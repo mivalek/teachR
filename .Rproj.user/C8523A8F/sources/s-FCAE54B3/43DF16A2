@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1565790254364.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "43DF16A2",
+    "lastKnownWriteTime" : 1565790608,
+    "last_content_update" : 1565790608943,
+    "path" : "C:/Users/mvalasek/teachR/R/update_course_details.R",
+    "project_path" : "R/update_course_details.R",
+    "properties" : {
+        "cursorPosition" : "11,42",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
