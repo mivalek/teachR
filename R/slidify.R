@@ -6,13 +6,14 @@
 #' @param file character. Path to .Rmd file to convert.
 #' @param course character. Course the lecture is for: one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr".
 #' @param meta.folder character. path to folder with .css, .js, and _header.html files for generating reveal.js slides. By default a subdirectory of directory where file= is located.
+#' @param incremental logical. TRUE to render slide bullets incrementally on click. FALSE by default.
 #' @return Function does not return anything but outputs a .html file called [file]_slides.html and a corresponding folder with figures.
 #' @examples
 #' # .Rmd and meta.folde must be on a local drive!
 #' slidify("C:/Users/mvalasek/slides/dapR_1_demo.Rmd", "dapR_1", "C:/Users/mvalasek/meta")
 
 
-slidify <- function(file, course, meta_folder) {
+slidify <- function(file, course, meta_folder, incremental = FALSE) {
   require(rmarkdown)
   require(revealjs)
   if (!file.exists(file)) stop("The file does not exist.")
@@ -65,7 +66,8 @@ slidify <- function(file, course, meta_folder) {
   render(
     input = out_file,
     output_format = revealjs::revealjs_presentation(
-      fig_width = 5, fig_height = 3.5, self_contained = F, transition = "fade", background_transition = "fade",
+      fig_width = 5, fig_height = 3.5, self_contained = F,
+      transition = "fade", background_transition = "fade", incremental = incremental,
       reveal_options = list(
         slideNumber = "c/t", controls = F, width = 1000, height = 750, margin = 0),
       reveal_plugins = c("notes", "search", "chalkboard"),

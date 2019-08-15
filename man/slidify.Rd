@@ -4,12 +4,14 @@
 \alias{slidify}
 \title{Convert .Rmd to reveal.js slides}
 \usage{
-slidify(file, course, meta_folder)
+slidify(file, course, meta_folder, incremental = FALSE)
 }
 \arguments{
 \item{file}{character. Path to .Rmd file to convert.}
 
 \item{course}{character. Course the lecture is for: one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr".}
+
+\item{incremental}{logical. TRUE to render slide bullets incrementally on click. FALSE by default.}
 
 \item{meta.folder}{character. path to folder with .css, .js, and _header.html files for generating reveal.js slides. By default a subdirectory of directory where file= is located.}
 }
