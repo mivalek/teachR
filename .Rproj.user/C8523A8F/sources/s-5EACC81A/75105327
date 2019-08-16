@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1565790780884.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "75105327",
+    "lastKnownWriteTime" : 1565971700,
+    "last_content_update" : 1565971700,
+    "path" : "C:/Users/mvalasek/teachR/R/slidify.R",
+    "project_path" : "R/slidify.R",
+    "properties" : {
+        "cursorPosition" : "79,50",
+        "scrollLine" : "11",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
