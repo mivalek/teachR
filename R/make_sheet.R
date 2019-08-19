@@ -11,6 +11,7 @@
 #' @param toc_depth logical. Depth of headers to include in table of contents.
 #' @param toc_float TRUE to float the table of contents to the left of the main document content. Rather than TRUE you may also pass a list of options that control the behavior of the floating table of contents. For more details, see ?rmarkdown::html_document.
 #' @param fig_width,fig_depth numeric. Default width and height (in inches) for figures.
+#' @param highlight character. Syntax highlighting style. See ?rmarkdown::html_document.
 #' @param ... Other arguments to be passed to rmarkdown:html_document or rmarkdown:html_notebook.
 #' @details Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/sheet_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
 #' @return TRUE if output .html file was successfully created.
@@ -21,7 +22,7 @@
 
 
 make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_depth = 2, toc_float = T,
-                       fig_width = 5, fig_height = 3.5, ...) {
+                       fig_width = 5, fig_height = 3.5, highlight = "tango", ...) {
   if (!file.exists(file)) stop("The file does not exist.")
   if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "other"))
     stop("course= must be one of c(\"dapr_1\", \"dapr_2\", \"dapr_3\", \"usmr\", \"msmr\", \"other\").")
@@ -54,8 +55,6 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
     "",
     "```{r, rsetup, include=F}",
     "knitr::opts_chunk$set(comment=NULL, collapse=T, strip.white=F, echo=T)",
-    # "                      fig.height = 3.5,",
-    # "                      fig.width = 5)",
     "```",
     " ",
     "```{r task_fun, echo=FALSE}",
@@ -79,7 +78,7 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
       input = out_file,
       output_format = html_notebook(
         toc = toc, toc_depth = toc_depth, toc_float = toc_float,
-        fig_width = fig_width, fig_height = fig_height,
+        fig_width = fig_width, fig_height = fig_height, highlight = highlight,
         includes = includes(after_body = c(css, js)),
         ...
       ),
@@ -90,7 +89,7 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
       input = out_file,
       output_format = html_document(
         toc = toc, toc_depth = toc_depth, toc_float = toc_float,
-        fig_width = fig_width, fig_height = fig_height,
+        fig_width = fig_width, fig_height = fig_height, highlight = highlight,
         includes = includes(after_body = c(css, js)),
         ...
     ),

@@ -5,7 +5,8 @@
 \title{Convert .Rmd to course-formatted slide handout HTML document or R Notebook}
 \usage{
 handout(file, course, ntb = FALSE, toc = T, toc_depth = 2,
-  toc_float = T, fig_width = 5, fig_height = 3.5, ...)
+  toc_float = T, fig_width = 5, fig_height = 3.5,
+  highlight = "tango", ...)
 }
 \arguments{
 \item{file}{character. Path to .Rmd file to convert.}
@@ -21,6 +22,8 @@ handout(file, course, ntb = FALSE, toc = T, toc_depth = 2,
 \item{toc_float}{TRUE to float the table of contents to the left of the main document content. Rather than TRUE you may also pass a list of options that control the behavior of the floating table of contents. For more details, see ?rmarkdown::html_document.}
 
 \item{fig_width, fig_depth}{numeric. Default width and height (in inches) for figures.}
+
+\item{highlight}{character. Syntax highlighting style. See ?rmarkdown::html_document.}
 
 \item{...}{Other arguments to be passed to rmarkdown:html_document or rmarkdown:html_notebook.}
 }
