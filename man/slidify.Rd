@@ -4,17 +4,17 @@
 \alias{slidify}
 \title{Convert .Rmd to reveal.js slides}
 \usage{
-slidify(file, course, meta_folder, incremental = FALSE, fig_width = 5,
-  fig_height = 3.5, transition = "fade",
-  background_transition = transition, plugins = c("notes", "search",
-  "chalkboard"))
+slidify(file, course, header_text = "default", meta_folder,
+  incremental = FALSE, fig_width = 5, fig_height = 3.5,
+  transition = "fade", background_transition = transition,
+  plugins = c("notes", "search", "chalkboard"))
 }
 \arguments{
 \item{file}{character. Path to .Rmd file to convert.}
 
 \item{course}{character. Course the lecture is for: one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other".}
 
-\item{meta_folder}{character. path to folder with slides.css, slides.js, and _header.html files for generating reveal.js slides. By default a subdirectory of directory where file= is located.}
+\item{header_text}{character. Text to be displayed in the top right corner of slides. Course-specific text by default.}
 
 \item{incremental}{logical. TRUE to render slide bullets incrementally on click. FALSE by default.}
 
@@ -30,7 +30,10 @@ Function does not return anything but outputs a .html file called [file]_slides.
 \description{
 Lecture slides should be written in R Markdown with title, subtitle, and author in YAML header and saved on a local drive (due to Pandoc's issues with network drives). slidify() converts lecture .Rmd file into a reveal.js html presentation applying the theme for given course.
 }
+\details{
+Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/slides_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
+}
 \examples{
-# .Rmd and meta.folder must be on a local drive!
-slidify("C:/Users/mvalasek/slides/dapR_1_demo.Rmd", "dapR_1", "C:/Users/mvalasek/meta")
+# .Rmd must be on a local drive!
+slidify("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 }

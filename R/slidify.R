@@ -5,35 +5,25 @@
 #'
 #' @param file character. Path to .Rmd file to convert.
 #' @param course character. Course the lecture is for: one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other".
-#' @param meta_folder character. path to folder with slides.css, slides.js, and _header.html files for generating reveal.js slides. By default a subdirectory of directory where file= is located.
+#' @param header_text character. Text to be displayed in the top right corner of slides. Course-specific text by default.
 #' @param incremental logical. TRUE to render slide bullets incrementally on click. FALSE by default.
 #' @return Function does not return anything but outputs a .html file called [file]_slides.html and a corresponding folder with figures.
 #' @param fig_width,fig_height numeric. numeric. Default width and height (in inches) for figures.
 #' @param transition,background_transition character. Slide transition animation. "fade" by default. See reveal.js documentation for more options.
 #' @param plugins character. which plugind to include. By default c("notes", "search", "chalkboard").
+#' @details Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/slides_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
 #' @examples
-#' # .Rmd and meta.folder must be on a local drive!
-#' slidify("C:/Users/mvalasek/slides/dapR_1_demo.Rmd", "dapR_1", "C:/Users/mvalasek/meta")
+#' # .Rmd must be on a local drive!
+#' slidify("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 
 
-slidify <- function(file, course, meta_folder, incremental = FALSE,
+slidify <- function(file, course, header_text = "default", meta_folder, incremental = FALSE,
                     fig_width = 5, fig_height = 3.5,
                     transition = "fade", background_transition = transition,
                     plugins = c("notes", "search", "chalkboard")) {
-  require(rmarkdown)
-  require(revealjs)
   if (!file.exists(file)) stop("The file does not exist.")
   if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "other"))
     stop("course= must be one of c(\"dapr_1\", \"dapr_2\", \"dapr_3\", \"usmr\", \"msmr\", \"other\").")
-  if (missing(meta_folder)) {
-    meta_folder <- file.path(
-      gsub(paste0("(.*)", .Platform$file.sep, ".*"), "\\1", file), "meta")
-    if (!dir.exists(meta_folder)) {
-      meta_folder <- file.path(getwd(), "meta")
-      if (!dir.exists(meta_folder))
-        stop("Cannot find the folder including .css, .js, and _header.html files.")
-    }
-  }
   course <- gsub("r_", "R_", tolower(course))
   x <- readLines(file)
   inc_lines <- grep("#\\s*?inc\\s*?$", x) # identify lines with #inc
@@ -81,9 +71,24 @@ slidify <- function(file, course, meta_folder, incremental = FALSE,
     "})",
     "```"
   )
-  css <- file.path(meta_folder, "css", "slides.css")
-  js <- file.path(meta_folder, "js", "slides.js")
-  header <- file.path(meta_folder, paste0(course, "_header.html"))
+  css <- "https://mivalek.github.io/slides_files/css/slides.css"
+  js <- "https://mivalek.github.io/slides_files/js/slides.js"
+  if (header_text == "default") {
+  header_text <-
+    if (grepl("dapR", course)) {
+      paste0(sub("_", "<strong>", course), "</strong>")
+    } else if (course == "usmr") {
+      "Univariate statistics<strong>in R</strong>"
+    } else if (course == "msmr") {
+      "Multivariate statistics<strong>in R</strong>"
+    } else ""
+  }
+  header_file <- gsub("\\.[Rr]md", "_header.html", file)
+  writeLines(
+    paste0("<div class=\"banner\"><div class = \"",
+           ifelse(course %in% c("usmr", "msmr"), "header msc", "header"),
+           "\"><a href=\"/\">", header_text, "</a></div></div>"),
+    header_file)
   x <- c(h, x)
   out_file <- gsub("\\.[Rr]md", "_temp.Rmd", file)
   writeLines(x, out_file)
@@ -97,11 +102,12 @@ slidify <- function(file, course, meta_folder, incremental = FALSE,
       reveal_options = list(
         slideNumber = "c/t", controls = F, width = 1000, height = 750, margin = 0),
       reveal_plugins = plugins,
-      highlight = "tango", includes = includes(before_body = header, after_body = js),
+      highlight = "tango", includes = includes(before_body = header_file, after_body = js),
       css = css
     ),
     output_file = pres_file)
   file.remove(out_file)
+  file.remove(header_file)
 
   x <- readLines(pres_file)
   ind <- grep("_slides_files", x)
@@ -111,8 +117,6 @@ slidify <- function(file, course, meta_folder, incremental = FALSE,
   x[ind] <-  gsub("^(\\s*?<script src=\").*?(slides_files.*)$", "\\1/\\2", x[ind])
   x[ind] <-  gsub("^(\\s*?\\{ src: ').*?(slides_files.*)$", "\\1/\\2", x[ind])
 
-  x[grepl("slides.css", x)] <-
-    "    <link rel=\"stylesheet\" href=\"/slides_files/css/slides.css\"/>"
   writeLines(x, pres_file)
   files_dirs <- list.dirs(sub("\\.html", "_files", pres_file), recursive = F)
   for (i in grep("figure-reveal", files_dirs, invert = T, value = T)) unlink(i, recursive = T)

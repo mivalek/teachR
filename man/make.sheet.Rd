@@ -4,16 +4,13 @@
 \alias{make.sheet}
 \title{Convert .Rmd to course-formatted HTML document or R Notebook}
 \usage{
-make.sheet(file, course, meta_folder, ntb = FALSE, toc = T,
-  toc_depth = 2, toc_float = T, fig_width = 5, fig_height = 3.5,
-  ...)
+make.sheet(file, course, ntb = FALSE, toc = T, toc_depth = 2,
+  toc_float = T, fig_width = 5, fig_height = 3.5, ...)
 }
 \arguments{
 \item{file}{character. Path to .Rmd file to convert.}
 
 \item{course}{character. Course the sheet is for: one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other".}
-
-\item{meta_folder}{character. path to folder with sheets.css and sheets.js for formatting HTML. By default a subdirectory of directory where file= is located.}
 
 \item{ntb}{logical. TRUE to render document as R Notebook. FALSE by default.}
 
@@ -28,12 +25,15 @@ make.sheet(file, course, meta_folder, ntb = FALSE, toc = T,
 \item{...}{Other arguments to be passed to rmarkdown:html_document or rmarkdown:html_notebook.}
 }
 \value{
-Function does not return anything but outputs a .html file.
+TRUE if output .html file was successfully created.
 }
 \description{
 Lab sheets and lecture materials should be written in R Markdown with title, subtitle, and author in YAML header and saved on a local drive (due to Pandoc's issues with network drives). make.sheets() converts a .Rmd file into a HTML/R Notebook document applying the theme for given course.
 }
+\details{
+Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/sheet_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
+}
 \examples{
-# .Rmd and meta.folder must be on a local drive!
-make.sheet("C:/Users/mvalasek/slides/dapR_1_demo.Rmd", "dapR_1", "C:/Users/mvalasek/meta")
+# .Rmd must be on a local drive!
+make.sheet("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 }

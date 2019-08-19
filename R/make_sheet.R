@@ -5,34 +5,24 @@
 #'
 #' @param file character. Path to .Rmd file to convert.
 #' @param course character. Course the sheet is for: one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other".
-#' @param meta_folder character. path to folder with sheets.css and sheets.js for formatting HTML. By default a subdirectory of directory where file= is located.
 #' @param ntb logical. TRUE to render document as R Notebook. FALSE by default.
 #' @param toc logical. Should table of content be included
 #' @param toc_depth logical. Depth of headers to include in table of contents.
 #' @param toc_float TRUE to float the table of contents to the left of the main document content. Rather than TRUE you may also pass a list of options that control the behavior of the floating table of contents. For more details, see ?rmarkdown::html_document.
 #' @param fig_width,fig_depth numeric. Default width and height (in inches) for figures.
 #' @param ... Other arguments to be passed to rmarkdown:html_document or rmarkdown:html_notebook.
-#' @return Function does not return anything but outputs a .html file.
+#' @details Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/sheet_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
+#' @return TRUE if output .html file was successfully created.
 #' @examples
-#' # .Rmd and meta.folder must be on a local drive!
-#' make.sheet("C:/Users/mvalasek/slides/dapR_1_demo.Rmd", "dapR_1", "C:/Users/mvalasek/meta")
+#' # .Rmd must be on a local drive!
+#' make.sheet("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 
 
-make.sheet <- function(file, course, meta_folder, ntb = FALSE, toc = T, toc_depth = 2, toc_float = T,
+make.sheet <- function(file, course, ntb = FALSE, toc = T, toc_depth = 2, toc_float = T,
                        fig_width = 5, fig_height = 3.5, ...) {
-  require(rmarkdown)
   if (!file.exists(file)) stop("The file does not exist.")
   if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "other"))
     stop("course= must be one of c(\"dapr_1\", \"dapr_2\", \"dapr_3\", \"usmr\", \"msmr\", \"other\").")
-  if (missing(meta_folder)) {
-    meta_folder <- file.path(
-      gsub(paste0("(.*)", .Platform$file.sep, ".*"), "\\1", file), "meta")
-    if (!dir.exists(meta_folder)) {
-      meta_folder <- file.path(getwd(), "meta")
-      if (!dir.exists(meta_folder))
-        stop("Cannot find the folder including .css, .js, and _header.html files.")
-    }
-  }
   course <- gsub("r_", "R_", tolower(course))
   x <- readLines(file)
   x <- gsub("^(\\s*?)>\\s*?-", "\\1-", x) # get rid of incremental bulletpoints if used ( > - ...)
@@ -74,8 +64,8 @@ make.sheet <- function(file, course, meta_folder, ntb = FALSE, toc = T, toc_dept
     "}",
     "```"
   )
-  css <- file.path(meta_folder, "css", "sheets.css")
-  js <- file.path(meta_folder, "js", "sheets.js")
+  css <- "https://mivalek.github.io/sheet_files/sheets.css"
+  js <- "https://mivalek.github.io/sheet_files/sheets.js"
   x <- c(h, x)
   out_file <- gsub("\\.[Rr]md", "_temp.Rmd", file)
   writeLines(x, out_file)
