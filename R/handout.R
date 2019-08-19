@@ -23,5 +23,5 @@
 handout <- function(file, course, ntb = FALSE, toc = T, toc_depth = 2, toc_float = T,
                        fig_width = 5, fig_height = 3.5, highlight = "tango", ...) {
   make.sheet(file = file, course = course, handout = TRUE, ntb = ntb, toc = toc, toc_depth = toc_depth,
-             toc_float = toc_float, fig_width = fig_width, fig_height = fig_height, highlight = highlight...)
+             toc_float = toc_float, fig_width = fig_width, fig_height = fig_height, highlight = highlight, ...)
 }
