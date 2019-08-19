@@ -43,7 +43,7 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
   subtitle <- grep("^\\s*?subtitle:", x, value = T)
   author <- grep("^\\s*?author:", x, value = T)
   x <- x[-(1:yaml[2])]
-  x <- gsub("^#[^#]", "## ", x)
+  x <- gsub("^#[^#.]", "## ", x) # turn # headings into ## headings
   h <- c(
     "---",
     title, subtitle, author,
