@@ -29,6 +29,7 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
   course <- gsub("r_", "R_", tolower(course))
   x <- readLines(file)
   x <- gsub("^(\\s*?)>\\s*?-", "\\1-", x) # get rid of incremental bulletpoints if used ( > - ...)
+  x <- gsub("#\\s*?inc\\s*?$", "", x) # identify lines with #inc
   yaml <- grep("---", x)
   title <- grep("^\\s*?title:", x, value = T)
   subtitle <- grep("^\\s*?subtitle:", x, value = T)
