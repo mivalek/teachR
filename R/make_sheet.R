@@ -5,6 +5,7 @@
 #'
 #' @param file character. Path to .Rmd file to convert.
 #' @param course character. Course the sheet is for: one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other".
+#' @param handout logical. TRUE adds "Click for slides" link under author. To be used only for slide handout HTML files. FALSE by default.
 #' @param ntb logical. TRUE to render document as R Notebook. FALSE by default.
 #' @param toc logical. Should table of content be included
 #' @param toc_depth logical. Depth of headers to include in table of contents.
@@ -13,12 +14,13 @@
 #' @param ... Other arguments to be passed to rmarkdown:html_document or rmarkdown:html_notebook.
 #' @details Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/sheet_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
 #' @return TRUE if output .html file was successfully created.
+#' @seealso handout()
 #' @examples
 #' # .Rmd must be on a local drive!
 #' make.sheet("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 
 
-make.sheet <- function(file, course, ntb = FALSE, toc = T, toc_depth = 2, toc_float = T,
+make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_depth = 2, toc_float = T,
                        fig_width = 5, fig_height = 3.5, ...) {
   if (!file.exists(file)) stop("The file does not exist.")
   if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "other"))
@@ -35,7 +37,7 @@ make.sheet <- function(file, course, ntb = FALSE, toc = T, toc_depth = 2, toc_fl
   h <- c(
     "---",
     title, subtitle, author,
-    paste0("date: \"[Click for slides](",
+    if (handout) paste0("date: \"[Click for slides](",
            gsub("(.*)\\.[rR]md", "./\\1_slides.html",
                 rev(unlist(strsplit(file, .Platform$file.sep)))[1]), ")\""),
     "---",
