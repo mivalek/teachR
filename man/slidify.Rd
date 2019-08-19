@@ -4,8 +4,8 @@
 \alias{slidify}
 \title{Convert .Rmd to reveal.js slides}
 \usage{
-slidify(file, course, header_text = "default", meta_folder,
-  incremental = FALSE, fig_width = 5, fig_height = 3.5,
+slidify(file, course, header_text = "default", incremental = FALSE,
+  offline = FALSE, offline_css, fig_width = 5, fig_height = 3.5,
   transition = "fade", background_transition = transition,
   plugins = c("notes", "search", "chalkboard"))
 }
@@ -17,6 +17,10 @@ slidify(file, course, header_text = "default", meta_folder,
 \item{header_text}{character. Text to be displayed in the top right corner of slides. Course-specific text by default.}
 
 \item{incremental}{logical. TRUE to render slide bullets incrementally on click. FALSE by default.}
+
+\item{offline}{logical. TRUE generates reaveal.js presentation that only works locally. FALSE by default. If TRUE, offline_css can be specified.}
+
+\item{offline_css}{character. Path to .css file for offline presentations. If not specified, slides will be linked to default css hosted online and will require Internet connection even if hosted offline. Leave unspecified if offline = FALSE.}
 
 \item{fig_width, fig_height}{numeric. numeric. Default width and height (in inches) for figures.}
 

@@ -6,6 +6,8 @@
 #' @param file character. Path to .Rmd file to convert.
 #' @param course character. Course the lecture is for: one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other".
 #' @param header_text character. Text to be displayed in the top right corner of slides. Course-specific text by default.
+#' @param offline logical. TRUE generates reaveal.js presentation that only works locally. FALSE by default. If TRUE, offline_css can be specified.
+#' @param offline_css character. Path to .css file for offline presentations. If not specified, slides will be linked to default css hosted online and will require Internet connection even if hosted offline. Leave unspecified if offline = FALSE.
 #' @param incremental logical. TRUE to render slide bullets incrementally on click. FALSE by default.
 #' @return Function does not return anything but outputs a .html file called [file]_slides.html and a corresponding folder with figures.
 #' @param fig_width,fig_height numeric. numeric. Default width and height (in inches) for figures.
@@ -17,7 +19,8 @@
 #' slidify("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 
 
-slidify <- function(file, course, header_text = "default", meta_folder, incremental = FALSE,
+slidify <- function(file, course, header_text = "default", incremental = FALSE,
+                    offline = FALSE, offline_css,
                     fig_width = 5, fig_height = 3.5,
                     transition = "fade", background_transition = transition,
                     plugins = c("notes", "search", "chalkboard")) {
@@ -44,9 +47,10 @@ slidify <- function(file, course, header_text = "default", meta_folder, incremen
   h <- c(
     "---",
     title, subtitle, author,
-    paste0("date: \"[Click for handout](",
-           gsub("(.*)[rR]md", "./\\1html",
-                rev(unlist(strsplit(file, .Platform$file.sep)))[1]), ")\""),
+    if (!offline)
+      paste0("date: \"[Click for handout](",
+             gsub("(.*)[rR]md", "./\\1html",
+                  rev(unlist(strsplit(file, .Platform$file.sep)))[1]), ")\""),
     "---",
     " ",
     "```{r, echo=F, results='asis'}",
@@ -71,7 +75,7 @@ slidify <- function(file, course, header_text = "default", meta_folder, incremen
     "})",
     "```"
   )
-  css <- "https://mivalek.github.io/slides_files/css/slides.css"
+  css <- ifelse(missing(offline_css), "https://mivalek.github.io/slides_files/css/slides.css", offline_css)
   js <- "https://mivalek.github.io/slides_files/js/slides.js"
   if (header_text == "default") {
   header_text <-
@@ -109,15 +113,17 @@ slidify <- function(file, course, header_text = "default", meta_folder, incremen
   file.remove(out_file)
   file.remove(header_file)
 
-  x <- readLines(pres_file)
-  ind <- grep("_slides_files", x)
-  ind <- ind[grep("img src", x[ind], invert = T)]
-  x[ind] <-  gsub("^(\\s*?<link rel=\"stylesheet\" href=\").*?(slides_files.*)$", "\\1/\\2", x[ind])
-  x[ind] <-  gsub("^(\\s*?<link href=\").*?(slides_files.*)$", "\\1/\\2", x[ind])
-  x[ind] <-  gsub("^(\\s*?<script src=\").*?(slides_files.*)$", "\\1/\\2", x[ind])
-  x[ind] <-  gsub("^(\\s*?\\{ src: ').*?(slides_files.*)$", "\\1/\\2", x[ind])
+  if (!offline) {
+    x <- readLines(pres_file)
+    ind <- grep("_slides_files", x)
+    ind <- ind[grep("img src", x[ind], invert = T)]
+    x[ind] <-  gsub("^(\\s*?<link rel=\"stylesheet\" href=\").*?(slides_files.*)$", "\\1/\\2", x[ind])
+    x[ind] <-  gsub("^(\\s*?<link href=\").*?(slides_files.*)$", "\\1/\\2", x[ind])
+    x[ind] <-  gsub("^(\\s*?<script src=\").*?(slides_files.*)$", "\\1/\\2", x[ind])
+    x[ind] <-  gsub("^(\\s*?\\{ src: ').*?(slides_files.*)$", "\\1/\\2", x[ind])
 
-  writeLines(x, pres_file)
-  files_dirs <- list.dirs(sub("\\.html", "_files", pres_file), recursive = F)
-  for (i in grep("figure-reveal", files_dirs, invert = T, value = T)) unlink(i, recursive = T)
+    writeLines(x, pres_file)
+    files_dirs <- list.dirs(sub("\\.html", "_files", pres_file), recursive = F)
+    for (i in grep("figure-reveal", files_dirs, invert = T, value = T)) unlink(i, recursive = T)
+  }
 }
