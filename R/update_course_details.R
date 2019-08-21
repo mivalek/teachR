@@ -5,15 +5,21 @@
 #'
 #' IMPORTANT: Set working directory to website folder!.
 #'
-#' @param details.file character. Name of .csv file containing course details (with path).
-#' @param people.file character. Name of .csv file containing people details (with path). By default, replaces "_courses.csv" in string given to details.file= with "_people.csv".
+#' @param details.file character. Name of .csv file containing course details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_courses.csv".
+#' @param people.file character. Name of .csv file containing people details. By default, replaces "_courses.csv" in string given to details.file= with "_people.csv".
 #' @return Function does not return anything of use.
 #' @examples
 #' # update course details for all courses
 #' update.course.details(details.file = "M:/teaching/admin/website_courses.csv")
 
-update.course.details <- function(details.file,
-                                  people.file = sub("_courses.csv", "_people.csv", details.file)) {
+update.course.details <- function(details.file = "default",
+                                  people.file = "default") {
+  if (details.file == "default")
+    details.file <- file.path(
+      "", "", "chss.datastore.ed.ac.uk","chss","ppls","shared",
+      "courses","DAP","website_courses.csv")
+  if (people.file == "default")
+    people.file <- sub("_courses.csv", "_people.csv", details.file)
   if (!file.exists(details.file)) stop("The course details file you linked to does not exist.")
   if (!file.exists(people.file)) stop("The people details file you linked to does not exist.")
   ff <- list.files(pattern = "info.html", recursive = T)

@@ -4,15 +4,15 @@
 \alias{update.people}
 \title{Update People section of a course page}
 \usage{
-\method{update}{people}(surname = "all", course = "all", file,
-  remove = F, inside = F)
+\method{update}{people}(surname = "all", course = "all",
+  file = "default", remove = F, inside = F)
 }
 \arguments{
 \item{surname}{character. Either "all" (default) or surname of person to add to course.}
 
 \item{course}{character. Course to modify: either "all" (default) or one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr".}
 
-\item{file}{character. Name of .csv file containing details (with path). Not required if remove = TRUE.}
+\item{file}{character. Name of .csv file containing details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_people.csv". Not required if remove = TRUE.}
 
 \item{remove}{logical. TRUE removes people from page, FALSE adds them.}
 
@@ -29,7 +29,7 @@ IMPORTANT: Set working directory to website folder!.
 }
 \examples{
 # update all people on all courses
-update.people(file = "M:/teaching/admin/website_people.csv")
+update.people()
 
 # remove single person from all courses
 update.people("valasek", remove = T)

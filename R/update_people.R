@@ -7,19 +7,19 @@
 #'
 #' @param surname character. Either "all" (default) or surname of person to add to course.
 #' @param course character. Course to modify: either "all" (default) or one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr".
-#' @param file character. Name of .csv file containing details (with path). Not required if remove = TRUE.
+#' @param file character. Name of .csv file containing details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_people.csv". Not required if remove = TRUE.
 #' @param remove logical. TRUE removes people from page, FALSE adds them.
 #' @param inside logical. Suppresses dialog windows. TRUE mainly for use within functions.
 #' @return Function does not return anything of use.
 #' @examples
 #' # update all people on all courses
-#' update.people(file = "M:/teaching/admin/website_people.csv")
+#' update.people()
 #'
 #' # remove single person from all courses
 #' update.people("valasek", remove = T)
 
 update.people <- function(surname = "all", course = "all",
-                          file, remove = F, inside = F) {
+                          file = "default", remove = F, inside = F) {
   if (class(surname) != "character") stop("surname= must be a character vector.")
   if (!all(course %in% c(paste0("dapR_", 1:3L), "usmr", "msmr")) && course != "all")
     stop('course= must be "all" or one of c("dapR_1", "daprR_2", "dapR_3", "usmr", "msmr").')
@@ -71,6 +71,9 @@ update.people <- function(surname = "all", course = "all",
     }
 
   } else {
+    if (file == "default") file <- file.path(
+      "", "", "chss.datastore.ed.ac.uk","chss","ppls","shared",
+      "courses","DAP","website_people.csv")
     if (!file.exists(file)) stop("The file you linked to does not exist.")
     if (all_courses) course <- c(paste0("dapR_", 1:3L), "usmr", "msmr")
     df <- read.csv(file, na.strings = "", stringsAsFactors = F)
@@ -106,7 +109,8 @@ update.people <- function(surname = "all", course = "all",
           "\t\t\t<div class=\"inner\">",
           "\t\t\t\t<header class=\"major\">",
           paste0(
-            "\t\t\t\t\t<h3>", paste(df_i[j, c("title", "forename", "display_surname")], collapse = " "), "</h3>"
+            "\t\t\t\t\t<h3>",
+            paste(df_i[j, c("title", "forename", "display_surname")], collapse = " "), "</h3>"
           ),
           "\t\t\t\t</header>",
           if(!is.na(df_i$blurb[j])) paste0("\t\t\t\t<p>", df_i$blurb[j], "</p>"),

@@ -4,13 +4,13 @@
 \alias{update.course.details}
 \title{Update Course details section of a course page}
 \usage{
-\method{update}{course.details}(details.file,
-  people.file = sub("_courses.csv", "_people.csv", details.file))
+\method{update}{course.details}(details.file = "default",
+  people.file = "default")
 }
 \arguments{
-\item{details.file}{character. Name of .csv file containing course details (with path).}
+\item{details.file}{character. Name of .csv file containing course details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_courses.csv".}
 
-\item{people.file}{character. Name of .csv file containing people details (with path). By default, replaces "_courses.csv" in string given to details.file= with "_people.csv".}
+\item{people.file}{character. Name of .csv file containing people details. By default, replaces "_courses.csv" in string given to details.file= with "_people.csv".}
 }
 \value{
 Function does not return anything of use.
