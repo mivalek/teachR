@@ -12,7 +12,7 @@
 
 \item{course}{character. Course to modify: either "all" (default) or one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr".}
 
-\item{file}{character. Name of .csv file containing details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_people.csv". Not required if remove = TRUE.}
+\item{file}{character. Name of .csv file containing details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_people.csv". Not required if remove = TRUE. See details for MacOS and Linux users.}
 
 \item{remove}{logical. TRUE removes people from page, FALSE adds them.}
 
@@ -26,6 +26,8 @@ Function reqires an up-to-date website_people.csv file with all info. For more d
 }
 \details{
 IMPORTANT: Set working directory to website folder!.
+
+The function will by default try to access //chss.datastore.ed.ac.uk/chss... This only works on Windows. If it cannot access the path, it will try /Volumes/chss... instead. This should work on MacOS. For Linux users, you're on your own but I bet you're used to that by now.
 }
 \examples{
 # update all people on all courses

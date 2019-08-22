@@ -5,22 +5,26 @@
 #'
 #' IMPORTANT: Set working directory to website folder!.
 #'
-#' @param details.file character. Name of .csv file containing course details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_courses.csv".
+#' @param details.file character. Name of .csv file containing course details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_courses.csv". See details for MacOS and Linux users.
 #' @param people.file character. Name of .csv file containing people details. By default, replaces "_courses.csv" in string given to details.file= with "_people.csv".
+#' @details The function will by default try to access //chss.datastore.ed.ac.uk/chss... This only works on Windows. If it cannot access the path, it will try /Volumes/chss... instead. This should work on MacOS. For Linux users, you're on your own but I bet you're used to that by now.
 #' @return Function does not return anything of use.
 #' @examples
 #' # update course details for all courses
-#' update.course.details(details.file = "M:/teaching/admin/website_courses.csv")
+#' update.course.details()
 
 update.course.details <- function(details.file = "default",
                                   people.file = "default") {
-  if (details.file == "default")
-    details.file <- file.path(
-      "", "", "chss.datastore.ed.ac.uk","chss","ppls","shared",
-      "courses","DAP","website_courses.csv")
+  if (details.file == "default") {
+    details.file <- "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_people.csv"
+    if (!file.exists(details.file)) {
+      details.file <- sub("/chss.datastore.ed.ac.uk", "Volumes", details.file)
+      if (!file.exists(details.file)) stop("Cannot access the shared drive. Please set path manually.")
+    }
+  } else
+    if (!file.exists(details.file)) stop("The course details file you linked to does not exist.")
   if (people.file == "default")
     people.file <- sub("_courses.csv", "_people.csv", details.file)
-  if (!file.exists(details.file)) stop("The course details file you linked to does not exist.")
   if (!file.exists(people.file)) stop("The people details file you linked to does not exist.")
   ff <- list.files(pattern = "info.html", recursive = T)
   people <- read.csv(people.file, stringsAsFactors = F)

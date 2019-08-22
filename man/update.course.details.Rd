@@ -8,7 +8,7 @@
   people.file = "default")
 }
 \arguments{
-\item{details.file}{character. Name of .csv file containing course details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_courses.csv".}
+\item{details.file}{character. Name of .csv file containing course details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_courses.csv". See details for MacOS and Linux users.}
 
 \item{people.file}{character. Name of .csv file containing people details. By default, replaces "_courses.csv" in string given to details.file= with "_people.csv".}
 }
@@ -20,8 +20,10 @@ Function reqires an up-to-date website_courses.csv and website_people.csv files 
 }
 \details{
 IMPORTANT: Set working directory to website folder!.
+
+The function will by default try to access //chss.datastore.ed.ac.uk/chss... This only works on Windows. If it cannot access the path, it will try /Volumes/chss... instead. This should work on MacOS. For Linux users, you're on your own but I bet you're used to that by now.
 }
 \examples{
 # update course details for all courses
-update.course.details(details.file = "M:/teaching/admin/website_courses.csv")
+update.course.details()
 }

@@ -7,9 +7,10 @@
 #'
 #' @param surname character. Either "all" (default) or surname of person to add to course.
 #' @param course character. Course to modify: either "all" (default) or one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr".
-#' @param file character. Name of .csv file containing details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_people.csv". Not required if remove = TRUE.
+#' @param file character. Name of .csv file containing details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_people.csv". Not required if remove = TRUE. See details for MacOS and Linux users.
 #' @param remove logical. TRUE removes people from page, FALSE adds them.
 #' @param inside logical. Suppresses dialog windows. TRUE mainly for use within functions.
+#' @details The function will by default try to access //chss.datastore.ed.ac.uk/chss... This only works on Windows. If it cannot access the path, it will try /Volumes/chss... instead. This should work on MacOS. For Linux users, you're on your own but I bet you're used to that by now.
 #' @return Function does not return anything of use.
 #' @examples
 #' # update all people on all courses
@@ -71,10 +72,14 @@ update.people <- function(surname = "all", course = "all",
     }
 
   } else {
-    if (file == "default") file <- file.path(
-      "", "", "chss.datastore.ed.ac.uk","chss","ppls","shared",
-      "courses","DAP","website_people.csv")
-    if (!file.exists(file)) stop("The file you linked to does not exist.")
+    if (file == "default") {
+      file <- "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_people.csv"
+      if (!file.exists(file)) {
+        file <- sub("/chss.datastore.ed.ac.uk", "Volumes", file)
+        if (!file.exists(file)) stop("Cannot access the shared drive. Please set path manually.")
+      }
+    } else
+      if (!file.exists(file)) stop("The file you linked to does not exist.")
     if (all_courses) course <- c(paste0("dapR_", 1:3L), "usmr", "msmr")
     df <- read.csv(file, na.strings = "", stringsAsFactors = F)
     df$role <- ordered(df$role, levels = c("CO", "L", "TC", "TA"))
