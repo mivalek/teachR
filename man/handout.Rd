@@ -31,13 +31,12 @@ handout(file, course, ntb = FALSE, toc = T, toc_depth = 2,
 TRUE if output .html file was successfully created.
 }
 \description{
-Lecture materials should be written in R Markdown with title, subtitle, and author in YAML header and saved on a local drive (due to Pandoc's issues with network drives). handout() is a convenience function equivalent to make.sheet(handout = TRUE, ...). It converts a .Rmd file into a HTML/R Notebook document applying the theme for given course.
+Lecture materials should be written in R Markdown with title, subtitle, and author in YAML header. handout() is a convenience function equivalent to make.sheet(handout = TRUE, ...). It converts a .Rmd file into a HTML/R Notebook document applying the theme for given course.
 }
 \details{
 Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/sheet_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
 }
 \examples{
-# .Rmd must be on a local drive!
 handout("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 }
 \seealso{
