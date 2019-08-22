@@ -75,6 +75,7 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
     "})",
     "```"
   )
+  h <- as.vector(na.omit(h))
   css <- ifelse(missing(offline_css), "https://mivalek.github.io/slides_files/css/slides.css", offline_css)
   js <- "https://mivalek.github.io/slides_files/js/slides.js"
   if (header_text == "default") {

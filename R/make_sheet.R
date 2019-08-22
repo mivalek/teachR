@@ -66,6 +66,7 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
     "}",
     "```"
   )
+  h <- as.vector(na.omit(h))
   css <- "https://mivalek.github.io/sheet_files/sheets.css"
   js <- "https://mivalek.github.io/sheet_files/sheets.js"
   x <- c(h, x)
