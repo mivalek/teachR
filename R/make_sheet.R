@@ -36,12 +36,23 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
   author <- grep("^\\s*?author:", x, value = T)[1]
   x <- x[-(1:yaml[2])]
   x <- gsub("^#[^#]", "## ", x)
+  
+  
+  file <- gsub("\\", "/", file, fixed = T)
+  
+  outwd <- oldwd <- getwd()
+  if (grepl("/", file)) {
+    outwd <- gsub("(.*)/.*$", "\\1", file)
+    file <- gsub(".*/(.*?)", "\\1", file)
+  }
+  if (!grepl(oldwd, outwd)) outwd <- file.path(oldwd, outwd)
+  
   h <- c(
     "---",
     title, subtitle, author,
     if (handout) paste0("date: \"[Click for slides](",
            gsub("(.*)\\.[rR]md", "./\\1_slides.html",
-                rev(unlist(strsplit(file, .Platform$file.sep)))[1]), ")\""),
+                file), ")\""),
     "---",
     " ",
     "```{r, echo=F, results='asis'}",
@@ -70,45 +81,37 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
   css <- "https://mivalek.github.io/sheet_files/sheets.css"
   js <- "https://mivalek.github.io/sheet_files/sheets.js"
   x <- c(h, x)
-  file <- gsub("\\", "/", file, fixed = T)
   
-  outwd <- oldwd <- getwd()
-  if (grepl("/", file)) {
-    outwd <- gsub("(.*)/.*$", "\\1", file)
-    file <- gsub(".*/(.*?)", "\\1", file)
-  }
-  if (!grepl(oldwd, outwd)) outwd <- file.path(oldwd, outwd)
-  setwd(tempdir())
+  setwd(outwd)
   on.exit(setwd(oldwd))
   
-  out_file <- gsub("\\.[Rr]md", "_temp.Rmd", file)
-  writeLines(x, out_file)
-  on.exit(file.remove(out_file), add = T, after = F)
+  temp_rmd <- gsub("\\.[Rr]md", "_temp.Rmd", file)
+  writeLines(x, temp_rmd)
+  on.exit(file.remove(temp_rmd), add = T, after = F)
 
-  pres_file <- gsub("\\.[Rr]md$", ".html", file)
+  out_html <- gsub("\\.[Rr]md$", ".html", file)
 
   if (ntb) {
     render(
-      input = out_file,
+      input = temp_rmd,
       output_format = html_notebook(
         toc = toc, toc_depth = toc_depth, toc_float = toc_float,
         fig_width = fig_width, fig_height = fig_height, highlight = highlight,
         includes = includes(after_body = c(css, js)),
         ...
       ),
-      output_file = pres_file)
+      intermediates_dir = tempdir())
   }
   else {
     render(
-      input = out_file,
+      input = temp_rmd,
       output_format = html_document(
         toc = toc, toc_depth = toc_depth, toc_float = toc_float,
         fig_width = fig_width, fig_height = fig_height, highlight = highlight,
         includes = includes(after_body = c(css, js)),
         ...
     ),
-    output_file = pres_file)
+    intermediates_dir = tempdir())
   }
-  on.exit(file.remove(pres_file), add = T, after = F)
-  file.copy(pres_file, file.path(outwd, pres_file), overwrite = T)
+  file.rename(sub("\\.Rmd$", ".html", temp_rmd), out_html)
 }
