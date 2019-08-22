@@ -124,8 +124,6 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
       css = css
     ),
     output_file = pres_file)
-  # file.remove(out_file)
-  # file.remove(header_file)
 
   if (!offline) {
     x <- readLines(pres_file)

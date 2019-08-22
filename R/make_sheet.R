@@ -106,6 +106,4 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
     ),
     output_file = pres_file)
   }
-
-  # file.remove(out_file)
 }
