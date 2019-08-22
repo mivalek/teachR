@@ -1,7 +1,7 @@
 
 #' Convert .Rmd to reveal.js slides
 #'
-#' Lecture slides should be written in R Markdown with title, subtitle, and author in YAML header and saved on a local drive (due to Pandoc's issues with network drives). slidify() converts lecture .Rmd file into a reveal.js html presentation applying the theme for given course.
+#' Lecture slides should be written in R Markdown with title, subtitle, and author in YAML header. slidify() converts lecture .Rmd file into a reveal.js html presentation applying the theme for given course.
 #'
 #' @param file character. Path to .Rmd file to convert.
 #' @param course character. Course the lecture is for: one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other".
@@ -15,7 +15,6 @@
 #' @param plugins character. which plugind to include. By default c("notes", "search", "chalkboard").
 #' @details Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/slides_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
 #' @examples
-#' # .Rmd must be on a local drive!
 #' slidify("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 
 

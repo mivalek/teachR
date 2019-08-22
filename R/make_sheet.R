@@ -1,7 +1,7 @@
 
 #' Convert .Rmd to course-formatted HTML document or R Notebook
 #'
-#' Lab sheets and lecture materials should be written in R Markdown with title, subtitle, and author in YAML header and saved on a local drive (due to Pandoc's issues with network drives). make.sheets() converts a .Rmd file into a HTML/R Notebook document applying the theme for given course.
+#' Lab sheets and lecture materials should be written in R Markdown with title, subtitle, and author in YAML header. make.sheets() converts a .Rmd file into a HTML/R Notebook document applying the theme for given course.
 #'
 #' @param file character. Path to .Rmd file to convert.
 #' @param course character. Course the sheet is for: one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other".
@@ -17,7 +17,6 @@
 #' @return TRUE if output .html file was successfully created.
 #' @seealso handout()
 #' @examples
-#' # .Rmd must be on a local drive!
 #' make.sheet("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 
 
