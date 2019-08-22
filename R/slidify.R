@@ -91,12 +91,14 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
   
   file <- gsub("\\", "/", file, fixed = T)
   
-  oldwd <- getwd()
+  outwd <- oldwd <- getwd()
   if (grepl("/", file)) {
-    setwd(gsub("(.*)/.*$", "\\1", file))
-    on.exit(setwd(oldwd))
+    outwd <- gsub("(.*)/.*$", "\\1", file)
     file <- gsub(".*/(.*?)", "\\1", file)
   }
+  if (!grepl(oldwd, outwd)) outwd <- file.path(oldwd, outwd)
+  setwd(tempdir())
+  on.exit(setwd(oldwd))
   
   header_file <- gsub("\\.[Rr]md", "_header.html", file)
   writeLines(
@@ -124,6 +126,8 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
       css = css
     ),
     output_file = pres_file)
+  on.exit(file.remove(pres_file), add = T, after = F)
+  on.exit(unlink(sub("\\.html", "_files", pres_file), recursive = T), add = T, after = F)
 
   if (!offline) {
     x <- readLines(pres_file)
@@ -138,4 +142,6 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
     files_dirs <- list.dirs(sub("\\.html", "_files", pres_file), recursive = F)
     for (i in grep("figure-reveal", files_dirs, invert = T, value = T)) unlink(i, recursive = T)
   }
+  
+  file.copy(pres_file, file.path(outwd, pres_file), overwrite = T)
 }

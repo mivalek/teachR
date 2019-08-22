@@ -72,12 +72,15 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
   x <- c(h, x)
   file <- gsub("\\", "/", file, fixed = T)
   
-  oldwd <- getwd()
+  outwd <- oldwd <- getwd()
   if (grepl("/", file)) {
-    setwd(gsub("(.*)/.*$", "\\1", file))
-    on.exit(setwd(oldwd))
+    outwd <- gsub("(.*)/.*$", "\\1", file)
     file <- gsub(".*/(.*?)", "\\1", file)
   }
+  if (!grepl(oldwd, outwd)) outwd <- file.path(oldwd, outwd)
+  setwd(tempdir())
+  on.exit(setwd(oldwd))
+  
   out_file <- gsub("\\.[Rr]md", "_temp.Rmd", file)
   writeLines(x, out_file)
   on.exit(file.remove(out_file), add = T, after = F)
@@ -106,4 +109,6 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
     ),
     output_file = pres_file)
   }
+  on.exit(file.remove(pres_file), add = T, after = F)
+  file.copy(pres_file, file.path(outwd, pres_file), overwrite = T)
 }
