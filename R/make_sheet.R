@@ -70,8 +70,17 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
   css <- "https://mivalek.github.io/sheet_files/sheets.css"
   js <- "https://mivalek.github.io/sheet_files/sheets.js"
   x <- c(h, x)
+  file <- gsub("\\", "/", file, fixed = T)
+  
+  oldwd <- getwd()
+  if (grepl("/", file)) {
+    setwd(gsub("(.*)/.*$", "\\1", file))
+    on.exit(setwd(oldwd))
+    file <- gsub(".*/(.*?)", "\\1", file)
+  }
   out_file <- gsub("\\.[Rr]md", "_temp.Rmd", file)
   writeLines(x, out_file)
+  on.exit(file.remove(out_file), add = T, after = F)
 
   pres_file <- gsub("\\.[Rr]md$", ".html", file)
 
@@ -98,5 +107,5 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
     output_file = pres_file)
   }
 
-  file.remove(out_file)
+  # file.remove(out_file)
 }

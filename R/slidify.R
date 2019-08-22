@@ -88,15 +88,28 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
       "Multivariate statistics<strong>in R</strong>"
     } else ""
   }
+  
+  file <- gsub("\\", "/", file, fixed = T)
+  
+  oldwd <- getwd()
+  if (grepl("/", file)) {
+    setwd(gsub("(.*)/.*$", "\\1", file))
+    on.exit(setwd(oldwd))
+    file <- gsub(".*/(.*?)", "\\1", file)
+  }
+  
   header_file <- gsub("\\.[Rr]md", "_header.html", file)
   writeLines(
     paste0("<div class=\"banner\"><div class = \"",
            ifelse(course %in% c("usmr", "msmr"), "header msc", "header"),
            "\"><a href=\"/\">", header_text, "</a></div></div>"),
     header_file)
+  on.exit(file.remove(header_file), add = T, after = F)
+  
   x <- c(h, x)
   out_file <- gsub("\\.[Rr]md", "_temp.Rmd", file)
   writeLines(x, out_file)
+  on.exit(file.remove(out_file), add = T, after = F)
 
   pres_file <- gsub("\\.[Rr]md$", "_slides.html", file)
   render(
@@ -111,8 +124,8 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
       css = css
     ),
     output_file = pres_file)
-  file.remove(out_file)
-  file.remove(header_file)
+  # file.remove(out_file)
+  # file.remove(header_file)
 
   if (!offline) {
     x <- readLines(pres_file)
