@@ -47,9 +47,9 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
   x <- y[order(index)] # half-ranks get inserted in the right places
   x <- gsub("^(\\s*?)(.*?)#\\s*?inc", "\\1> \\2", x) # make lines with #inc render incrementally
   yaml <- grep("---", x)
-  title <- grep("^\\s*?title:", x, value = T)
-  subtitle <- grep("^\\s*?subtitle:", x, value = T)
-  author <- grep("^\\s*?author:", x, value = T)
+  title <- grep("^\\s*?title:", x[1:yaml[2]], value = T)[1]
+  subtitle <- grep("^\\s*?subtitle:", x[1:yaml[2]], value = T)[1]
+  author <- grep("^\\s*?author:", x[1:yaml[2]], value = T)[1]
   x <- x[-(1:yaml[2])]
   x <- gsub("^#[^#.]", "## ", x) # turn # headings into ## headings
   

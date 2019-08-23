@@ -39,9 +39,9 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
   x <- gsub("^(\\s*?)>\\s*?-", "\\1-", x) # get rid of incremental bulletpoints if used ( > - ...)
   x <- gsub("#\\s*?inc\\s*?$", "", x) # get rid of #inc
   yaml <- grep("---", x)
-  title <- grep("^\\s*?title:", x, value = T)[1]
-  subtitle <- grep("^\\s*?subtitle:", x, value = T)[1]
-  author <- grep("^\\s*?author:", x, value = T)[1]
+  title <- grep("^\\s*?title:", x[1:yaml[2]], value = T)[1]
+  subtitle <- grep("^\\s*?subtitle:", x[1:yaml[2]], value = T)[1]
+  author <- grep("^\\s*?author:", x[1:yaml[2]], value = T)[1]
   x <- x[-(1:yaml[2])]
   x <- gsub("^#[^#]", "## ", x)
 
