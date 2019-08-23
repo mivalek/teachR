@@ -23,9 +23,18 @@
 make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_depth = 2, toc_float = T,
                        fig_width = 5, fig_height = 3.5, highlight = "tango", ...) {
   if (!file.exists(file)) stop("The file does not exist.")
+  if (!grepl("\\.[rR]md$", file)) stop("file= needs to be an .Rmd file.")
   if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "other"))
     stop("course= must be one of c(\"dapr_1\", \"dapr_2\", \"dapr_3\", \"usmr\", \"msmr\", \"other\").")
   course <- gsub("r_", "R_", tolower(course))
+  
+  oldwd <- getwd()
+  file <- gsub("\\", "/", normalizePath(file, "/", T), fixed = T)
+  outwd <- gsub("(.*)/.*$", "\\1", file)
+  file <- gsub(".*/(.*?)", "\\1", file)
+  setwd(outwd)
+  on.exit(setwd(oldwd))
+  
   x <- readLines(file)
   x <- gsub("^(\\s*?)>\\s*?-", "\\1-", x) # get rid of incremental bulletpoints if used ( > - ...)
   x <- gsub("#\\s*?inc\\s*?$", "", x) # get rid of #inc
@@ -35,23 +44,11 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
   author <- grep("^\\s*?author:", x, value = T)[1]
   x <- x[-(1:yaml[2])]
   x <- gsub("^#[^#]", "## ", x)
-  
-  
-  file <- gsub("\\", "/", file, fixed = T)
-  
-  outwd <- oldwd <- getwd()
-  if (grepl("/", file)) {
-    outwd <- gsub("(.*)/.*$", "\\1", file)
-    file <- gsub(".*/(.*?)", "\\1", file)
-  }
-  if (!grepl(oldwd, outwd)) outwd <- file.path(oldwd, outwd)
-  
+
   h <- c(
     "---",
     title, subtitle, author,
-    if (handout) paste0("date: \"[Click for slides](",
-           gsub("(.*)\\.[rR]md", "./\\1_slides.html",
-                file), ")\""),
+    if (handout) paste0("date: \"[Click for slides](", file, ")\""),
     "---",
     " ",
     "```{r, echo=F, results='asis'}",
@@ -77,12 +74,10 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
     "```"
   )
   h <- as.vector(na.omit(h))
-  css <- "https://mivalek.github.io/sheet_files/sheets.css"
-  js <- "https://mivalek.github.io/sheet_files/sheets.js"
   x <- c(h, x)
   
-  setwd(outwd)
-  on.exit(setwd(oldwd))
+  css <- "https://mivalek.github.io/sheet_files/sheets.css"
+  js <- "https://mivalek.github.io/sheet_files/sheets.js"
   
   temp_rmd <- gsub("\\.[Rr]md", "_temp.Rmd", file)
   writeLines(x, temp_rmd)

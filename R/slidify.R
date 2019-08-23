@@ -24,9 +24,18 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
                     transition = "fade", background_transition = transition,
                     plugins = c("notes", "search", "chalkboard")) {
   if (!file.exists(file)) stop("The file does not exist.")
+  if (!grepl("\\.[rR]md$", file)) stop("file= needs to be an .Rmd file.")
   if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "other"))
     stop("course= must be one of c(\"dapr_1\", \"dapr_2\", \"dapr_3\", \"usmr\", \"msmr\", \"other\").")
   course <- gsub("r_", "R_", tolower(course))
+  
+  oldwd <- getwd()
+  file <- gsub("\\", "/", normalizePath(file, "/", T), fixed = T)
+  outwd <- gsub("(.*)/.*$", "\\1", file)
+  file <- gsub(".*/(.*?)", "\\1", file)
+  setwd(outwd)
+  on.exit(setwd(oldwd))
+  
   x <- readLines(file)
   inc_lines <- grep("#\\s*?inc\\s*?$", x) # identify lines with #inc
   dist_mat <- as.matrix(dist(inc_lines)) # distances between #inc lines
@@ -43,14 +52,8 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
   author <- grep("^\\s*?author:", x, value = T)
   x <- x[-(1:yaml[2])]
   x <- gsub("^#[^#.]", "## ", x) # turn # headings into ## headings
-  h <- c(
-    "---",
-    title, subtitle, author,
-    if (!offline)
-      paste0("date: \"[Click for handout](",
-             gsub("(.*)[rR]md", "./\\1html",
-                  rev(unlist(strsplit(file, .Platform$file.sep)))[1]), ")\""),
-    "---",
+  
+  setup <- c(
     " ",
     "```{r, echo=F, results='asis'}",
     "cat(\"",
@@ -74,7 +77,23 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
     "})",
     "```"
   )
+  first_slide <- grep("^\\s*?##", x)[1]
+  x <- c(x[1:first_slide], setup, x[(first_slide + 1): length(x)])
+         
+  h <- c(
+    "---",
+    title, subtitle, author,
+    if (!offline)
+      paste0("date: \"[Click for handout](",
+             gsub("(.*)[rR]md", "./\\1html", file), ")\""),
+    "---")
   h <- as.vector(na.omit(h))
+  
+  x <- c(h, x)
+  temp_rmd <- gsub("\\.[Rr]md", "_temp.Rmd", file)
+  writeLines(x, temp_rmd)
+  on.exit(file.remove(temp_rmd), add = T, after = F)
+  
   css <- ifelse(missing(offline_css), "https://mivalek.github.io/slides_files/css/slides.css", offline_css)
   js <- "https://mivalek.github.io/slides_files/js/slides.js"
   if (header_text == "default") {
@@ -87,18 +106,7 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
       "Multivariate statistics<strong>in R</strong>"
     } else ""
   }
-  
-  file <- gsub("\\", "/", file, fixed = T)
-  
-  outwd <- oldwd <- getwd()
-  if (grepl("/", file)) {
-    outwd <- gsub("(.*)/.*$", "\\1", file)
-    file <- gsub(".*/(.*?)", "\\1", file)
-  }
-  if (!grepl(oldwd, outwd)) outwd <- file.path(oldwd, outwd)
-  setwd(outwd)
-  on.exit(setwd(oldwd))
-  
+
   header_file <- file.path(tempdir(), sub("\\.[Rr]md", "_header.html", file))
   writeLines(
     paste0("<div class=\"banner\"><div class = \"",
@@ -106,14 +114,10 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
            "\"><a href=\"/\">", header_text, "</a></div></div>"),
     header_file)
   on.exit(file.remove(header_file), add = T, after = F)
-  
-  x <- c(h, x)
-  temp_rmd <- gsub("\\.[Rr]md", "_temp.Rmd", file)
-  writeLines(x, temp_rmd)
-  on.exit(file.remove(temp_rmd), add = T, after = F)
 
   out_html <- sub("\\.[Rr]md$", "_slides.html", file)
-  html_dir <- sub("\\.html", "_files", out_html)
+  temp_html_dir <- sub("\\.[Rr]md$", "_files", temp_rmd)
+  out_html_dir <- sub("_temp_", "_slides_", temp_html_dir)
   render(
     input = temp_rmd,
     output_format = revealjs::revealjs_presentation(
@@ -123,22 +127,36 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
         slideNumber = "c/t", controls = F, width = 1000, height = 750, margin = 0),
       reveal_plugins = plugins,
       highlight = "tango", includes = includes(before_body = header_file, after_body = js),
-      css = css, lib_dir = html_dir
+      css = css
     ),
     intermediates_dir = tempdir(), clean = T)
   file.rename(gsub("\\.[Rr]md", ".html", temp_rmd), out_html)
+  
+  unlink(out_html_dir, recursive = T)
 
+  
+  x <- readLines(out_html)
+  x <-  gsub(temp_html_dir, out_html_dir, x)
   if (!offline) {
-    x <- readLines(out_html)
     ind <- grep("_slides_files", x)
     ind <- ind[grep("img src", x[ind], invert = T)]
     x[ind] <-  gsub("^(\\s*?<link rel=\"stylesheet\" href=\").*?(slides_files.*)$", "\\1/\\2", x[ind])
     x[ind] <-  gsub("^(\\s*?<link href=\").*?(slides_files.*)$", "\\1/\\2", x[ind])
     x[ind] <-  gsub("^(\\s*?<script src=\").*?(slides_files.*)$", "\\1/\\2", x[ind])
     x[ind] <-  gsub("^(\\s*?\\{ src: ').*?(slides_files.*)$", "\\1/\\2", x[ind])
-
     writeLines(x, out_html)
-    files_dirs <- list.dirs(html_dir, recursive = F)
+    
+    dir.create(file.path(out_html_dir, "figure-revealjs"), recursive = T)
+    ff <- list.files(file.path(temp_html_dir, "figure-revealjs"), recursive = T, full.names = T)
+    file.copy(ff, sub(temp_html_dir, out_html_dir, ff))
+    files_dirs <- list.dirs(temp_html_dir, recursive = F)
     for (i in grep("figure-reveal", files_dirs, invert = T, value = T)) unlink(i, recursive = T)
+  } else {
+    writeLines(x, out_html)
+    dirs <- list.dirs(temp_html_dir, recursive = T, full.names = F)[-1]
+    for (i in dirs) dir.create(file.path(out_html_dir, i), recursive = T)
+    ff <- list.files(temp_html_dir, recursive = T, full.names = T)
+    file.copy(ff, sub(temp_html_dir, out_html_dir, ff))
   }
+  unlink(temp_html_dir, recursive = T)
 }
