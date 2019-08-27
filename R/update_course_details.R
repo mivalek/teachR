@@ -16,7 +16,7 @@
 update.course.details <- function(details.file = "default",
                                   people.file = "default") {
   if (details.file == "default") {
-    details.file <- "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_people.csv"
+    details.file <- "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_courses.csv"
     if (!file.exists(details.file)) {
       details.file <- sub("/chss.datastore.ed.ac.uk", "Volumes", details.file)
       if (!file.exists(details.file)) stop("Cannot access the shared drive. Please set path manually.")
@@ -26,6 +26,7 @@ update.course.details <- function(details.file = "default",
   if (people.file == "default")
     people.file <- sub("_courses.csv", "_people.csv", details.file)
   if (!file.exists(people.file)) stop("The people details file you linked to does not exist.")
+  
   ff <- list.files(pattern = "info.html", recursive = T)
   people <- read.csv(people.file, stringsAsFactors = F)
   info <- read.csv(details.file, stringsAsFactors = F, na.strings = "")
@@ -36,8 +37,28 @@ update.course.details <- function(details.file = "default",
 
   for (i in ff) {
     course <- gsub("/?(.*?)/.*", "\\1", i) # extract course from path
-    x <- readLines(i)
-    details <- info[ , c("course", course)]
+    html <- readLines(i)
+    if (course %in% c("dapR_1", "dapR_2")) {
+      sem1_section <- grep("<!-- Semester 1 -->", html)
+      end_sem1_section <- grep("<!-- END Semester 1 -->", html)
+      end_sem2_section <- grep("<!-- END Semester 2 -->", html)
+      if (length(end_sem2_section) > 0) { # delete semester 2 section if exists
+        html <- c(
+          html[c(1:end_sem1_section, (end_sem2_section + 1):length(html))]
+        )
+        html <- gsub("sem-hide", "sem-show", html)
+      } else html <- gsub("sem-show", "sem-hide", html)
+    }
+    
+    # x <- readLines(i)
+    details <- info[ , c("course", grep(course, names(info), value = T))]
+    diff_sem2 <- ncol(details) == 3 && !all(is.na(details[[paste0(course, "_sem2")]]))
+    
+    if (diff_sem2) {
+      drop_ins <- grep("drop_in", details$course)
+      replace <- is.na(details[drop_ins, 3])
+      details[drop_ins, 3][replace] <- details[drop_ins, 2][replace]
+    }
     details <- as.data.frame(t(details), stringsAsFactors = F)
     names(details) <- as.character(details[1, ])
     details <- details[-1, ]
@@ -54,156 +75,22 @@ update.course.details <- function(details.file = "default",
     details[ , grep("_time", names(details))] <-
       lapply(details[ , grep("_time", names(details))],
              function(y) gsub("-", " &ndash; ", y))
-    attach(details)
+    
 
-    one_lecture_course <- is.na(lec_day2)
-    same_room_labs <- all(is.na(c(lab_room2, lab_room3, lab_room4))) |
-      length(table(c(lab_room1, lab_room2, lab_room3, lab_room4), useNA = "always")) == 1
-
-    # get relevant lines of info.html
-    indices <- sapply(c("co", "tc", "cs", paste0("lecturer", 1:2), paste0("lec_day", 1:2),
-                        paste0("lec_room", 1:2), paste0("lec_time", 1:2),
-                        paste0("lab_room", 1:4), paste0("lab_time", 1:4),
-                        "drop_in_person", "drop_in_room", "drop_in_time"),
-                      function(y) grep(paste0("id=\"", y), x), simplify = F)
-
-    # comment out / uncomment appropriate sections
-    if (one_lecture_course) {
-      x[grep("BEGIN ONE LECTURE", x)] <- "\t\t\t\t\t\t\t\t<!-- BEGIN ONE LECTURE COURSE-->"
-      x[grep("END ONE LECTURE", x)] <- "\t\t\t\t\t\t\t\t<!-- END ONE LECTURE COURSE -->"
-
-      x[grep("BEGIN TWO LECTURE", x)] <- "\t\t\t\t\t\t\t\t<!-- BEGIN TWO LECTURE COURSE"
-      x[grep("END TWO LECTURE", x)] <- "\t\t\t\t\t\t\t\tEND TWO LECTURE COURSE -->"
-    } else {
-      x[grep("BEGIN ONE LECTURE", x)] <- "\t\t\t\t\t\t\t\t<!-- BEGIN ONE LECTURE COURSE"
-      x[grep("END ONE LECTURE", x)] <- "\t\t\t\t\t\t\t\tEND ONE LECTURE COURSE -->"
-
-      x[grep("BEGIN TWO LECTURE", x)] <- "\t\t\t\t\t\t\t\t<!-- BEGIN TWO LECTURE COURSE -->"
-      x[grep("END TWO LECTURE", x)] <- "\t\t\t\t\t\t\t\t<!-- END TWO LECTURE COURSE -->"
+    
+    html <- update.html(html, details[1, ])
+    
+    if (diff_sem2) {
+      end_sem1_section <- grep("<!-- END Semester 1 -->", html)
+      sem2_html <- update.html(html, details[2, ])
+      
+      sem2_html <- gsub("Semester 1", "Semester 2", sem2_html)
+      sem2_section <- grep("<!-- Semester 2 -->", sem2_html)
+      end_sem2_section <- grep("<!-- END Semester 2 -->", sem2_html)
+      sem2_html <- sem2_html[sem2_section:end_sem2_section]
+      html <- c(html[1:end_sem1_section], sem2_html, html[(end_sem1_section + 1):length(html)])
     }
 
-    if (same_room_labs) {
-      x[grep("BEGIN SAME ROOM", x)] <- "\t\t\t\t\t\t\t\t<!-- BEGIN SAME ROOM LABS-->"
-      x[grep("END SAME ROOM", x)] <- "\t\t\t\t\t\t\t\t<!-- END SAME ROOM LABS -->"
-
-      x[grep("BEGIN DIFFERENT ROOM", x)] <- "\t\t\t\t\t\t\t\t<!-- BEGIN DIFFERENT ROOM LABS"
-      x[grep("END DIFFERENT ROOM", x)] <- "\t\t\t\t\t\t\t\tEND DIFFERENT ROOM LABS -->"
-    } else {
-      x[grep("BEGIN SAME ROOM", x)] <- "\t\t\t\t\t\t\t\t<!-- BEGIN SAME ROOM LABS"
-      x[grep("END SAME ROOM", x)] <- "\t\t\t\t\t\t\t\tEND SAME ROOM LABS -->"
-
-      x[grep("BEGIN DIFFERENT ROOM", x)] <- "\t\t\t\t\t\t\t\t<!-- BEGIN DIFFERENT ROOM LABS -->"
-      x[grep("END DIFFERENT ROOM", x)] <- "\t\t\t\t\t\t\t\t<!-- END DIFFERENT ROOM LABS -->"
-    }
-
-    ### update people
-    # get display names / slugs / profile URLs of people
-    get.name <- function(x, get = "all") {
-      if (is.na(x)) {
-        out <- list(name = NA, slug = NA, profile = NA)
-      } else {
-        name <- unlist(strsplit(x, " "))
-        index <- people$forename == name[1] &
-          people$surname == name[2]
-        out <- list(name = paste(
-          people[index,
-                 c("title", "forename", "display_surname")],
-          collapse = " "),
-          slug = paste(tolower(name), collapse = "_"),
-          profile = people$profile[index])
-      }
-      if (get == "all") get <- 1:3
-      return(out[get])
-    }
-
-    # identify <div class="contact-method"> just BEFORE lecturer1 line
-    div_ind <- rev(grep("class=\"contact-method", x))
-    div_ind <- div_ind[div_ind < indices$lecturer1][1]
-
-    if (!is.na(lecturer2)) {
-      # two lecturer case
-      if (length(indices$lecturer2) == 0) # no lecturer 2 line in html
-        # insert lecturer 2 line
-        x <- c(
-          x[1:indices$lecturer1],
-          c("<br>", sub("lecturer1", "lecturer2", x[indices$lecturer1])),
-          x[(indices$lecturer1 + 1):length(x)]
-        )
-      # add id="multiline" for styling of bottom margin
-      x[div_ind] <- "\t\t\t\t\t\t\t\t<div id=\"multiline\" class=\"contact-method\">"
-
-    } else if (length(indices$lecturer2) != 0) {# 1 lecturer case with l2 line in html
-      x <- x[-(indices$lecturer2 - 1:0)] # delete lecturer 2 line
-      # remove id="multiline" for styling of bottom margin
-      x[div_ind] <- "\t\t\t\t\t\t\t\t<div class=\"contact-method\">"
-    }
-    # update indices
-    indices <- sapply(c("co", "tc", "cs", paste0("lecturer", 1:2), paste0("lec_day", 1:2),
-                        paste0("lec_room", 1:2), paste0("lec_time", 1:2),
-                        paste0("lab_room", 1:4), paste0("lab_time", 1:4),
-                        "drop_in_person", "drop_in_room", "drop_in_time"),
-                      function(y) grep(paste0("id=\"", y), x), simplify = F)
-
-    # update people
-    for (j in c("co", "tc", "lecturer1", "lecturer2", "drop_in_person")) {
-      x[indices[[j]]] <- paste0(
-        "\t\t\t\t\t\t\t\t\t<a id=\"", j, "\" href=\"/dapR_1/people.html#",
-        get.name(details[[j]], 2), "\">",
-        get.name(details[[j]], 1), "</a>"
-      )
-    }
-
-    x[indices$cs] <- paste0(
-      "\t\t\t\t\t\t\t\t\t<a id=\"", j, "\" href=\"",
-      get.name(details$cs, 3), "\">",
-      get.name(details$cs, 1), "</a>")
-
-    ### update rooms
-    for (j in c(paste0("lec_room", 1:2), paste0("lab_room", 1:4), "drop_in_room")) {
-      x[indices[[j]]] <- paste0(
-        "\t\t\t\t\t\t\t\t\t<a id=\"", j, "\" href=\"https://www.ed.ac.uk/maps/maps?building=",
-        details[[paste0(j, "_link")]],
-        "\" target=\"_blank\">",
-        details[[j]],
-        "</a>")
-    }
-
-    ### update times
-    ## lectures
-    if (one_lecture_course) {
-      x[indices$lec_time1] <- paste0(
-        "\t\t\t\t\t\t\t\t\t<span id=\"lec_time1\">", lec_day1, "&ensp;",
-        sub("-", " &ndash; ", lec_time1), "</span>")
-    } else {
-      x[indices$lec_day1] <- paste0("\t\t\t<h4 id=\"lec_day1\">", lec_day1, "</h4>")
-      x[indices$lec_time1] <- paste0(
-        "\t\t\t\t\t\t\t\t\t<span id=\"lec_time1\">", lec_time1, "</span>")
-
-      x[indices$lec_day2] <- paste0("\t\t\t<h4 id=\"lec_day2\">", lec_day2, "</h4>")
-      x[indices$lec_time2] <- paste0(
-        "\t\t\t\t\t\t\t\t\t<span id=\"lec_time2\">", lec_time2, "</span>")
-    }
-
-    ## labs
-    if (same_room_labs) {
-      # get lab times in a vector
-      labs <- as.vector(details[ , grep("lab_time", names(details))])
-      x[indices$lab_time1] <- paste0(
-        "\t\t\t\t\t\t\t\t\t<span id=\"lab_time1\">",
-        paste(labs[!is.na(labs)], collapse = "<br>"),
-        "</span>"
-      )
-    } else{
-      for (j in paste0("lab_time", 1:4)) {
-        x[indices[[j]]] <- paste0(
-          "\t\t\t\t\t\t\t\t\t<span id=\"", j, "\">", details[[j]], "</span>")
-      }
-    }
-
-    # drop-ins
-    x[indices$drop_in_time] <- paste0(
-      "\t\t\t\t\t\t\t\t\t<span id=\"drop_in_time\">", details$drop_in_time, "</span>")
-
-    writeLines(x, i)
+    writeLines(html, i)
   }
 }

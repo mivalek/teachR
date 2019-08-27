@@ -48,7 +48,7 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
   h <- c(
     "---",
     title, subtitle, author,
-    if (handout) paste0("date: \"[Click for slides](", file, ")\""),
+    if (handout) paste0("date: \"[Click for slides](", sub("\\.[Rr]md$", "_slides_html", file), ")\""),
     "---",
     " ",
     "```{r, echo=F, results='asis'}",
@@ -79,11 +79,11 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
   css <- "https://mivalek.github.io/sheet_files/sheets.css"
   js <- "https://mivalek.github.io/sheet_files/sheets.js"
   
-  temp_rmd <- gsub("\\.[Rr]md", "_temp.Rmd", file)
+  temp_rmd <- sub("\\.[Rr]md$", "_temp.Rmd", file)
   writeLines(x, temp_rmd)
   on.exit(file.remove(temp_rmd), add = T, after = F)
 
-  out_html <- gsub("\\.[Rr]md$", ".html", file)
+  out_html <- sub("\\.[Rr]md$", ".html", file)
 
   if (ntb) {
     render(
