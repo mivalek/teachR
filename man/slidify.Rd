@@ -24,7 +24,7 @@ slidify(file, course, header_text = "default", incremental = FALSE,
 
 \item{fig_width, fig_height}{\code{numeric}. Default width and height (in inches) for figures.}
 
-\item{transition, background_transition}{\code{character}. Slide transition animation. \code{"fade"} by default. See \link[reveal.js]{https://github.com/hakimel/reveal.js/blob/master/README.md} documentation for more options.}
+\item{transition, background_transition}{\code{character}. Slide transition animation. \code{"fade"} by default. See reveal.js documentation (https://github.com/hakimel/reveal.js/blob/master/README.md) for more options.}
 
 \item{plugins}{\code{character}. which plugind to include. By default \code{c("notes", "search", "chalkboard")}.}
 }

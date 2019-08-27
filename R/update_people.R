@@ -6,7 +6,7 @@
 #' IMPORTANT: Set working directory to website folder!.
 #'
 #' @param surname \code{character}. Either \code{"all"} (default) or surname of person to add to course.
-#' @param course \code{haracter}. Course to modify: either \code{"all"} (default) or one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr"}.
+#' @param course \code{character}. Course to modify: either \code{"all"} (default) or one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr"}.
 #' @param file \code{character}. Name of .csv file containing details. By default \code{"//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_people.csv"}. Not required if \code{remove = TRUE}. See details for MacOS and Linux users.
 #' @param remove \code{logical}. \code{TRUE} removes people from page, \code{FALSE} adds them.
 #' @param inside \code{logical}. Suppresses dialog windows. \code{TRUE} mainly for use within functions.

@@ -10,7 +10,7 @@
 \arguments{
 \item{surname}{\code{character}. Either \code{"all"} (default) or surname of person to add to course.}
 
-\item{course}{\code{haracter}. Course to modify: either \code{"all"} (default) or one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr"}.}
+\item{course}{\code{character}. Course to modify: either \code{"all"} (default) or one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr"}.}
 
 \item{file}{\code{character}. Name of .csv file containing details. By default \code{"//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_people.csv"}. Not required if \code{remove = TRUE}. See details for MacOS and Linux users.}
 
