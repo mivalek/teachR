@@ -1,18 +1,18 @@
 
 #' Convert .Rmd to reveal.js slides
 #'
-#' Lecture slides should be written in R Markdown with title, subtitle, and author in YAML header. slidify() converts lecture .Rmd file into a reveal.js html presentation applying the theme for given course.
+#' Lecture slides should be written in R Markdown with title, subtitle, and author in YAML header. \code{slidify()} converts lecture .Rmd file into a reveal.js html presentation applying the theme for given course.
 #'
-#' @param file character. Path to .Rmd file to convert.
-#' @param course character. Course the lecture is for: one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other".
-#' @param header_text character. Text to be displayed in the top right corner of slides. Course-specific text by default.
-#' @param offline logical. TRUE generates reaveal.js presentation that only works locally. FALSE by default. If TRUE, offline_css can be specified.
-#' @param offline_css character. Path to .css file for offline presentations. If not specified, slides will be linked to default css hosted online and will require Internet connection even if hosted offline. Leave unspecified if offline = FALSE.
-#' @param incremental logical. TRUE to render slide bullets incrementally on click. FALSE by default.
+#' @param file \code{character}. Path to .Rmd file to convert.
+#' @param course \code{character}. Course the lecture is for: one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other"}.
+#' @param header_text \code{character}. Text to be displayed in the top right corner of slides. Course-specific text by default.
+#' @param offline \code{logical}. \code{TRUE} generates reaveal.js presentation that only works locally. \code{FALSE} by default. If \code{TRUE}, \code{offline_css=} can be specified.
+#' @param offline_css \code{character}. Path to .css file for offline presentations. If not specified, slides will be linked to default CSS hosted online and will require Internet connection even if hosted offline. Leave unspecified if \code{offline = FALSE}.
+#' @param incremental \code{logical}. \code{TRUE} to render slide bullets incrementally on click. \code{FALSE} by default.
 #' @return Function does not return anything but outputs a .html file called [file]_slides.html and a corresponding folder with figures.
-#' @param fig_width,fig_height numeric. numeric. Default width and height (in inches) for figures.
-#' @param transition,background_transition character. Slide transition animation. "fade" by default. See reveal.js documentation for more options.
-#' @param plugins character. which plugind to include. By default c("notes", "search", "chalkboard").
+#' @param fig_width,fig_height \code{numeric}. Default width and height (in inches) for figures.
+#' @param transition,background_transition \code{character}. Slide transition animation. \code{"fade"} by default. See \link[reveal.js]{https://github.com/hakimel/reveal.js/blob/master/README.md} documentation for more options.
+#' @param plugins \code{character}. which plugind to include. By default \code{c("notes", "search", "chalkboard")}.
 #' @details Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/slides_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
 #' @examples
 #' slidify("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")

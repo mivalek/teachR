@@ -5,11 +5,11 @@
 #'
 #' IMPORTANT: Set working directory to website folder!.
 #'
-#' @param course character. Course page to modify: one of "dapR_1", "daprR_2", "dapR_3", "usmr", or "msmr".
-#' @param sem numeric. Semester to modify: either 1 or 2. Only applicable for 2-semester courses, currently dapR 1 and 2.
-#' @param label character. Button text. Keep it short, e.g., "Lecture", "Lab", "Explainer"...
-#' @param link character. Single URL for the buttons. Defaults to /course/sem. Probably better to use link.button().
-#' @param remove logical. If FALSE (default), button gets added. If TRUE it gets removed
+#' @param course \code{character}. Course page to modify: one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr"}, or \code{"msmr"}.
+#' @param sem \code{numeric}. Semester to modify: either \code{1} or \code{2}. Only applicable for 2-semester courses, currently dapR 1 and 2.
+#' @param label \code{character}. Button text. Keep it short, e.g., \code{"Lecture", "Lab", "Explainer"}...
+#' @param link \code{character}. Single URL for the buttons. Defaults to /course/sem. Probably better to use \code{\link{link.button}()}.
+#' @param remove \code{logical}. If \code{FALSE} (default), button gets added. If \code{TRUE} it gets removed
 #' @return Function does not return anything of use.
 #' @examples
 #' # add Explainer button for each week
@@ -25,6 +25,8 @@ week.button <- function(course, sem = NULL, label, link, remove = FALSE) {
     stop(paste('sem= must be either 1 or 2 for', course))
   if(missing(label)) stop("Button label not provided.")
   if (!is.logical(remove)) stop("remove= must be logical.")
+  if (class(try(readLines("index.html"))) == "try-error")
+    stop("Cannot access website files. Have you set working directory?")
   label <- sub("^(.)", "\\U\\1", tolower(label), perl = T)
   if (!is.null(sem)) sem <- paste0("sem_", sem)
   ff <- ifelse(is.null(sem),

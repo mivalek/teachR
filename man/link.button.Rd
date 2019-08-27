@@ -7,21 +7,21 @@
 link.button(course, sem = NULL, weeks = "all", label, links)
 }
 \arguments{
-\item{course}{character. Course page to modify: one of "dapR_1", "daprR_2", "dapR_3", "usmr", or "msmr".}
+\item{course}{\code{character}. Course page to modify: one of "dapR_1", "daprR_2", "dapR_3", "usmr", or "msmr".}
 
-\item{sem}{numeric. Semester to modify: either 1 or 2. Only applicable for 2-semester courses, currently dapR 1 and 2.}
+\item{sem}{\code{numeric}. Semester to modify: either 1 or 2. Only applicable for 2-semester courses, currently dapR 1 and 2.}
 
-\item{weeks}{Weeks in which to link buttons. Defaults to "all", otherwise numeric vector.}
+\item{weeks}{Weeks in which to link buttons. Defaults to \code{"all"}, otherwise \code{numeric} vector.}
 
-\item{label}{character. Name of the button to link.}
+\item{label}{\code{character}. Name of the button to link.}
 
-\item{links}{character vector. URLs for the buttons. Either length 1 or length(weeks)}
+\item{links}{\code{character} vector. URLs for the buttons. Either length 1 or \code{length(weeks)}.}
 }
 \value{
 Function does not return anything of use.
 }
 \description{
-Function links a given button (all weeks by default) to URLs specified in links=.
+Function links a given button (all weeks by default) to URLs specified in \code{links=}.
 }
 \details{
 IMPORTANT: Set working directory to website folder!.

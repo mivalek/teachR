@@ -1,21 +1,21 @@
 
 #' Convert .Rmd to course-formatted HTML document or R Notebook
 #'
-#' Lab sheets and lecture materials should be written in R Markdown with title, subtitle, and author in YAML header. make.sheets() converts a .Rmd file into a HTML/R Notebook document applying the theme for given course.
+#' Lab sheets and lecture materials should be written in R Markdown with title, subtitle, and author in YAML header. \code{make.sheets()} converts a .Rmd file into a HTML/R Notebook document applying the theme for given course.
 #'
-#' @param file character. Path to .Rmd file to convert.
-#' @param course character. Course the sheet is for: one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other".
-#' @param handout logical. TRUE adds "Click for slides" link under author. To be used only for slide handout HTML files. FALSE by default.
-#' @param ntb logical. TRUE to render document as R Notebook. FALSE by default.
-#' @param toc logical. Should table of content be included
-#' @param toc_depth logical. Depth of headers to include in table of contents.
-#' @param toc_float TRUE to float the table of contents to the left of the main document content. Rather than TRUE you may also pass a list of options that control the behavior of the floating table of contents. For more details, see ?rmarkdown::html_document.
-#' @param fig_width,fig_depth numeric. Default width and height (in inches) for figures.
-#' @param highlight character. Syntax highlighting style. See ?rmarkdown::html_document.
-#' @param ... Other arguments to be passed to rmarkdown:html_document or rmarkdown:html_notebook.
+#' @param file \code{character}. Path to .Rmd file to convert.
+#' @param course \code{character}. Course the sheet is for: one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other"}.
+#' @param handout \code{logical}. \code{TRUE} adds "Click for slides" link under author. To be used only for slide handout HTML files. \code{FALSE} by default.
+#' @param ntb \code{logical}. \code{TRUE} to render document as R Notebook. \code{FALSE} by default.
+#' @param toc \code{logical}. Should table of content be included
+#' @param toc_depth \code{logical}. Depth of headers to include in table of contents.
+#' @param toc_float \code{TRUE} to float the table of contents to the left of the main document content. Rather than TRUE you may also pass a list of options that control the behavior of the floating table of contents. For more details, see \code{\link[rmarkdown]{html_document}}.
+#' @param fig_width,fig_depth \code{numeric}. Default width and height (in inches) for figures.
+#' @param highlight \code{character}. Syntax highlighting style. See \code{\link[rmarkdown]{html_document}}.
+#' @param ... Other arguments to be passed to \code{rmarkdown:html_document} or \code{rmarkdown:html_notebook}.
 #' @details Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/sheet_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
-#' @return TRUE if output .html file was successfully created.
-#' @seealso handout()
+#' @return \code{TRUE} if output .html file was successfully created.
+#' @seealso \code{\link{handout}()}
 #' @examples
 #' make.sheet("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 

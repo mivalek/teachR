@@ -5,8 +5,8 @@
 #'
 #' IMPORTANT: Set working directory to website folder!.
 #'
-#' @param details.file character. Name of .csv file containing course details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_courses.csv". See details for MacOS and Linux users.
-#' @param people.file character. Name of .csv file containing people details. By default, replaces "_courses.csv" in string given to details.file= with "_people.csv".
+#' @param details.file \code{character}. Name of .csv file containing course details. By default \code{"//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_courses.csv"}. See details for MacOS and Linux users.
+#' @param people.file \code{character}. Name of .csv file containing people details. By default, replaces \code{"_courses.csv"} in string given to \code{details.file=} with \code{"_people.csv"}.
 #' @details The function will by default try to access //chss.datastore.ed.ac.uk/chss... This only works on Windows. If it cannot access the path, it will try /Volumes/chss... instead. This should work on MacOS. For Linux users, you're on your own but I bet you're used to that by now.
 #' @return Function does not return anything of use.
 #' @examples
@@ -26,6 +26,8 @@ update.course.details <- function(details.file = "default",
   if (people.file == "default")
     people.file <- sub("_courses.csv", "_people.csv", details.file)
   if (!file.exists(people.file)) stop("The people details file you linked to does not exist.")
+  if (class(try(readLines("index.html"))) == "try-error")
+    stop("Cannot access website files. Have you set working directory?")
   
   ff <- list.files(pattern = "info.html", recursive = T)
   people <- read.csv(people.file, stringsAsFactors = F)

@@ -5,11 +5,11 @@
 #'
 #' IMPORTANT: Set working directory to website folder!.
 #'
-#' @param surname character. Either "all" (default) or surname of person to add to course.
-#' @param course character. Course to modify: either "all" (default) or one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr".
-#' @param file character. Name of .csv file containing details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_people.csv". Not required if remove = TRUE. See details for MacOS and Linux users.
-#' @param remove logical. TRUE removes people from page, FALSE adds them.
-#' @param inside logical. Suppresses dialog windows. TRUE mainly for use within functions.
+#' @param surname \code{character}. Either \code{"all"} (default) or surname of person to add to course.
+#' @param course \code{haracter}. Course to modify: either \code{"all"} (default) or one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr"}.
+#' @param file \code{character}. Name of .csv file containing details. By default \code{"//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_people.csv"}. Not required if \code{remove = TRUE}. See details for MacOS and Linux users.
+#' @param remove \code{logical}. \code{TRUE} removes people from page, \code{FALSE} adds them.
+#' @param inside \code{logical}. Suppresses dialog windows. \code{TRUE} mainly for use within functions.
 #' @details The function will by default try to access //chss.datastore.ed.ac.uk/chss... This only works on Windows. If it cannot access the path, it will try /Volumes/chss... instead. This should work on MacOS. For Linux users, you're on your own but I bet you're used to that by now.
 #' @return Function does not return anything of use.
 #' @examples
@@ -25,6 +25,8 @@ update.people <- function(surname = "all", course = "all",
   if (!all(course %in% c(paste0("dapR_", 1:3L), "usmr", "msmr")) && course != "all")
     stop('course= must be "all" or one of c("dapR_1", "daprR_2", "dapR_3", "usmr", "msmr").')
   if (!is.logical(remove)) stop("remove= must be logical.")
+  if (class(try(readLines("index.html"))) == "try-error")
+    stop("Cannot access website files. Have you set working directory?")
   surname <- tolower(surname)
   all_peeps <- surname[1] == "all"
   all_courses <- course[1] == "all"

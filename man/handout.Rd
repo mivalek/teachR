@@ -9,29 +9,29 @@ handout(file, course, ntb = FALSE, toc = T, toc_depth = 2,
   highlight = "tango", ...)
 }
 \arguments{
-\item{file}{character. Path to .Rmd file to convert.}
+\item{file}{\code{character}. Path to .Rmd file to convert.}
 
-\item{course}{character. Course the sheet is for: one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other".}
+\item{course}{\code{character}. Course the sheet is for: one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other"}.}
 
-\item{ntb}{logical. TRUE to render document as R Notebook. FALSE by default.}
+\item{ntb}{\code{logical}. \code{TRUE} to render document as R Notebook. \code{FALSE} by default.}
 
-\item{toc}{logical. Should table of content be included}
+\item{toc}{\code{logical}. Should table of content be included}
 
-\item{toc_depth}{logical. Depth of headers to include in table of contents.}
+\item{toc_depth}{\code{logical}. Depth of headers to include in table of contents.}
 
-\item{toc_float}{TRUE to float the table of contents to the left of the main document content. Rather than TRUE you may also pass a list of options that control the behavior of the floating table of contents. For more details, see ?rmarkdown::html_document.}
+\item{toc_float}{\code{TRUE} to float the table of contents to the left of the main document content. Rather than TRUE you may also pass a list of options that control the behavior of the floating table of contents. For more details, see \code{\link[rmarkdown]{html_document}}.}
 
-\item{fig_width, fig_depth}{numeric. Default width and height (in inches) for figures.}
+\item{fig_width, fig_depth}{\code{numeric}. Default width and height (in inches) for figures.}
 
-\item{highlight}{character. Syntax highlighting style. See ?rmarkdown::html_document.}
+\item{highlight}{\code{character}. Syntax highlighting style. See \code{\link[rmarkdown]{html_document}}.}
 
-\item{...}{Other arguments to be passed to rmarkdown:html_document or rmarkdown:html_notebook.}
+\item{...}{Other arguments to be passed to \code{rmarkdown:html_document} or \code{rmarkdown:html_notebook}.}
 }
 \value{
-TRUE if output .html file was successfully created.
+\code{TRUE} if output .html file was successfully created.
 }
 \description{
-Lecture materials should be written in R Markdown with title, subtitle, and author in YAML header. handout() is a convenience function equivalent to make.sheet(handout = TRUE, ...). It converts a .Rmd file into a HTML/R Notebook document applying the theme for given course.
+Lecture materials should be written in R Markdown with title, subtitle, and author in YAML header. {handout()} is a convenience function equivalent to \code{make.sheet(handout = TRUE, ...)}. It converts a .Rmd file into a HTML/R Notebook document applying the theme for given course.
 }
 \details{
 Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/sheet_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
@@ -40,5 +40,5 @@ Function requires a .css and .js files for correct formatting of lab sheets/hand
 handout("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 }
 \seealso{
-make.sheet()
+\code{\link{make.sheet}()}
 }

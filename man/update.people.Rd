@@ -8,15 +8,15 @@
   file = "default", remove = F, inside = F)
 }
 \arguments{
-\item{surname}{character. Either "all" (default) or surname of person to add to course.}
+\item{surname}{\code{character}. Either \code{"all"} (default) or surname of person to add to course.}
 
-\item{course}{character. Course to modify: either "all" (default) or one of "dapR_1", "daprR_2", "dapR_3", "usmr", "msmr".}
+\item{course}{\code{haracter}. Course to modify: either \code{"all"} (default) or one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr"}.}
 
-\item{file}{character. Name of .csv file containing details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_people.csv". Not required if remove = TRUE. See details for MacOS and Linux users.}
+\item{file}{\code{character}. Name of .csv file containing details. By default \code{"//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_people.csv"}. Not required if \code{remove = TRUE}. See details for MacOS and Linux users.}
 
-\item{remove}{logical. TRUE removes people from page, FALSE adds them.}
+\item{remove}{\code{logical}. \code{TRUE} removes people from page, \code{FALSE} adds them.}
 
-\item{inside}{logical. Suppresses dialog windows. TRUE mainly for use within functions.}
+\item{inside}{\code{logical}. Suppresses dialog windows. \code{TRUE} mainly for use within functions.}
 }
 \value{
 Function does not return anything of use.

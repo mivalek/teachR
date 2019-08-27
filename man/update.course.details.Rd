@@ -8,9 +8,9 @@
   people.file = "default")
 }
 \arguments{
-\item{details.file}{character. Name of .csv file containing course details. By default "//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_courses.csv". See details for MacOS and Linux users.}
+\item{details.file}{\code{character}. Name of .csv file containing course details. By default \code{"//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_courses.csv"}. See details for MacOS and Linux users.}
 
-\item{people.file}{character. Name of .csv file containing people details. By default, replaces "_courses.csv" in string given to details.file= with "_people.csv".}
+\item{people.file}{\code{character}. Name of .csv file containing people details. By default, replaces \code{"_courses.csv"} in string given to \code{details.file=} with \code{"_people.csv"}.}
 }
 \value{
 Function does not return anything of use.

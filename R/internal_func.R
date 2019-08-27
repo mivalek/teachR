@@ -1,5 +1,8 @@
 
-#' Functions used within update.course.details()Update Course details section of a course page
+#' Functions used within \code{\link{update.course.details}()}
+#' 
+#' These are not to be used by user.
+#' 
 
 # get relevant lines of info.html
 get.indices <- function(x) {

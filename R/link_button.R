@@ -1,15 +1,15 @@
 
 #' Link a button on course content page to URL
 #'
-#' Function links a given button (all weeks by default) to URLs specified in links=.
+#' Function links a given button (all weeks by default) to URLs specified in \code{links=}.
 #'
 #' IMPORTANT: Set working directory to website folder!.
 #'
-#' @param course character. Course page to modify: one of "dapR_1", "daprR_2", "dapR_3", "usmr", or "msmr".
-#' @param sem numeric. Semester to modify: either 1 or 2. Only applicable for 2-semester courses, currently dapR 1 and 2.
-#' @param weeks Weeks in which to link buttons. Defaults to "all", otherwise numeric vector.
-#' @param label character. Name of the button to link.
-#' @param links character vector. URLs for the buttons. Either length 1 or length(weeks)
+#' @param course \code{character}. Course page to modify: one of "dapR_1", "daprR_2", "dapR_3", "usmr", or "msmr".
+#' @param sem \code{numeric}. Semester to modify: either 1 or 2. Only applicable for 2-semester courses, currently dapR 1 and 2.
+#' @param weeks Weeks in which to link buttons. Defaults to \code{"all"}, otherwise \code{numeric} vector.
+#' @param label \code{character}. Name of the button to link.
+#' @param links \code{character} vector. URLs for the buttons. Either length 1 or \code{length(weeks)}.
 #' @return Function does not return anything of use.
 #' @examples
 #' # Link Explainer button for each week to 10 different URLs
@@ -25,6 +25,8 @@ link.button <- function(course, sem = NULL, weeks = "all", label, links) {
   if (missing(label)) stop("Links need to be provided..")
   if (!(length(weeks) == 1 && weeks[1] == "all") && !class(weeks) %in% c("integer", "numeric"))
     stop("weeks= must be either \"all\" or numeric.")
+  if (class(try(readLines("index.html"))) == "try-error")
+    stop("Cannot access website files. Have you set working directory?")
 
 
   label <- sub("^(.)", "\\U\\1", tolower(label), perl = T)

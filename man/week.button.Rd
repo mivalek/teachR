@@ -7,15 +7,15 @@
 week.button(course, sem = NULL, label, link, remove = FALSE)
 }
 \arguments{
-\item{course}{character. Course page to modify: one of "dapR_1", "daprR_2", "dapR_3", "usmr", or "msmr".}
+\item{course}{\code{character}. Course page to modify: one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr"}, or \code{"msmr"}.}
 
-\item{sem}{numeric. Semester to modify: either 1 or 2. Only applicable for 2-semester courses, currently dapR 1 and 2.}
+\item{sem}{\code{numeric}. Semester to modify: either \code{1} or \code{2}. Only applicable for 2-semester courses, currently dapR 1 and 2.}
 
-\item{label}{character. Button text. Keep it short, e.g., "Lecture", "Lab", "Explainer"...}
+\item{label}{\code{character}. Button text. Keep it short, e.g., \code{"Lecture", "Lab", "Explainer"}...}
 
-\item{link}{character. Single URL for the buttons. Defaults to /course/sem. Probably better to use link.button().}
+\item{link}{\code{character}. Single URL for the buttons. Defaults to /course/sem. Probably better to use \code{\link{link.button}()}.}
 
-\item{remove}{logical. If FALSE (default), button gets added. If TRUE it gets removed}
+\item{remove}{\code{logical}. If \code{FALSE} (default), button gets added. If \code{TRUE} it gets removed}
 }
 \value{
 Function does not return anything of use.
