@@ -14,7 +14,7 @@ get.indices <- function(x) {
 }
 
 # get display names / slugs / profile URLs of people
-get.name <- function(x, get = "all") {
+get.name <- function(x, get = "all", people) {
   if (is.na(x)) {
     out <- list(name = NA, slug = NA, profile = NA)
   } else {
@@ -32,7 +32,7 @@ get.name <- function(x, get = "all") {
   return(out[get])
 }
 
-update.html <- function(x, sem_details) {
+update.html <- function(x, sem_details, people) {
   attach(sem_details, warn.conflicts = F)
   one_lecture_course <- is.na(lec_day2)
   same_room_labs <- all(is.na(c(lab_room2, lab_room3, lab_room4))) |
@@ -115,15 +115,15 @@ update.html <- function(x, sem_details) {
   for (j in c("co", "tc1", "tc2", "lecturer1", "lecturer2", "drop_in_person")) {
     x[indices[[j]]] <- paste0(
       "\t\t\t\t\t\t\t\t\t<a id=\"", j, "\" href=\"/dapR_1/people.html#",
-      get.name(sem_details[[j]], 2), "\">",
-      get.name(sem_details[[j]], 1), "</a>"
+      get.name(sem_details[[j]], 2, people), "\">",
+      get.name(sem_details[[j]], 1, people), "</a>"
     )
   }
   
   x[indices$cs] <- paste0(
     "\t\t\t\t\t\t\t\t\t<a id=\"cs\" href=\"",
-    get.name(sem_details$cs, 3), "\">",
-    get.name(sem_details$cs, 1), "</a>")
+    get.name(sem_details$cs, 3, people), "\">",
+    get.name(sem_details$cs, 1, people), "</a>")
   
   ### update rooms
   for (j in c(paste0("lec_room", 1:2), paste0("lab_room", 1:4), "drop_in_room")) {

@@ -57,7 +57,7 @@ update.course.details <- function(details.file = "default",
     diff_sem2 <- ncol(details) == 3 && !all(is.na(details[[paste0(course, "_sem2")]]))
     
     if (diff_sem2) {
-      lec_drop <- grep("drop_in|lecturer", details$course)
+      lec_drop <- grep("lecturer|drop_in", details$course)
       replace <- is.na(details[lec_drop, 3])
       details[lec_drop, 3][replace] <- details[lec_drop, 2][replace]
     }
@@ -80,11 +80,11 @@ update.course.details <- function(details.file = "default",
     
 
     
-    html <- update.html(html, details[1, ])
+    html <- update.html(html, details[1, ], people = people)
     
     if (diff_sem2) {
       end_sem1_section <- grep("<!-- END Semester 1 -->", html)
-      sem2_html <- update.html(html, details[2, ])
+      sem2_html <- update.html(html, details[2, ], people = people)
       
       sem2_html <- gsub("Semester 1", "Semester 2", sem2_html)
       sem2_html <- gsub("sem-hide", "sem-show", sem2_html)
