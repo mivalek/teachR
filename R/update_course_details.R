@@ -83,18 +83,17 @@ update.course.details <- function(details.file = "default",
     html <- update.html(html, details[1, ], people = people)
     
     if (diff_sem2) {
+      html <- gsub("sem-hide", "sem-show", html)
       end_sem1_section <- grep("<!-- END Semester 1 -->", html)
       sem2_html <- update.html(html, details[2, ], people = people)
       
       sem2_html <- gsub("Semester 1", "Semester 2", sem2_html)
-      sem2_html <- gsub("sem-hide", "sem-show", sem2_html)
       sem2_section <- grep("<!-- Semester 2 -->", sem2_html)
       end_sem2_section <- grep("<!-- END Semester 2 -->", sem2_html)
       sem2_html <- sem2_html[sem2_section:end_sem2_section]
       html <- c(html[1:end_sem1_section], sem2_html, html[(end_sem1_section + 1):length(html)])
     } else {
-      html <- gsub("section class=\"sem-hide", "section class=\"sem-show", html)
-      html <- gsub("header class=\"sem-show", "header class=\"sem-hide", html)
+      html <- gsub("sem-show", "sem-hide", html)
     }
 
     writeLines(html, i)
