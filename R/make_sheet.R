@@ -48,7 +48,7 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
   h <- c(
     "---",
     title, subtitle, author,
-    if (handout) paste0("date: \"[Click for slides](", sub("\\.[Rr]md$", "_slides_html", file), ")\""),
+    if (handout) paste0("date: \"[Click for slides](", sub("\\.[Rr]md$", "_slides.html", file), ")\""),
     "---",
     " ",
     "```{r, echo=F, results='asis'}",

@@ -48,7 +48,7 @@ update.course.details <- function(details.file = "default",
         html <- c(
           html[c(1:end_sem1_section, (end_sem2_section + 1):length(html))]
         )
-        html <- gsub("sem-hide", "sem-show", html)
+        
       } else html <- gsub("sem-show", "sem-hide", html)
     }
     
@@ -57,9 +57,9 @@ update.course.details <- function(details.file = "default",
     diff_sem2 <- ncol(details) == 3 && !all(is.na(details[[paste0(course, "_sem2")]]))
     
     if (diff_sem2) {
-      drop_ins <- grep("drop_in", details$course)
-      replace <- is.na(details[drop_ins, 3])
-      details[drop_ins, 3][replace] <- details[drop_ins, 2][replace]
+      lec_drop <- grep("drop_in|lecturer", details$course)
+      replace <- is.na(details[lec_drop, 3])
+      details[lec_drop, 3][replace] <- details[lec_drop, 2][replace]
     }
     details <- as.data.frame(t(details), stringsAsFactors = F)
     names(details) <- as.character(details[1, ])
@@ -87,10 +87,14 @@ update.course.details <- function(details.file = "default",
       sem2_html <- update.html(html, details[2, ])
       
       sem2_html <- gsub("Semester 1", "Semester 2", sem2_html)
+      sem2_html <- gsub("sem-hide", "sem-show", sem2_html)
       sem2_section <- grep("<!-- Semester 2 -->", sem2_html)
       end_sem2_section <- grep("<!-- END Semester 2 -->", sem2_html)
       sem2_html <- sem2_html[sem2_section:end_sem2_section]
       html <- c(html[1:end_sem1_section], sem2_html, html[(end_sem1_section + 1):length(html)])
+    } else {
+      html <- gsub("section class=\"sem-hide", "section class=\"sem-show", html)
+      html <- gsub("header class=\"sem-show", "header class=\"sem-hide", html)
     }
 
     writeLines(html, i)
