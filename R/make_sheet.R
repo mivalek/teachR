@@ -5,6 +5,7 @@
 #'
 #' @param file \code{character}. Path to .Rmd file to convert.
 #' @param course \code{character}. Course the sheet is for: one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other"}.
+#' @param solution \code{logical}. Should solutions to taks be rendered? \code{FALSE} by default.
 #' @param handout \code{logical}. \code{TRUE} adds "Click for slides" link under author. To be used only for slide handout HTML files. \code{FALSE} by default.
 #' @param ntb \code{logical}. \code{TRUE} to render document as R Notebook. \code{FALSE} by default.
 #' @param toc \code{logical}. Should table of content be included
@@ -20,8 +21,9 @@
 #' make.sheet("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 
 
-make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_depth = 2, toc_float = T,
-                       fig_width = 5, fig_height = 3.5, highlight = "tango", ...) {
+make.sheet <- function(file, course, solution = F, handout = FALSE, ntb = FALSE, toc = T,
+                       toc_depth = 2, toc_float = T, fig_width = 5, fig_height = 3.5,
+                       highlight = "tango", ...) {
   if (!file.exists(file)) stop("The file does not exist.")
   if (!grepl("\\.[rR]md$", file)) stop("file= needs to be an .Rmd file.")
   if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "other"))
@@ -40,6 +42,7 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
   x <- gsub("#\\s*?inc\\s*?$", "", x) # get rid of #inc
   yaml <- grep("---", x)
   title <- grep("^\\s*?title:", x[1:yaml[2]], value = T)[1]
+  if (solution) title <- sub("\"$", " with solutions\"", title)
   subtitle <- grep("^\\s*?subtitle:", x[1:yaml[2]], value = T)[1]
   author <- grep("^\\s*?author:", x[1:yaml[2]], value = T)[1]
   x <- x[-(1:yaml[2])]
@@ -62,7 +65,8 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
     "```",
     "",
     "```{r, rsetup, include=F}",
-    "knitr::opts_chunk$set(comment=NULL, collapse=T, strip.white=F, echo=T)",
+    "knitr::opts_chunk$set(comment=NULL, collapse=T, strip.white=F, echo=T,
+    message = F, warning = F, prompt = F, comment = NA)",
     "```",
     " ",
     "```{r task_fun, echo=FALSE}",
@@ -83,7 +87,7 @@ make.sheet <- function(file, course, handout = FALSE, ntb = FALSE, toc = T, toc_
   writeLines(x, temp_rmd)
   on.exit(file.remove(temp_rmd), add = T, after = F)
 
-  out_html <- sub("\\.[Rr]md$", ".html", file)
+  out_html <- sub("\\.[Rr]md$", ifelse(solution, "_sol.html", ".html"), file)
 
   if (ntb) {
     render(

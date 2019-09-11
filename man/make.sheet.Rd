@@ -4,14 +4,16 @@
 \alias{make.sheet}
 \title{Convert .Rmd to course-formatted HTML document or R Notebook}
 \usage{
-make.sheet(file, course, handout = FALSE, ntb = FALSE, toc = T,
-  toc_depth = 2, toc_float = T, fig_width = 5, fig_height = 3.5,
+make.sheet(file, course, solution = FALSE, handout = FALSE, ntb = FALSE,
+  toc = T, toc_depth = 2, toc_float = T, fig_width = 5, fig_height = 3.5,
   highlight = "tango", ...)
 }
 \arguments{
 \item{file}{\code{character}. Path to .Rmd file to convert.}
 
 \item{course}{\code{character}. Course the sheet is for: one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other"}.}
+
+\item{solution}{\code{logical}. Should solutions to tasks be rendered? \code{FALSE} by default.}
 
 \item{handout}{\code{logical}. \code{TRUE} adds "Click for slides" link under author. To be used only for slide handout HTML files. \code{FALSE} by default.}
 
