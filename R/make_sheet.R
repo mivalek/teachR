@@ -46,7 +46,9 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, ntb = FALSE,
   subtitle <- grep("^\\s*?subtitle:", x[1:yaml[2]], value = T)[1]
   author <- grep("^\\s*?author:", x[1:yaml[2]], value = T)[1]
   x <- x[-(1:yaml[2])]
-  x <- gsub("^#[^#]", "## ", x)
+  x <- gsub("^#([^# ])", "## \\1", x)
+  x[(1:length(x))[duplicated(x)]] <-
+    gsub("^#+.*", "", x[(1:length(x))[duplicated(x)]]) # get rid of duplicated headlines
 
   h <- c(
     "---",
