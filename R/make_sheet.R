@@ -30,6 +30,14 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, ntb = FALSE,
     stop("course= must be one of c(\"dapr_1\", \"dapr_2\", \"dapr_3\", \"usmr\", \"msmr\", \"other\").")
   course <- gsub("r_", "R_", tolower(course))
   
+  sol <- function(x) {
+    if (solution) {
+      paste0('<div class="solBody">
+    <p class="solHeader>', x, '</p>')
+    } else paste('<br><br><br><br><br><br>
+<div style="display:none;">')
+  }
+  
   oldwd <- getwd()
   file <- gsub("\\", "/", normalizePath(file, "/", T), fixed = T)
   outwd <- gsub("(.*)/.*$", "\\1", file)
@@ -49,6 +57,34 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, ntb = FALSE,
   x <- gsub("^#([^# ])", "## \\1", x)
   x[(1:length(x))[duplicated(x)]] <-
     gsub("^#+.*", "", x[(1:length(x))[duplicated(x)]]) # get rid of duplicated headlines
+  
+  ## show/hide <!-- solution or write-up
+  begin_comment2 <- grep("<!--", x)
+  end_comment <- grep("-->", x)
+  
+  begin_comment <- setdiff(begin_comment2, end_comment)
+  end_comment <- setdiff(end_comment, begin_comment2)
+  
+  if (length(begin_comment) != length(end_comment)) stop("There seems to be something wrong with the way you used '<!--' comments to designate solution body text.")
+  
+  sol <- grep("<!--\\s*solution|<!--\\s*write.?up", x[begin_comment])
+  begin_comment <- begin_comment[sol]
+  end_comment <- end_comment[sol]
+  
+  for (i in seq_along(begin_comment)) {
+    if (solution) {
+      x[begin_comment[i]] <- ifelse(
+        grepl("<!--\\s*write.?up", x[begin_comment[i]]),
+        '<div class="writeUp">',
+        '<div class="solText">')
+      strip_end <- sub("\\s*-->\\s*", "", x[end_comment[i]])
+      x[end_comment[i]] <- "</div>"
+      if (strip_end != "") x[end_comment[i]] <- paste0(strip_end, "\n", x[end_comment[i]])
+    } else if (grepl("<!--\\s*write.?up", x[begin_comment[i]])){
+      x[begin_comment[i]] <- '<div class="writeUp empty
+      "><br></div>\n<!--'
+    }
+  }
 
   h <- c(
     "---",
@@ -67,8 +103,14 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, ntb = FALSE,
     "```",
     "",
     "```{r, rsetup, include=F}",
-    "knitr::opts_chunk$set(comment=NULL, collapse=T, strip.white=F, echo=T,
-    message = F, warning = F, prompt = F, comment = NA)",
+    "knitr::opts_chunk$set(comment=NULL, collapse=T, strip.white=F, echo=T,\n    message = F, warning = F, prompt = F, comment = NA, split = F)",
+    "knitr::knit_hooks$set(class = function(before, options, envir){",
+    "  if (before){",
+    "    paste0('<div class=\"', options$class, '\">')",
+    "  } else {",
+    "    paste0('</div>')",
+    "  }",
+    "})",
     "```",
     " ",
     "```{r task_fun, echo=FALSE}",
@@ -90,6 +132,8 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, ntb = FALSE,
   on.exit(file.remove(temp_rmd), add = T, after = F)
 
   out_html <- sub("\\.[Rr]md$", ifelse(solution, "_sol.html", ".html"), file)
+  
+  
 
   if (ntb) {
     render(
@@ -97,7 +141,7 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, ntb = FALSE,
       output_format = html_notebook(
         toc = toc, toc_depth = toc_depth, toc_float = toc_float,
         fig_width = fig_width, fig_height = fig_height, highlight = highlight,
-        includes = includes(after_body = c(css, js)),
+        includes = includes(after_body = c(css, js)),# md_extensions = "+fenced_code_attributes",
         ...
       ),
       intermediates_dir = tempdir())
@@ -108,7 +152,7 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, ntb = FALSE,
       output_format = html_document(
         toc = toc, toc_depth = toc_depth, toc_float = toc_float,
         fig_width = fig_width, fig_height = fig_height, highlight = highlight,
-        includes = includes(after_body = c(css, js)),
+        includes = includes(after_body = c(css, js)),# md_extensions = "+fenced_code_attributes",
         ...
     ),
     intermediates_dir = tempdir())
