@@ -82,9 +82,9 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, ntb = FALSE,
       if (strip_end != "") x[end_comment[i]] <- paste0(strip_end, "\n", x[end_comment[i]])
     } else if (grepl("<!--\\s*write.?up", x[begin_comment[i]])){
       x[begin_comment[i]] <- paste0(
-        '<div class="writeUp empty" style="padding-bottomn: ',
-        ceiling(nchar(x[(begin_comment[i] + 1):end_comment[i]])/30 * 1.2),
-        # 'em"><br></div>\n<!--')
+        '<div class="writeUp empty" style="padding-bottom: ',
+        ceiling(nchar(x[(begin_comment[i] + 1):end_comment[i]])/30 * 1.4),
+        'em"><br></div>\n<!--')
     }
   }
 
@@ -116,10 +116,15 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, ntb = FALSE,
     "```",
     " ",
     "```{r task_fun, echo=FALSE}",
-    "t <- 1 # Task counter",
+    "t <- s <- 1 # Task counter",
     "task <- function(x = t) {",
     "  t <<- x + 1",
-    "  return(paste0(\"**Task \", x, \": **\"))",
+    "  s <<- 1",
+    "  return(paste0('\\\\ \\n\\n**Task ', x, ': **'))",
+    "}",
+    "subtask <- function(x = t-1, y = s) {",
+    "  s <<- y + 1",
+    "  return(paste0('\\\\ \\n\\n**Task ', x, '.', y, ': **'))",
     "}",
     "```"
   )
