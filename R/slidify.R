@@ -94,8 +94,8 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
   writeLines(x, temp_rmd)
   on.exit(file.remove(temp_rmd), add = T, after = F)
   
-  css <- ifelse(missing(offline_css), "https://mivalek.github.io/slides_files/css/slides.css", offline_css)
-  js <- "https://mivalek.github.io/slides_files/js/slides.js"
+  css <- ifelse(missing(offline_css), "https://psystats.github.io/slides_files/css/slides.css", offline_css)
+  js <- "https://psystats.github.io/slides_files/js/slides.js"
   if (header_text == "default") {
   header_text <-
     if (grepl("dapR", course)) {
