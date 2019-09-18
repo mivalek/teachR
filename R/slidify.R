@@ -140,10 +140,13 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
   if (!offline) {
     ind <- grep("_slides_files", x)
     ind <- ind[grep("img src", x[ind], invert = T)]
-    x[ind] <-  gsub("^(\\s*?<link rel=\"stylesheet\" href=\").*?(slides_files.*)$", "\\1/\\2", x[ind])
-    x[ind] <-  gsub("^(\\s*?<link href=\").*?(slides_files.*)$", "\\1/\\2", x[ind])
-    x[ind] <-  gsub("^(\\s*?<script src=\").*?(slides_files.*)$", "\\1/\\2", x[ind])
-    x[ind] <-  gsub("^(\\s*?\\{ src: ').*?(slides_files.*)$", "\\1/\\2", x[ind])
+    x[ind] <-  gsub("^(\\s*?<link rel=\"stylesheet\" href=\").*?(slides_files.*)$", "\\1https://psystats.github.io/\\2", x[ind])
+    x[ind] <-  gsub("^(\\s*?<link href=\").*?(slides_files.*)$",
+                    "\\1https://psystats.github.io/\\2", x[ind])
+    x[ind] <-  gsub("^(\\s*?<script src=\").*?(slides_files.*)$",
+                    "\\1https://psystats.github.io/\\2", x[ind])
+    x[ind] <-  gsub("^(\\s*?\\{ src: ').*?(slides_files.*)$",
+                    "\\1https://psystats.github.io/\\2", x[ind])
     writeLines(x, out_html)
     
     dir.create(file.path(out_html_dir, "figure-revealjs"), recursive = T)
