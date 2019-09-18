@@ -54,9 +54,10 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, ntb = FALSE,
   subtitle <- grep("^\\s*?subtitle:", x[1:yaml[2]], value = T)[1]
   author <- grep("^\\s*?author:", x[1:yaml[2]], value = T)[1]
   x <- x[-(1:yaml[2])]
-  x <- gsub("^#([^# ])", "## \\1", x)
+  x <- gsub("^\\s*(#+.*?)\\s*$", "\\1", x) # remove leading/trailing white spaces from headings
+  x <- gsub("^#\\s*([^#])", "## \\1", x) # turn # in to ##
   x[(1:length(x))[duplicated(x)]] <-
-    gsub("^#+.*", "", x[(1:length(x))[duplicated(x)]]) # get rid of duplicated headlines
+    gsub("^#+.*", "", x[(1:length(x))[duplicated(x)]]) # get rid of duplicated headings
   
   ## show/hide <!-- solution or write-up
   begin_comment2 <- grep("<!--", x)
