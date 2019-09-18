@@ -29,7 +29,7 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
     stop("course= must be one of c(\"dapr_1\", \"dapr_2\", \"dapr_3\", \"usmr\", \"msmr\", \"other\").")
   course <- gsub("r_", "R_", tolower(course))
   
-  slides_files <- "https://psystats.github.io/slides_files/"
+  slides_files <- "https://psystats.github.io/slides_files"
   oldwd <- getwd()
   file <- gsub("\\", "/", normalizePath(file, "/", T), fixed = T)
   outwd <- gsub("(.*)/.*$", "\\1", file)
@@ -95,8 +95,8 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
   writeLines(x, temp_rmd)
   on.exit(file.remove(temp_rmd), add = T, after = F)
   
-  css <- ifelse(missing(offline_css), paste0(slides_files, "css/slides.css"), offline_css)
-  js <- paste0(slides_files, "js/slides.js")
+  css <- ifelse(missing(offline_css), paste0(slides_files, "/css/slides.css"), offline_css)
+  js <- paste0(slides_files, "/js/slides.js")
   if (header_text == "default") {
   header_text <-
     if (grepl("dapR", course)) {
@@ -142,13 +142,13 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
     ind <- grep("_slides_files", x)
     ind <- ind[grep("img src", x[ind], invert = T)]
     x[ind] <-  gsub("^(\\s*?<link rel=\"stylesheet\" href=\").*?slides_files(.*)$",
-                    paste0("\\1", slides_files, "\\2", x[ind]))
-    x[ind] <-  gsub("^(\\s*?<link href=\").*?(slides_files.*)$",
-                    paste0("\\1", slides_files, "\\2", x[ind]))
-    x[ind] <-  gsub("^(\\s*?<script src=\").*?(slides_files.*)$",
-                    paste0("\\1", slides_files, "\\2", x[ind]))
-    x[ind] <-  gsub("^(\\s*?\\{ src: ').*?(slides_files.*)$",
-                    paste0("\\1", slides_files, "\\2", x[ind]))
+                    paste0("\\1", slides_files, "\\2"), x[ind])
+    x[ind] <-  gsub("^(\\s*?<link href=\").*?slides_files(.*)$",
+                    paste0("\\1", slides_files, "\\2"), x[ind])
+    x[ind] <-  gsub("^(\\s*?<script src=\").*?slides_files(.*)$",
+                    paste0("\\1", slides_files, "\\2"), x[ind])
+    x[ind] <-  gsub("^(\\s*?\\{ src: ').*?slides_files(.*)$",
+                    paste0("\\1", slides_files, "\\2"), x[ind])
     writeLines(x, out_html)
     
     dir.create(file.path(out_html_dir, "figure-revealjs"), recursive = T)
