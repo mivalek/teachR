@@ -55,37 +55,39 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, ntb = FALSE,
   author <- grep("^\\s*?author:", x[1:yaml[2]], value = T)[1]
   x <- x[-(1:yaml[2])]
   x <- gsub("^\\s*(#+.*?)\\s*$", "\\1", x) # remove leading/trailing white spaces from headings
-  x <- gsub("^#\\s*([^#])", "## \\1", x) # turn # in to ##
-  x[(1:length(x))[duplicated(x)]] <-
-    gsub("^#+.*", "", x[(1:length(x))[duplicated(x)]]) # get rid of duplicated headings
-  
-  ## show/hide <!-- solution or write-up
-  begin_comment2 <- grep("<!--", x)
-  end_comment <- grep("-->", x)
-  
-  begin_comment <- setdiff(begin_comment2, end_comment)
-  end_comment <- setdiff(end_comment, begin_comment2)
-  
-  if (length(begin_comment) != length(end_comment)) stop("There seems to be something wrong with the way you used '<!--' comments to designate solution body text.")
-  
-  sol <- grep("<!--\\s*solution|<!--\\s*write.?up", x[begin_comment])
-  begin_comment <- begin_comment[sol]
-  end_comment <- end_comment[sol]
-  
-  for (i in seq_along(begin_comment)) {
-    if (solution) {
-      x[begin_comment[i]] <- ifelse(
-        grepl("<!--\\s*write.?up", x[begin_comment[i]]),
-        '<div class="writeUp">',
-        '<div class="solText">')
-      strip_end <- sub("\\s*-->\\s*", "", x[end_comment[i]])
-      x[end_comment[i]] <- "</div>"
-      if (strip_end != "") x[end_comment[i]] <- paste0(strip_end, "\n", x[end_comment[i]])
-    } else if (grepl("<!--\\s*write.?up", x[begin_comment[i]])){
-      x[begin_comment[i]] <- paste0(
-        '<div class="writeUp empty" style="padding-bottom: ',
-        ceiling(nchar(x[(begin_comment[i] + 1):end_comment[i]])/30 * 1.4),
-        'em"><br></div>\n<!--')
+  if (handout) {
+    x <- gsub("^#\\s*([^#])", "## \\1", x) # turn # in to ##
+    x[(1:length(x))[duplicated(x)]] <-
+      gsub("^#+.*", "", x[(1:length(x))[duplicated(x)]]) # get rid of duplicated headings
+  } else {
+    ## show/hide <!-- solution or write-up
+    begin_comment2 <- grep("<!--", x)
+    end_comment <- grep("-->", x)
+    
+    begin_comment <- setdiff(begin_comment2, end_comment)
+    end_comment <- setdiff(end_comment, begin_comment2)
+    
+    if (length(begin_comment) != length(end_comment)) stop("There seems to be something wrong with the way you used '<!--' comments to designate solution body text.")
+    
+    sol <- grep("<!--\\s*solution|<!--\\s*write.?up", x[begin_comment])
+    begin_comment <- begin_comment[sol]
+    end_comment <- end_comment[sol]
+    
+    for (i in seq_along(begin_comment)) {
+      if (solution) {
+        x[begin_comment[i]] <- ifelse(
+          grepl("<!--\\s*write.?up", x[begin_comment[i]]),
+          '<div class="writeUp">',
+          '<div class="solText">')
+        strip_end <- sub("\\s*-->\\s*", "", x[end_comment[i]])
+        x[end_comment[i]] <- "</div>"
+        if (strip_end != "") x[end_comment[i]] <- paste0(strip_end, "\n", x[end_comment[i]])
+      } else if (grepl("<!--\\s*write.?up", x[begin_comment[i]])){
+        x[begin_comment[i]] <- paste0(
+          '<div class="writeUp empty" style="padding-bottom: ',
+          ceiling(nchar(x[(begin_comment[i] + 1):end_comment[i]])/30 * 1.4),
+          'em"><br></div>\n<!--')
+      }
     }
   }
 
