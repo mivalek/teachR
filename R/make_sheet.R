@@ -7,6 +7,7 @@
 #' @param course \code{character}. Course the sheet is for: one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other"}.
 #' @param solution \code{logical}. Should solutions to taks be rendered? \code{FALSE} by default.
 #' @param handout \code{logical}. \code{TRUE} adds "Click for slides" link under author. To be used only for slide handout HTML files. \code{FALSE} by default.
+#' @param notes \code{logical}. If \code{handout=TRUE}, then if \code{TRUE} a writable box for notes will appear at the bottom of each slide.
 #' @param ntb \code{logical}. \code{TRUE} to render document as R Notebook. \code{FALSE} by default.
 #' @param toc \code{logical}. Should table of content be included
 #' @param toc_depth \code{logical}. Depth of headers to include in table of contents.
@@ -21,8 +22,8 @@
 #' make.sheet("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 
 
-make.sheet <- function(file, course, solution = F, handout = FALSE, ntb = FALSE, toc = T,
-                       toc_depth = 2, toc_float = T, fig_width = 5, fig_height = 3.5,
+make.sheet <- function(file, course, solution = F, handout = FALSE, notes = TRUE, ntb = FALSE,
+                       toc = T, toc_depth = 2, toc_float = T, fig_width = 5, fig_height = 3.5,
                        highlight = "tango", ...) {
   if (!file.exists(file)) stop("The file does not exist.")
   if (!grepl("\\.[rR]md$", file)) stop("file= needs to be an .Rmd file.")
@@ -168,4 +169,12 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, ntb = FALSE,
     intermediates_dir = tempdir())
   }
   file.rename(sub("\\.Rmd$", ".html", temp_rmd), out_html)
+  
+  if (handout && notes) {
+    x <- readLines(out_html)
+    ind <- grep("^\\s*<h[2-9]>", x)[-1]
+    x[ind] <- gsub("^\\s*(<h[2-9]>.*)",
+                   "<textarea class=\"notes\" rows=\"4\"></textarea>\n\\1", x[ind])
+    writeLines(x, out_html)
+  }
 }
