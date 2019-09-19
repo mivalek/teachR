@@ -5,6 +5,7 @@
 #'
 #' @param file \code{character}. Path to .Rmd file to convert.
 #' @param course \code{character}. Course the sheet is for: one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other"}.
+#' @param notes \code{logical}. If \code{handout=TRUE}, then if \code{TRUE} a writable box for notes will appear at the bottom of each slide.
 #' @param ntb \code{logical}. \code{TRUE} to render document as R Notebook. \code{FALSE} by default.
 #' @param toc \code{logical}. Should table of content be included
 #' @param toc_depth \code{logical}. Depth of headers to include in table of contents.
@@ -21,6 +22,7 @@
 
 handout <- function(file, course, ntb = FALSE, toc = T, toc_depth = 2, toc_float = T,
                        fig_width = 5, fig_height = 3.5, highlight = "tango", ...) {
-  make.sheet(file = file, course = course, handout = TRUE, ntb = ntb, toc = toc, toc_depth = toc_depth,
-             toc_float = toc_float, fig_width = fig_width, fig_height = fig_height, highlight = highlight, ...)
+  make.sheet(file = file, course = course, handout = TRUE, notes = notes, ntb = ntb,
+             toc = toc, toc_depth = toc_depth, toc_float = toc_float,
+             fig_width = fig_width, fig_height = fig_height, highlight = highlight, ...)
 }

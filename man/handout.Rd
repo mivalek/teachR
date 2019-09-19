@@ -13,6 +13,8 @@ handout(file, course, ntb = FALSE, toc = T, toc_depth = 2,
 
 \item{course}{\code{character}. Course the sheet is for: one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other"}.}
 
+\item{notes}{\code{logical}. If \code{handout=TRUE}, then if \code{TRUE} a writable box for notes will appear at the bottom of each slide.}
+
 \item{ntb}{\code{logical}. \code{TRUE} to render document as R Notebook. \code{FALSE} by default.}
 
 \item{toc}{\code{logical}. Should table of content be included}
