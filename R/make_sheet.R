@@ -174,7 +174,7 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, notes = TRUE
     x <- readLines(out_html)
     ind <- grep("^\\s*<h[2-9]>", x)[-1]
     x[ind] <- gsub("^\\s*(<h[2-9]>.*)",
-                   "<textarea class=\"notes\" rows=\"4\"></textarea>\n\\1", x[ind])
+                   "<textarea class=\"notes\" rows=\"7\"></textarea>\n\\1", x[ind])
     writeLines(x, out_html)
   }
 }
