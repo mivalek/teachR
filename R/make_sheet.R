@@ -83,10 +83,10 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, ntb = FALSE,
         x[end_comment[i]] <- "</div>"
         if (strip_end != "") x[end_comment[i]] <- paste0(strip_end, "\n", x[end_comment[i]])
       } else if (grepl("<!--\\s*write.?up", x[begin_comment[i]])){
+        height_text <- ceiling(ceiling(nchar(x[(begin_comment[i] + 1):end_comment[i]]) / 82) * 1.3)
         x[begin_comment[i]] <- paste0(
-          '<div class="writeUp empty" style="padding-bottom: ',
-          ceiling(nchar(x[(begin_comment[i] + 1):end_comment[i]])/30 * 1.4),
-          'em"><br></div>\n<!--')
+          '<div class="writeUp empty">\n<textarea rows="',
+          height_text, '"></textarea>\n</div>\n<!--')
       }
     }
   }
