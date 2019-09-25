@@ -86,8 +86,7 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, notes = TRUE
       } else if (grepl("<!--\\s*write.?up", x[begin_comment[i]])){
         height_text <- ceiling(ceiling(nchar(x[(begin_comment[i] + 1):end_comment[i]]) / 82) * 1.3)
         x[begin_comment[i]] <- paste0(
-          '<div class="writeUp empty">\n<textarea rows="',
-          height_text, '"></textarea>\n</div>\n<!--')
+          '<div class="noteBox writeUp" contenteditable="true"></div>\n<!--')
       }
     }
   }
@@ -174,7 +173,7 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, notes = TRUE
     x <- readLines(out_html)
     ind <- grep("^\\s*<h[2-9]>", x)[-1]
     x[ind] <- gsub("^\\s*(<h[2-9]>.*)",
-                   "<textarea class=\"notes\" rows=\"7\"></textarea>\n\\1", x[ind])
+                   "<div class=\"noteBox\" contenteditable=\"true\"></div>\n\\1", x[ind])
     writeLines(x, out_html)
   }
 }
