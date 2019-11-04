@@ -134,8 +134,8 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, notes = TRUE
   h <- as.vector(na.omit(h))
   x <- c(h, x)
   
-  css <- "https://psystats.github.io/sheet_files/sheets.css"
-  js <- "https://psystats.github.io/sheet_files/sheets.js"
+  css <- "https://mivalek.github.io/sheet_files/sheets.css"
+  js <- "https://mivalek.github.io/sheet_files/sheets.js"
   
   temp_rmd <- sub("\\.[Rr]md$", "_temp.Rmd", file)
   writeLines(x, temp_rmd)

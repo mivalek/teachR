@@ -29,7 +29,7 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
     stop("course= must be one of c(\"dapr_1\", \"dapr_2\", \"dapr_3\", \"usmr\", \"msmr\", \"other\").")
   course <- gsub("r_", "R_", tolower(course))
   
-  slides_files <- "https://psystats.github.io/slides_files"
+  slides_files <- "https://mivalek.github.io/slides_files"
   oldwd <- getwd()
   file <- gsub("\\", "/", normalizePath(file, "/", T), fixed = T)
   outwd <- gsub("(.*)/.*$", "\\1", file)
