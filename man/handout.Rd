@@ -13,8 +13,6 @@ handout(file, course, ntb = FALSE, toc = T, toc_depth = 2,
 
 \item{course}{\code{character}. Course the sheet is for: one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other"}.}
 
-\item{notes}{\code{logical}. If \code{handout=TRUE}, then if \code{TRUE} a writable box for notes will appear at the bottom of each slide.}
-
 \item{ntb}{\code{logical}. \code{TRUE} to render document as R Notebook. \code{FALSE} by default.}
 
 \item{toc}{\code{logical}. Should table of content be included}
@@ -28,6 +26,8 @@ handout(file, course, ntb = FALSE, toc = T, toc_depth = 2,
 \item{highlight}{\code{character}. Syntax highlighting style. See \code{\link[rmarkdown]{html_document}}.}
 
 \item{...}{Other arguments to be passed to \code{rmarkdown:html_document} or \code{rmarkdown:html_notebook}.}
+
+\item{notes}{\code{logical}. If \code{handout=TRUE}, then if \code{TRUE} a writable box for notes will appear at the bottom of each slide.}
 }
 \value{
 \code{TRUE} if output .html file was successfully created.
