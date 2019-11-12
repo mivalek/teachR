@@ -43,7 +43,7 @@ fun.index <- function(folder, output = "fun_index", course = "other", url = "", 
     start <- grep("```\\{r setup", tmp)
     x <- grep("```", tmp)
     
-    end <- x[which(y %in% start) + 1]
+    end <- x[which(x %in% start) + 1]
     cut <- unlist(apply(cbind(start, end), 1, function(x) x[1]:x[2]))
     writeLines(tmp[-cut], "temp.Rmd")
     
