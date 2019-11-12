@@ -22,7 +22,7 @@ slidify(file, course, header_text = "default", incremental = FALSE,
 
 \item{offline_css}{\code{character}. Path to .css file for offline presentations. If not specified, slides will be linked to default CSS hosted online and will require Internet connection even if hosted offline. Leave unspecified if \code{offline = FALSE}.}
 
-\item{link_to_ho} {\code{logical}. \code{TRUE} (default) to display "click for handout" on title slide.}
+\item{link_to_ho}{\code{logical}. \code{TRUE} (default) to display "click for handout" on title slide.}
 
 \item{fig_width, fig_height}{\code{numeric}. Default width and height (in inches) for figures.}
 
