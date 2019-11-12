@@ -92,7 +92,7 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
   h <- c(
     "---",
     title, subtitle, author,
-    if (!offline || !link_to_ho)
+    if (!offline && link_to_ho)
       paste0("date: \"[Click for handout](",
              gsub("(.*)[rR]md", "./\\1html", file), ")\""),
     "---")
