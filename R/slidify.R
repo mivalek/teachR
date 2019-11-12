@@ -8,6 +8,7 @@
 #' @param header_text \code{character}. Text to be displayed in the top right corner of slides. Course-specific text by default.
 #' @param offline \code{logical}. \code{TRUE} generates reaveal.js presentation that only works locally. \code{FALSE} by default. If \code{TRUE}, \code{offline_css=} can be specified.
 #' @param offline_css \code{character}. Path to .css file for offline presentations. If not specified, slides will be linked to default CSS hosted online and will require Internet connection even if hosted offline. Leave unspecified if \code{offline = FALSE}.
+#' @param link_to_ho \code{logical}. \code{TRUE} (default) to display "click for handout" on title slide.
 #' @param incremental \code{logical}. \code{TRUE} to render slide bullets incrementally on click. \code{FALSE} by default.
 #' @return Function does not return anything but outputs a .html file called [file]_slides.html and a corresponding folder with figures.
 #' @param fig_width,fig_height \code{numeric}. Default width and height (in inches) for figures.
@@ -19,7 +20,7 @@
 
 
 slidify <- function(file, course, header_text = "default", incremental = FALSE,
-                    offline = FALSE, offline_css,
+                    offline = FALSE, offline_css, link_to_ho = T,
                     fig_width = 5, fig_height = 3.5,
                     transition = "fade", background_transition = transition,
                     plugins = c("notes", "search", "chalkboard")) {
@@ -77,6 +78,12 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
     "  x <- def.chunk.hook(x, options)",
     "  ifelse(options$size != \"normalsize\", paste0(\"\\\\\", options$size,\"\\n\\n\", x, \"\\n\\n \\\\normalsize\"), x)",
     "})",
+    "hook_inline = knitr::knit_hooks$get('inline')",
+    "knitr::knit_hooks$set(",
+    "  inline = function(x) {",
+    "    res = hook_inline(x)",
+    "    if (is.numeric(x)) prettyNum(format(x, scientific=FALSE), big.mark=',') else res",
+    "  })",
     "```"
   )
   first_slide <- grep("^\\s*?##", x)[1]
@@ -85,7 +92,7 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
   h <- c(
     "---",
     title, subtitle, author,
-    if (!offline)
+    if (!offline || !link_to_ho)
       paste0("date: \"[Click for handout](",
              gsub("(.*)[rR]md", "./\\1html", file), ")\""),
     "---")

@@ -37,13 +37,22 @@ fun.index <- function(folder, output = "fun_index", course = "other", url = "", 
   warn <- c()
   
   on.exit(file.remove("temp.R"), T, F)
+  on.exit(file.remove("temp.Rmd"), T, F)
   for (i in files) {
-    purl(i, "temp.R")
+    tmp <- readLines(i)
+    start <- grep("```\\{r setup", tmp)
+    x <- grep("```", tmp)
+    
+    end <- x[which(y %in% start) + 1]
+    cut <- unlist(apply(cbind(start, end), 1, function(x) x[1]:x[2]))
+    writeLines(tmp[-cut], "temp.Rmd")
+    
+    purl("temp.Rmd", "temp.R")
     tmp <- try(parse("temp.R", keep.source=TRUE))
     if (class(tmp) == "try-error") {
       warn <- c(warn, i)
     } else {
-    tmp %>%
+      tmp %>%
         getParseData() %>%
         filter(token == "SYMBOL_FUNCTION_CALL") %>%
         pull(text) %>%
