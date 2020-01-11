@@ -7,6 +7,7 @@
 #' @param course \code{character}. Course the sheet is for: one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other"}.
 #' @param notes \code{logical}. If \code{handout=TRUE}, then if \code{TRUE} a writable box for notes will appear at the bottom of each slide.
 #' @param ntb \code{logical}. \code{TRUE} to render document as R Notebook. \code{FALSE} by default.
+#' @param color \code{character}. Either a single valid colour (hex code or any of the values in \code{colours()}) or any valid value of the \code{course=} argument. If provided, it will be used to set colour scheme instead of \code{course=}.
 #' @param toc \code{logical}. Should table of content be included
 #' @param toc_depth \code{logical}. Depth of headers to include in table of contents.
 #' @param toc_float \code{TRUE} to float the table of contents to the left of the main document content. Rather than TRUE you may also pass a list of options that control the behavior of the floating table of contents. For more details, see \code{\link[rmarkdown]{html_document}}.
@@ -20,9 +21,9 @@
 #' handout("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 
 
-handout <- function(file, course, ntb = FALSE, toc = T, toc_depth = 2, toc_float = T,
-                       fig_width = 5, fig_height = 3.5, highlight = "tango", ...) {
-  make.sheet(file = file, course = course, handout = TRUE, ntb = ntb,
+handout <- function(file, course, ntb = FALSE, color = NULL, toc = T, toc_depth = 2, toc_float = T,
+                       fig_width = 5, fig_height = 3.5, highlight = "tango", colour = color, ...) {
+  make.sheet(file = file, course = course, handout = TRUE, ntb = ntb, color = color,
              toc = toc, toc_depth = toc_depth, toc_float = toc_float,
-             fig_width = fig_width, fig_height = fig_height, highlight = highlight, ...)
+             fig_width = fig_width, fig_height = fig_height, highlight = highlight, colour = colour, ...)
 }

@@ -9,6 +9,7 @@
 #' @param handout \code{logical}. \code{TRUE} adds "Click for slides" link under author. To be used only for slide handout HTML files. \code{FALSE} by default.
 #' @param notes \code{logical}. If \code{handout=TRUE}, then if \code{TRUE} a writable box for notes will appear at the bottom of each slide.
 #' @param ntb \code{logical}. \code{TRUE} to render document as R Notebook. \code{FALSE} by default.
+#' @param color \code{character}. Either a single valid colour (hex code or any of the values in \code{colours()}) or any valid value of the \code{course=} argument. If provided, it will be used to set colour scheme instead of \code{course=}.
 #' @param toc \code{logical}. Should table of content be included
 #' @param toc_depth \code{logical}. Depth of headers to include in table of contents.
 #' @param toc_float \code{TRUE} to float the table of contents to the left of the main document content. Rather than TRUE you may also pass a list of options that control the behavior of the floating table of contents. For more details, see \code{\link[rmarkdown]{html_document}}.
@@ -23,13 +24,37 @@
 
 
 make.sheet <- function(file, course, solution = F, handout = FALSE, notes = TRUE, ntb = FALSE,
-                       toc = T, toc_depth = 2, toc_float = T, fig_width = 5, fig_height = 3.5,
-                       highlight = "tango", ...) {
+                       color = NULL, toc = T, toc_depth = 2, toc_float = T, fig_width = 5, fig_height = 3.5,
+                       highlight = "tango", colour = color, ...) {
   if (!file.exists(file)) stop("The file does not exist.")
   if (!grepl("\\.[rR]md$", file)) stop("file= needs to be an .Rmd file.")
-  if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "other"))
-    stop("course= must be one of c(\"dapr_1\", \"dapr_2\", \"dapr_3\", \"usmr\", \"msmr\", \"other\").")
+  if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "and", "ad", "adata", "other"))
+    stop("course= must be one of c(\"dapr_1\", \"dapr_2\", \"dapr_3\", \"usmr\", \"msmr\", \"and\", \"other\").")
+  if (course %in% c("ad", "adata")) course <- "and"
+  if (!is.null(colour)) color <- colour
+  if (!is.null(color)) {
+    if (length(color) != 1) stop("Please provide exactly one value to color=.")
+    if (color %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "and", "ad", "adata", "other")) {
+      course <- color
+      color <- NULL
+    } else {
+    if (!grepl("^#[[:xdigit:]]{3,6}$", color) && !(color %in% colours()))
+      stop("Invalid color provided.")
+    }
+  }
   course <- gsub("r_", "R_", tolower(course))
+  
+  color_list <- list(
+    dapR_1 = "#6bcded",
+    dapR_2 = "#b38ed2",
+    dapR_3 =  "#85a6ea",
+    usmr = "#eda46f",
+    msmr = "#d8d768",
+    and = "#b38ed2",
+    other = "#77bd9d"
+  )
+  
+  theme_col <- ifelse(is.null(color), color_list[[course]], color)
   
   sol <- function(x) {
     if (solution) {
@@ -101,7 +126,7 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, notes = TRUE
     "cat(\"",
     "<style>",
       ":root {",
-        paste0("--theme-col: var(--", course, "-col);"),
+    paste0("--theme-col: ", paste(col2rgb(theme_col), collapse=", "), ";"),
       "}",
     "</style>",
     "\")",

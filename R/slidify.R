@@ -9,6 +9,7 @@
 #' @param offline \code{logical}. \code{TRUE} generates reaveal.js presentation that only works locally. \code{FALSE} by default. If \code{TRUE}, \code{offline_css=} can be specified.
 #' @param offline_css \code{character}. Path to .css file for offline presentations. If not specified, slides will be linked to default CSS hosted online and will require Internet connection even if hosted offline. Leave unspecified if \code{offline = FALSE}.
 #' @param link_to_ho \code{logical}. \code{TRUE} (default) to display "click for handout" on title slide.
+#' @param color \code{character}. Either a single valid colour (hex code or any of the values in \code{colours()}) or any valid value of the \code{course=} argument. If provided, it will be used to set colour scheme instead of \code{course=}.
 #' @param incremental \code{logical}. \code{TRUE} to render slide bullets incrementally on click. \code{FALSE} by default.
 #' @return Function does not return anything but outputs a .html file called [file]_slides.html and a corresponding folder with figures.
 #' @param fig_width,fig_height \code{numeric}. Default width and height (in inches) for figures.
@@ -21,14 +22,39 @@
 
 slidify <- function(file, course, header_text = "default", incremental = FALSE,
                     offline = FALSE, offline_css, link_to_ho = T,
-                    fig_width = 5, fig_height = 3.5,
+                    color = NULL, fig_width = 5, fig_height = 3.5,
                     transition = "fade", background_transition = transition,
-                    plugins = c("notes", "search", "chalkboard")) {
+                    plugins = c("notes", "search", "chalkboard"), colour = color) {
   if (!file.exists(file)) stop("The file does not exist.")
   if (!grepl("\\.[rR]md$", file)) stop("file= needs to be an .Rmd file.")
-  if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "other"))
-    stop("course= must be one of c(\"dapr_1\", \"dapr_2\", \"dapr_3\", \"usmr\", \"msmr\", \"other\").")
+  if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "and", "ad", "adata", "other"))
+    stop("course= must be one of c(\"dapr_1\", \"dapr_2\", \"dapr_3\", \"usmr\", \"msmr\", \"and\", \"other\").")
+  if (course %in% c("ad", "adata")) course <- "and"
+  if (!is.null(colour)) color <- colour
+  if (!is.null(color)) {
+    if (length(color) != 1) stop("Please provide exactly one value to color=.")
+    if (color %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "and", "ad", "adata", "other")) {
+      course <- color
+      color <- NULL
+    } else {
+      if (!grepl("^#[[:xdigit:]]{3,6}$", color) && !(color %in% colours()))
+        stop("Invalid color provided.")
+    }
+  }
+  
   course <- gsub("r_", "R_", tolower(course))
+  
+  color_list <- list(
+    dapR_1 = "#6bcded",
+    dapR_2 = "#b38ed2",
+    dapR_3 =  "#85a6ea",
+    usmr = "#eda46f",
+    msmr = "#d8d768",
+    and = "#b38ed2",
+    other = "#77bd9d"
+  )
+  
+  theme_col <- ifelse(is.null(color), color_list[[course]], color)
   
   slides_files <- "https://mivalek.github.io/slides_files"
   oldwd <- getwd()
@@ -60,9 +86,9 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
     "```{r, echo=F, results='asis'}",
     "cat(\"",
     "<style>",
-      ":root {",
-        paste0("--theme-col: var(--", course, "-col1);"),
-        paste0("--hover-col: var(--", course, "-col2);"),
+    ":root {",
+    paste0("--theme-col: ", theme_col, ";"),
+    paste0("--hover-col: ", colortools::complementary(theme_col, F)[2], ";"),
       "}",
     "</style>",
     "\")",
@@ -113,13 +139,15 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
       "Univariate statistics<strong>in R</strong>"
     } else if (course == "msmr") {
       "Multivariate statistics<strong>in R</strong>"
+    } else if (course == "and") {
+      "Analysing<strong>data</strong>"
     } else ""
   }
 
   header_file <- file.path(tempdir(), sub("\\.[Rr]md", "_header.html", file))
   writeLines(
     paste0("<div class=\"banner\"><div class = \"",
-           ifelse(course %in% c("usmr", "msmr"), "header msc", "header"),
+           ifelse(course %in% c("usmr", "msmr", "and"), "header msc", "header"),
            "\"><a href=\"/\">", header_text, "</a></div></div>"),
     header_file)
   on.exit(file.remove(header_file), add = T, after = F)

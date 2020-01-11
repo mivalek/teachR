@@ -24,6 +24,8 @@ slidify(file, course, header_text = "default", incremental = FALSE,
 
 \item{link_to_ho}{\code{logical}. \code{TRUE} (default) to display "click for handout" on title slide.}
 
+\item{color}{\code{character}. Either a single valid colour (hex code or any of the values in \code{colours()}) or any valid value of the \code{course=} argument. If provided, it will be used to set colour scheme instead of \code{course=}.}
+
 \item{fig_width, fig_height}{\code{numeric}. Default width and height (in inches) for figures.}
 
 \item{transition, background_transition}{\code{character}. Slide transition animation. \code{"fade"} by default. See reveal.js documentation (https://github.com/hakimel/reveal.js/blob/master/README.md) for more options.}

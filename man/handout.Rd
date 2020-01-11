@@ -15,6 +15,8 @@ handout(file, course, ntb = FALSE, toc = T, toc_depth = 2,
 
 \item{ntb}{\code{logical}. \code{TRUE} to render document as R Notebook. \code{FALSE} by default.}
 
+\item{color}{\code{character}. Either a single valid colour (hex code or any of the values in \code{colours()}) or any valid value of the \code{course=} argument. If provided, it will be used to set colour scheme instead of \code{course=}.}
+
 \item{toc}{\code{logical}. Should table of content be included}
 
 \item{toc_depth}{\code{logical}. Depth of headers to include in table of contents.}
