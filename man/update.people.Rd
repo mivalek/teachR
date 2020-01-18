@@ -4,8 +4,13 @@
 \alias{update.people}
 \title{Update People section of a course page}
 \usage{
-\method{update}{people}(surname = "all", course = "all",
-  file = "default", remove = F, inside = F)
+\method{update}{people}(
+  surname = "all",
+  course = "all",
+  file = "default",
+  remove = F,
+  inside = F
+)
 }
 \arguments{
 \item{surname}{\code{character}. Either \code{"all"} (default) or surname of person to add to course.}

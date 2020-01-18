@@ -4,10 +4,22 @@
 \alias{slidify}
 \title{Convert .Rmd to reveal.js slides}
 \usage{
-slidify(file, course, header_text = "default", incremental = FALSE,
-  offline = FALSE, offline_css, fig_width = 5, fig_height = 3.5,
-  transition = "fade", background_transition = transition,
-  plugins = c("notes", "search", "chalkboard"))
+slidify(
+  file,
+  course,
+  header_text = "default",
+  incremental = FALSE,
+  offline = FALSE,
+  offline_css,
+  link_to_ho = T,
+  color = NULL,
+  fig_width = 5,
+  fig_height = 3.5,
+  transition = "fade",
+  background_transition = transition,
+  plugins = c("notes", "search", "chalkboard"),
+  colour = color
+)
 }
 \arguments{
 \item{file}{\code{character}. Path to .Rmd file to convert.}

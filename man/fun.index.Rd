@@ -4,8 +4,14 @@
 \alias{fun.index}
 \title{Create html index of used functions}
 \usage{
-fun.index(folder, output = "fun_index", course = "other", url = "",
-  pattern = ".Rmd", recursive = T)
+fun.index(
+  folder,
+  output = "fun_index",
+  course = "other",
+  url = "",
+  pattern = ".Rmd",
+  recursive = T
+)
 }
 \arguments{
 \item{folder}{\code{character}. Path to folder containing lab sheet/practical .Rmd files.}

@@ -4,9 +4,20 @@
 \alias{handout}
 \title{Convert .Rmd to course-formatted slide handout HTML document or R Notebook}
 \usage{
-handout(file, course, ntb = FALSE, toc = T, toc_depth = 2,
-  toc_float = T, fig_width = 5, fig_height = 3.5,
-  highlight = "tango", ...)
+handout(
+  file,
+  course,
+  ntb = FALSE,
+  color = NULL,
+  toc = T,
+  toc_depth = 2,
+  toc_float = T,
+  fig_width = 5,
+  fig_height = 3.5,
+  highlight = "tango",
+  colour = color,
+  ...
+)
 }
 \arguments{
 \item{file}{\code{character}. Path to .Rmd file to convert.}

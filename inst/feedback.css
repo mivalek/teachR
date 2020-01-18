@@ -1,0 +1,40 @@
+
+<style>
+
+.feedback {
+    border: solid 1px rgb(var(--theme-col));
+    padding: 1em 1em 0.5em 1em;
+    background-color: rgba(var(--theme-col), .3);
+    margin-bottom: 3em;
+}
+
+.feedback > title {
+    font-size: 20px;
+    color: rgb(var(--theme-col));
+	display: block;
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
+.feedback a:hover {
+    background-color: transparent;
+}
+
+.feedback a {
+    color: rgb(var(--theme-col));
+}
+
+.feedback::before {
+    content: 'Feedback';
+	display: block;
+	font-size: 25px;
+	color: rgb(var(--theme-col));
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	margin-bottom: 10px;
+}
+
+fb {
+	color: #cc0000;
+}
+
+</style>

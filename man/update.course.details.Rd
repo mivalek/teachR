@@ -4,8 +4,7 @@
 \alias{update.course.details}
 \title{Update Course details section of a course page}
 \usage{
-\method{update}{course.details}(details.file = "default",
-  people.file = "default")
+\method{update}{course.details}(details.file = "default", people.file = "default")
 }
 \arguments{
 \item{details.file}{\code{character}. Name of .csv file containing course details. By default \code{"//chss.datastore.ed.ac.uk/chss/ppls/shared/courses/DAP/website_courses.csv"}. See details for MacOS and Linux users.}
