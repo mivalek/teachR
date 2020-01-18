@@ -1,5 +1,9 @@
 
-<style>
+<style type="text/css">
+
+:root {
+	--warn-col: 204, 0, 0;
+}
 
 .feedback {
     border: solid 1px rgb(var(--theme-col));
@@ -34,7 +38,11 @@
 }
 
 fb {
-	color: #cc0000;
+	color: rgb(var(--warn-col));
+	background-color: rgba(var(--warn-col), .3);
+	padding: 2px;
+	border: solid 1px rgb(var(--warn-col));
+	margin: 3px;
 }
 
 </style>
