@@ -1,6 +1,7 @@
 export(handout)
 export(fun.index)
 export(link.button)
+export(mark)
 export(make.sheet)
 export(slidify)
 export(update.course.details)

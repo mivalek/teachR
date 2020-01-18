@@ -18,12 +18,15 @@
 #' # then
 #' mark("C:/work/201000.Rmd", T)
 
-mark <- function(file, feedback = F, count_words = !feedback, limit, color = "#b38ed2") {
+mark <- function(file, feedback = F, limit = 1000, count_words = !feedback, color = "#b38ed2") {
   ff <- readLines(file)
   out_file <- ifelse(feedback, sub("\\.Rmd$", "_marked.Rmd", file), file)
   
   # word limit reached line
-  insert <- '\n\\ \n\n<div><p style="color:#cc0000;font-size:2em;text-align:center">*** WORD LIMIT REACHED ***</p></div>\n\n\\ \n'
+  insert <- '\n\\ \n\n<div>
+  <p style="color:#cc0000;font-size:2em;text-align:center">*** WORD LIMIT REACHED ***</p>
+  <p style="color:#cc0000;text-align:center">(Scroll down for feedback)</p>
+  </div>\n\n\\ \n'
   
   if (count_words && !any(grepl(insert, ff, fixed = T))) {
     
@@ -46,12 +49,14 @@ mark <- function(file, feedback = F, count_words = !feedback, limit, color = "#b
     ff_edit <- ff_edit[-c(1:grep("^\\s*---", ff_edit)[2])]
     
     words <- unlist(strsplit(ff_edit, "\\s+"))
-    words <- grep("[A-Za-z]", words, value = T)
+    words <- grep("[[:alnum:]]", words, value = T)
     
     # identify line that includes limit-th word
-    cutoff <- as.numeric(unlist(strsplit(names(words[limit]), "_")))[1]
+    cutoff <- as.numeric(unlist(strsplit(names(words[limit]), "_")))
+    cutoff_line <- cutoff[1]
+    cutoff_word <- cutoff[2]
     
-    feedback <- c('\n\\ \n',
+    feedback <- c('\n\n\\ \n',
                   '<div class="feedback">',
                   '<!-- THE GOOD -->',
                   '\n\n',
@@ -60,10 +65,17 @@ mark <- function(file, feedback = F, count_words = !feedback, limit, color = "#b
                   '<!-- RECOMMENDATIONS -->',
                   '\n\n',
                   '</div>\n\n')
-    out <- if (is.na(cutoff)) {
-      c(ff, feedback)
+    if (is.na(cutoff)[1]) {
+      out <- c(ff, feedback)
     } else {
-      c(ff[1:cutoff], insert, ff[(cutoff + 1):length(ff)], feedback)
+      words <- words[grep(paste0("^", cutoff_line, "_"), names(words))]
+      words_sane <- gsub(" ", "", gsub("([\\(\\[\\{\\*\\$\\.\\^\\#\\)\\}]|\\])", "\\\\ \\1", words))
+      ptrn <- paste(words_sane[1:cutoff_word], collapse = "[[:punct:] ]*?")
+      # introduce line break after limit has been reached
+      ff[cutoff_line] <- sub(paste0("(", ptrn, ")"), "\\1\n", ff[cutoff_line])
+      # split by \n again
+      ff <- unlist(strsplit(paste(ff, collapse = "\n"), "\n"))
+      out <- c(ff[1:cutoff_line], insert, ff[(cutoff_line + 1):length(ff)], feedback)
     }
       
     writeLines(out, out_file)
@@ -74,19 +86,19 @@ mark <- function(file, feedback = F, count_words = !feedback, limit, color = "#b
     
     good_text <- c(
       "\n\\ \n\n",
-      "First of all, it is important to highlight the strengths of your report:",
+      readLines(paste0(path.package("teachR"), "/fb_gd.txt")),
       ""
     )
     
     bad_text <- c(
       "\n\\ \n\n",
-      "There were, however, also things that lowered the overal quality of your work:",
+      readLines(paste0(path.package("teachR"), "/fb_bd.txt")),
       ""
     )
     
     recom_text <- c(
       "\n\\ \n\n",
-      "These are some recommendations that will help you produce a better piece of writing:",
+      readLines(paste0(path.package("teachR"), "/fb_rec.txt")),
       ""
     )
     
