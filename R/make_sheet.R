@@ -151,9 +151,9 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, tasks_to_hea
     "```",
     " ",
     "```{r task_fun, echo=FALSE}",
-    "t <- s <- 1 # Task counter",
-    "task <- teachR:::task()",
-    "subtask <- teachR:::subtask()",
+    "tsk <- s_tsk <- 1 # Task counter",
+    "task <- teachR:::task",
+    "subtask <- teachR:::subtask",
     "```"
   )
   
