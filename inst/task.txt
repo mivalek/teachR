@@ -1,9 +1,4 @@
 
-#' Functions used within \code{\link{make.sheet}()}
-#' 
-#' These are not to be used by user.
-#' 
-
 task <- function(x = tsk, headings = tasks_to_headings) {
   tsk <<- x + 1
   s_tsk <<- 1
