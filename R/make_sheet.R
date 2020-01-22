@@ -7,6 +7,7 @@
 #' @param course \code{character}. Course the sheet is for: one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other"}.
 #' @param solution \code{logical}. Should solutions to taks be rendered? \code{FALSE} by default.
 #' @param handout \code{logical}. \code{TRUE} adds "Click for slides" link under author. To be used only for slide handout HTML files. \code{FALSE} by default.
+#' @param tasks_to_headings \code{logical}. Should individual tasks and subtaks be rendered as level 2 and 3 (respectively) headings? \code{FALSE} by default.
 #' @param notes \code{logical}. If \code{handout=TRUE}, then if \code{TRUE} a writable box for notes will appear at the bottom of each slide.
 #' @param ntb \code{logical}. \code{TRUE} to render document as R Notebook. \code{FALSE} by default.
 #' @param color \code{character}. Either a single valid colour (hex code or any of the values in \code{colours()}) or any valid value of the \code{course=} argument. If provided, it will be used to set colour scheme instead of \code{course=}.
@@ -23,7 +24,7 @@
 #' make.sheet("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 
 
-make.sheet <- function(file, course, solution = F, handout = FALSE, notes = TRUE, ntb = FALSE,
+make.sheet <- function(file, course, solution = F, handout = FALSE, tasks_to_headings = FALSE, notes = TRUE, ntb = FALSE,
                        color = NULL, toc = T, toc_depth = 2, toc_float = T, fig_width = 5, fig_height = 3.5,
                        highlight = "tango", colour = color, ...) {
   if (!file.exists(file)) stop("The file does not exist.")
@@ -151,17 +152,13 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, notes = TRUE
     " ",
     "```{r task_fun, echo=FALSE}",
     "t <- s <- 1 # Task counter",
-    "task <- function(x = t) {",
-    "  t <<- x + 1",
-    "  s <<- 1",
-    "  return(paste0('\\\\ \\n\\n**Task ', x, ': **'))",
-    "}",
-    "subtask <- function(x = t-1, y = s) {",
-    "  s <<- y + 1",
-    "  return(paste0('\\\\ \\n\\n**Task ', x, '.', y, ': **'))",
-    "}",
+    "task <- teachR:::task()",
+    "subtask <- teachR:::subtask()",
     "```"
   )
+  
+
+  
   h <- as.vector(na.omit(h))
   x <- c(h, x)
   

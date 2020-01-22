@@ -9,6 +9,7 @@ make.sheet(
   course,
   solution = F,
   handout = FALSE,
+  tasks_to_headings = FALSE,
   notes = TRUE,
   ntb = FALSE,
   color = NULL,
@@ -30,6 +31,8 @@ make.sheet(
 \item{solution}{\code{logical}. Should solutions to taks be rendered? \code{FALSE} by default.}
 
 \item{handout}{\code{logical}. \code{TRUE} adds "Click for slides" link under author. To be used only for slide handout HTML files. \code{FALSE} by default.}
+
+\item{tasks_to_headings}{\code{logical}. Should individual tasks and subtaks be rendered as level 2 and 3 (respectively) headings? \code{FALSE} by default.}
 
 \item{notes}{\code{logical}. If \code{handout=TRUE}, then if \code{TRUE} a writable box for notes will appear at the bottom of each slide.}
 
