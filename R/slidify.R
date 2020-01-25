@@ -15,6 +15,7 @@
 #' @param fig_width,fig_height \code{numeric}. Default width and height (in inches) for figures.
 #' @param transition,background_transition \code{character}. Slide transition animation. \code{"fade"} by default. See reveal.js documentation (https://github.com/hakimel/reveal.js/blob/master/README.md) for more options.
 #' @param plugins \code{character}. which plugind to include. By default \code{c("notes", "search", "chalkboard")}.
+#' @param keep_temp_Rmd \code{logical}. Should temporary Rmd file be kept? Useful for post-hoc edits and debugging. 
 #' @details Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/slides_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
 #' @examples
 #' slidify("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
@@ -24,7 +25,7 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
                     offline = FALSE, offline_css, link_to_ho = T,
                     color = NULL, fig_width = 5, fig_height = 3.5,
                     transition = "fade", background_transition = transition,
-                    plugins = c("notes", "search", "chalkboard"), colour = color) {
+                    plugins = c("notes", "search", "chalkboard"), colour = color, keep_temp_Rmd = F) {
   if (!file.exists(file)) stop("The file does not exist.")
   if (!grepl("\\.[rR]md$", file)) stop("file= needs to be an .Rmd file.")
   if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "and", "ad", "adata", "other"))
@@ -127,7 +128,7 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
   x <- c(h, x)
   temp_rmd <- gsub("\\.[Rr]md", "_temp.Rmd", file)
   writeLines(x, temp_rmd)
-  on.exit(file.remove(temp_rmd), add = T, after = F)
+  if (!keep_temp_Rmd) on.exit(file.remove(temp_rmd), add = T, after = F)
   
   css <- ifelse(missing(offline_css), paste0(slides_files, "/css/slides.css"), offline_css)
   js <- paste0(slides_files, "/js/slides.js")

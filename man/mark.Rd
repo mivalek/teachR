@@ -7,8 +7,8 @@
 mark(
   file,
   feedback = F,
-  limit = 1000,
   count_words = !feedback,
+  limit = 1000,
   color = "#b38ed2"
 )
 }
@@ -17,9 +17,9 @@ mark(
 
 \item{feedback}{\code{logical}. Should feedback box with marker's comments appear at the bottom of document? \code{FALSE} by default.}
 
-\item{limit}{\code{numeric}. Word count limit}
-
 \item{count_words}{\code{logical}. \code{TRUE} counts body text words and if word count exceeds \code{limit}, inserts a warning line in HTML. \code{!feedback} by default.}
+
+\item{limit}{\code{numeric}. Word count limit}
 
 \item{color}{\code{character}. Single valid colour string (hex code or any of the values in \code{colours()}).}
 }

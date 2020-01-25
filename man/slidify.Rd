@@ -18,7 +18,8 @@ slidify(
   transition = "fade",
   background_transition = transition,
   plugins = c("notes", "search", "chalkboard"),
-  colour = color
+  colour = color,
+  keep_temp_Rmd = F
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ slidify(
 \item{transition, background_transition}{\code{character}. Slide transition animation. \code{"fade"} by default. See reveal.js documentation (https://github.com/hakimel/reveal.js/blob/master/README.md) for more options.}
 
 \item{plugins}{\code{character}. which plugind to include. By default \code{c("notes", "search", "chalkboard")}.}
+
+\item{keep_temp_Rmd}{\code{logical}. Should temporary Rmd file be kept? Useful for post-hoc edits and debugging.}
 }
 \value{
 Function does not return anything but outputs a .html file called [file]_slides.html and a corresponding folder with figures.

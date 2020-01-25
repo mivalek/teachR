@@ -7,6 +7,7 @@
 handout(
   file,
   course,
+  tasks_to_headings = FALSE,
   ntb = FALSE,
   color = NULL,
   toc = T,
@@ -16,6 +17,7 @@ handout(
   fig_height = 3.5,
   highlight = "tango",
   colour = color,
+  keep_temp_Rmd = F,
   ...
 )
 }
@@ -23,6 +25,8 @@ handout(
 \item{file}{\code{character}. Path to .Rmd file to convert.}
 
 \item{course}{\code{character}. Course the sheet is for: one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other"}.}
+
+\item{tasks_to_headings}{\code{logical}. Should individual tasks and subtaks be rendered as level 2 and 3 (respectively) headings? \code{FALSE} by default.}
 
 \item{ntb}{\code{logical}. \code{TRUE} to render document as R Notebook. \code{FALSE} by default.}
 
@@ -37,6 +41,8 @@ handout(
 \item{fig_width, fig_depth}{\code{numeric}. Default width and height (in inches) for figures.}
 
 \item{highlight}{\code{character}. Syntax highlighting style. See \code{\link[rmarkdown]{html_document}}.}
+
+\item{keep_temp_Rmd}{\code{logical}. Should temporary Rmd file be kept? Useful for post-hoc edits and debugging.}
 
 \item{...}{Other arguments to be passed to \code{rmarkdown:html_document} or \code{rmarkdown:html_notebook}.}
 

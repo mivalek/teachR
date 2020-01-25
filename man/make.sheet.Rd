@@ -20,6 +20,7 @@ make.sheet(
   fig_height = 3.5,
   highlight = "tango",
   colour = color,
+  keep_temp_Rmd = F,
   ...
 )
 }
@@ -40,7 +41,7 @@ make.sheet(
 
 \item{color}{\code{character}. Either a single valid colour (hex code or any of the values in \code{colours()}) or any valid value of the \code{course=} argument. If provided, it will be used to set colour scheme instead of \code{course=}.}
 
-\item{toc}{\code{logical}. Should table of content be included}
+\item{toc}{\code{logical}. Should table of content be included.}
 
 \item{toc_depth}{\code{logical}. Depth of headers to include in table of contents.}
 
@@ -49,6 +50,8 @@ make.sheet(
 \item{fig_width, fig_depth}{\code{numeric}. Default width and height (in inches) for figures.}
 
 \item{highlight}{\code{character}. Syntax highlighting style. See \code{\link[rmarkdown]{html_document}}.}
+
+\item{keep_temp_Rmd}{\code{logical}. Should temporary Rmd file be kept? Useful for post-hoc edits and debugging.}
 
 \item{...}{Other arguments to be passed to \code{rmarkdown:html_document} or \code{rmarkdown:html_notebook}.}
 }
