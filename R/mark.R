@@ -18,7 +18,7 @@
 #' # then
 #' mark("C:/work/201000.Rmd", T)
 
-mark <- function(file, feedback = F, limit = 1000, count_words = !feedback, color = "#b38ed2") {
+mark <- function(file, feedback = F, count_words = !feedback, limit = 1000, color = "#b38ed2") {
   ff <- readLines(file)
   out_file <- ifelse(feedback, sub("\\.Rmd$", "_marked.Rmd", file), file)
   
