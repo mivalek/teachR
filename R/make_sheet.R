@@ -97,6 +97,14 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, tasks_to_hea
     
     if (length(begin_comment) != length(end_comment)) stop("There seems to be something wrong with the way you used '<!--' comments to designate solution body text.")
     
+    ### answer formatting
+    ans <- grep("<!--\\s*ans", x[begin_comment])
+    begin_ans <- begin_comment[ans]
+    end_ans <- end_comment[ans]
+    
+    x[begin_ans] <- "<details><summary>See answer</summary>"
+    x[end_ans] <- gsub("\\s*-->\\s*$", "</details>", x[end_ans])
+    
     sol <- grep("<!--\\s*solution|<!--\\s*write.?up", x[begin_comment])
     begin_comment <- begin_comment[sol]
     end_comment <- end_comment[sol]
