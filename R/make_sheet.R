@@ -102,7 +102,7 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, tasks_to_hea
     begin_ans <- begin_comment[ans]
     end_ans <- end_comment[ans]
     
-    x[begin_ans] <- "<details><summary>See answer</summary>"
+    x[begin_ans] <- "<details><summary>Solution</summary>"
     x[end_ans] <- gsub("\\s*-->\\s*$", "</details>", x[end_ans])
     
     sol <- grep("<!--\\s*solution|<!--\\s*write.?up", x[begin_comment])
