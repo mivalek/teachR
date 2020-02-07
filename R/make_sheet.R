@@ -78,7 +78,7 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, tasks_to_hea
   x <- gsub("#\\s*?inc\\s*?$", "", x) # get rid of #inc
   yaml <- grep("---", x)
   title <- grep("^\\s*?title:", x[1:yaml[2]], value = T)[1]
-  if (solution) title <- sub("\"$", " with solutions\"", title)
+  if (solution) title <- sub("\"$", "<br>...with solutions\"", title)
   subtitle <- grep("^\\s*?subtitle:", x[1:yaml[2]], value = T)[1]
   author <- grep("^\\s*?author:", x[1:yaml[2]], value = T)[1]
   x <- x[-(1:yaml[2])]
