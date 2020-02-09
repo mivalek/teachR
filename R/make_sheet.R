@@ -97,13 +97,13 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, tasks_to_hea
     
     if (length(begin_comment) != length(end_comment)) stop("There seems to be something wrong with the way you used '<!--' comments to designate solution body text.")
     
-    ### answer formatting
-    ans <- grep("<!--\\s*ans", x[begin_comment])
-    begin_ans <- begin_comment[ans]
-    end_ans <- end_comment[ans]
+    ### answer toggle formatting
+    toggle <- grep("<!--\\s*toggle", x[begin_comment])
+    begin_toggle <- begin_comment[toggle]
+    end_toggle <- end_comment[toggle]
     
-    x[begin_ans] <- "<details><summary>Solution</summary>"
-    x[end_ans] <- gsub("\\s*-->\\s*$", "</details>", x[end_ans])
+    x[begin_toggle] <- "<details><summary>Solution</summary>"
+    x[end_toggle] <- gsub("\\s*-->\\s*$", "</details>", x[end_toggle])
     
     sol <- grep("<!--\\s*solution|<!--\\s*write.?up", x[begin_comment])
     begin_comment <- begin_comment[sol]
@@ -149,6 +149,15 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, tasks_to_hea
     "    paste0('<div class=\"', options$class, '\">')",
     "  } else {",
     "    paste0('</div>')",
+    "  }",
+    "},",
+    "                     toggle = function(before, options, envir){",
+    "  if (options$toggle) {",
+    "    if (before){",
+    "      paste0('<details><summary>Solution</summary>')",
+    "    } else {",
+    "      paste0('</details>')",
+    "    }",
     "  }",
     "})",
     "hook_inline = knitr::knit_hooks$get('inline')",
