@@ -14,7 +14,9 @@
 #' fun.index("N:/teaching/analysing_data", , pattern = "practical\\d+\\.Rmd")
 
 fun.index <- function(folder, output = "fun_index", course = "other", url = "", pattern = ".Rmd", recursive = T) {
-
+  
+  `%>%` <- magrittr::`%>%`
+  
   if(!dir.exists(folder))
     stop("This folder does not exist.")
   resetwd <- getwd()
@@ -101,10 +103,10 @@ fun.index <- function(folder, output = "fun_index", course = "other", url = "", 
       "",
       paste("###", toupper(i)),
       "```{r, echo=F}",
-      paste0("index %>% filter(gsub('^(.).*', '\\\\1', fun) == '", i,
-             "') %>% kable(col.names = c('Function', 'Practical')) %>% ",
-            "kable_styling(full_width = F, position = 'left') %>% ",
-            "column_spec(1, '4in')"),
+      paste0("index %>% dplyr::filter(gsub('^(.).*', '\\\\1', fun) == '", i,
+             "') %>% kableExtra::kable(col.names = c('Function', 'Practical')) %>% ",
+            "kableExtra::kable_styling(full_width = F, position = 'left') %>% ",
+            "kableExtra::column_spec(1, '4in')"),
       "```",
       "",
       "\ "
