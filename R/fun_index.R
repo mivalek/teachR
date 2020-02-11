@@ -47,21 +47,21 @@ fun.index <- function(folder, output = "fun_index", course = "other", url = "", 
     cut <- unlist(apply(cbind(start, end), 1, function(x) x[1]:x[2]))
     writeLines(tmp[-cut], "temp.Rmd")
     
-    purl("temp.Rmd", "temp.R")
+    knitr::purl("temp.Rmd", "temp.R")
     tmp <- try(parse("temp.R", keep.source=TRUE))
     if (class(tmp) == "try-error") {
       warn <- c(warn, i)
     } else {
       tmp %>%
-        getParseData() %>%
-        filter(token == "SYMBOL_FUNCTION_CALL") %>%
-        pull(text) %>%
+        utils::getParseData() %>%
+        dplyr::filter(token == "SYMBOL_FUNCTION_CALL") %>%
+        dplyr::pull(text) %>%
         unique() ->
         fun_list[[i]]
     }
   }
 
-  index <- tibble(fun = sort(unique(unlist(fun_list))))
+  index <- tibble::tibble(fun = sort(unique(unlist(fun_list))))
   fun_in_file <- list()
   for (i in seq_along(index$fun))
     fun_in_file[[i]] <- names(
@@ -87,7 +87,13 @@ fun.index <- function(folder, output = "fun_index", course = "other", url = "", 
   out <- c(
     "---",
     "title: 'Index of functions used in practicals'",
-    "---")
+    "---",
+    "",
+    "Below is the idexed list of all the functions we have used in the practicals.",
+    "It tells you which practicals make use of any given function.",
+    "You can click on the number of the practical to open the worksheet and then search (<kbd>Ctrl</kbd> + <kbd>F</kbd> on Windows and <kbd>&#8984;\\ Command</kbd> + <kbd>F</kbd> on Mac OS) for the function to see how it is used.",
+    "",
+    "")
   
   for (i in index_letter) {
     out <- c(
