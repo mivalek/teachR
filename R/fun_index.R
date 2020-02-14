@@ -13,7 +13,7 @@
 #' @examples
 #' fun.index("N:/teaching/analysing_data", , pattern = "practical\\d+\\.Rmd")
 
-fun.index <- function(folder, output = "fun_index", course = "other", url = "", pattern = ".Rmd", recursive = T) {
+fun.index <- function(folder, output = "fun_index", course = "fun_ind", url = "", pattern = ".Rmd", recursive = T) {
   
   `%>%` <- magrittr::`%>%`
   

@@ -30,8 +30,8 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, tasks_to_hea
                        highlight = "tango", colour = color, keep_temp_Rmd = F, ...) {
   if (!file.exists(file)) stop("The file does not exist.")
   if (!grepl("\\.[rR]md$", file)) stop("file= needs to be an .Rmd file.")
-  if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "and", "ad", "adata", "other"))
-    stop("course= must be one of c(\"dapr_1\", \"dapr_2\", \"dapr_3\", \"usmr\", \"msmr\", \"and\", \"other\").")
+  if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "and", "ad", "adata", "fun_ind", "other"))
+    stop("course= must be one of c(\"dapr_1\", \"dapr_2\", \"dapr_3\", \"usmr\", \"msmr\", \"and\", \"fun_ind\", \"other\").")
   if (course %in% c("ad", "adata")) course <- "and"
   if (!is.null(colour)) color <- colour
   if (!is.null(color)) {
@@ -53,7 +53,8 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, tasks_to_hea
     usmr = "#eda46f",
     msmr = "#d8d768",
     and = "#b38ed2",
-    other = "#77bd9d"
+    other = "#77bd9d",
+    fun_ind = "#013035" # Canvas colour
   )
   
   theme_col <- ifelse(is.null(color), color_list[[course]], color)
@@ -137,6 +138,7 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, tasks_to_hea
     "<style>",
       ":root {",
     paste0("--theme-col: ", paste(col2rgb(theme_col), collapse=", "), ";"),
+    paste0("--font-col: ", paste(col2rgb(ifelse(course == "fun_ind", theme_col, "#434b75")), collapse=", "), ";"),
       "}",
     "</style>",
     "\")",
