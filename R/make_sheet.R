@@ -176,6 +176,7 @@ make.sheet <- function(file, course, solution = FALSE, handout = FALSE, tasks_to
     "```",
     " ",
     "```{r plot_theme, include=FALSE}",
+    "library(ggplot2)",
     "bg_col <- '#fdfdfd'",
     "default_col <- '#434b75'",
     paste("theme_col <-", theme_col),
