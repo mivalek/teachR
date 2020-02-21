@@ -7,7 +7,7 @@
 fun.index(
   folder,
   output = "fun_index",
-  course = "other",
+  course = "fun_ind",
   url = "",
   pattern = ".Rmd",
   recursive = T

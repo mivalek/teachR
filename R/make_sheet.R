@@ -7,12 +7,12 @@
 #' @param course \code{character}. Course the sheet is for: one of \code{"dapR_1", "daprR_2", "dapR_3", "usmr", "msmr", "other"}.
 #' @param solution \code{logical}. Should solutions to taks be rendered? \code{FALSE} by default.
 #' @param handout \code{logical}. \code{TRUE} adds "Click for slides" link under author. To be used only for slide handout HTML files. \code{FALSE} by default.
-#' @param tasks_to_headings \code{logical}. Should individual tasks and subtaks be rendered as level 2 and 3 (respectively) headings? \code{FALSE} by default.
+#' @param tasks_to_headings \code{logical}. Should individual tasks and subtaks be rendered as level 2 and 3 (respectively) headings? \code{TRUE} by default.
 #' @param notes \code{logical}. If \code{handout=TRUE}, then if \code{TRUE} a writable box for notes will appear at the bottom of each slide.
 #' @param ntb \code{logical}. \code{TRUE} to render document as R Notebook. \code{FALSE} by default.
 #' @param color \code{character}. Either a single valid colour (hex code or any of the values in \code{colours()}) or any valid value of the \code{course=} argument. If provided, it will be used to set colour scheme instead of \code{course=}.
 #' @param toc \code{logical}. Should table of content be included.
-#' @param toc_depth \code{logical}. Depth of headers to include in table of contents.
+#' @param toc_depth \code{numeric}. Depth of headers to include in table of contents. 3 by default.
 #' @param toc_float \code{TRUE} to float the table of contents to the left of the main document content. Rather than TRUE you may also pass a list of options that control the behavior of the floating table of contents. For more details, see \code{\link[rmarkdown]{html_document}}.
 #' @param fig_width,fig_depth \code{numeric}. Default width and height (in inches) for figures.
 #' @param highlight \code{character}. Syntax highlighting style. See \code{\link[rmarkdown]{html_document}}.

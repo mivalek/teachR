@@ -7,20 +7,20 @@
 make.sheet(
   file,
   course,
-  solution = F,
+  solution = FALSE,
   handout = FALSE,
-  tasks_to_headings = FALSE,
+  tasks_to_headings = TRUE,
   notes = TRUE,
   ntb = FALSE,
   color = NULL,
-  toc = T,
-  toc_depth = 2,
-  toc_float = T,
+  toc = TRUE,
+  toc_depth = 3,
+  toc_float = TRUE,
   fig_width = 5,
   fig_height = 3.5,
   highlight = "tango",
   colour = color,
-  keep_temp_Rmd = F,
+  keep_temp_Rmd = FALSE,
   ...
 )
 }
@@ -33,7 +33,7 @@ make.sheet(
 
 \item{handout}{\code{logical}. \code{TRUE} adds "Click for slides" link under author. To be used only for slide handout HTML files. \code{FALSE} by default.}
 
-\item{tasks_to_headings}{\code{logical}. Should individual tasks and subtaks be rendered as level 2 and 3 (respectively) headings? \code{FALSE} by default.}
+\item{tasks_to_headings}{\code{logical}. Should individual tasks and subtaks be rendered as level 2 and 3 (respectively) headings? \code{TRUE} by default.}
 
 \item{notes}{\code{logical}. If \code{handout=TRUE}, then if \code{TRUE} a writable box for notes will appear at the bottom of each slide.}
 
@@ -43,7 +43,7 @@ make.sheet(
 
 \item{toc}{\code{logical}. Should table of content be included.}
 
-\item{toc_depth}{\code{logical}. Depth of headers to include in table of contents.}
+\item{toc_depth}{\code{numeric}. Depth of headers to include in table of contents. 3 by default.}
 
 \item{toc_float}{\code{TRUE} to float the table of contents to the left of the main document content. Rather than TRUE you may also pass a list of options that control the behavior of the floating table of contents. For more details, see \code{\link[rmarkdown]{html_document}}.}
 
