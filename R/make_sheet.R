@@ -25,9 +25,9 @@
 #' make.sheet("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 
 
-make.sheet <- function(file, course, solution = F, handout = FALSE, tasks_to_headings = FALSE, notes = TRUE, ntb = FALSE,
-                       color = NULL, toc = T, toc_depth = 2, toc_float = T, fig_width = 5, fig_height = 3.5,
-                       highlight = "tango", colour = color, keep_temp_Rmd = F, ...) {
+make.sheet <- function(file, course, solution = FALSE, handout = FALSE, tasks_to_headings = TRUE, notes = TRUE, ntb = FALSE,
+                       color = NULL, toc = TRUE, toc_depth = 3, toc_float = TRUE, fig_width = 5, fig_height = 3.5,
+                       highlight = "tango", colour = color, keep_temp_Rmd = FALSE, ...) {
   if (!file.exists(file)) stop("The file does not exist.")
   if (!grepl("\\.[rR]md$", file)) stop("file= needs to be an .Rmd file.")
   if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "and", "ad", "adata", "fun_ind", "other"))
@@ -145,10 +145,10 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, tasks_to_hea
     "```",
     "",
     "```{r, rsetup, include=F}",
-    "knitr::opts_chunk$set(comment=NULL, collapse=T, strip.white=F, echo=T,\n    message = F, warning = F, prompt = F, comment = NA, split = F)",
-    "knitr::knit_hooks$set(class = function(before, options, envir){",
+    "knitr::opts_chunk$set(comment=NULL, collapse=T, strip.white=F, echo=T,\n    message = F, warning = F, prompt = F, comment = NA, split = F, toggle = F, fig.align = \"center\")",
+    "knitr::knit_hooks$set(sol = function(before, options, envir){",
     "  if (before){",
-    "    paste0('<div class=\"', options$class, '\">')",
+    "    paste0('<div class=\"solution\">')",
     "  } else {",
     "    paste0('</div>')",
     "  }",
@@ -173,13 +173,43 @@ make.sheet <- function(file, course, solution = F, handout = FALSE, tasks_to_hea
     "```{r task_fun, echo=FALSE}",
     "tsk <- s_tsk <- 1 # Task counter",
     readLines(paste0(path.package("teachR"), "/task.txt")),
-    "```"
+    "```",
+    " ",
+    "```{r plot_theme, include=FALSE}",
+    "bg_col <- '#fdfdfd'",
+    "default_col <- '#434b75'",
+    paste("theme_col <-", theme_col),
+    "complement_col <- colortools::complementary(theme_col, F)[2]",
+    "point_col <- paste0(default_col, '88')",
+    " ",
+    "my_theme <- cowplot::theme_cowplot() +",
+    "  theme(line = element_line(colour = default_col),",
+    "        plot.background = element_rect(fill = bg_col),",
+    "        panel.background = element_rect(fill = bg_col),",
+    "        text = element_text(colour = default_col),",
+    "        title = element_text(colour = default_col),",
+    "        axis.line = element_line(colour = default_col),",
+    "        axis.ticks = element_line(colour = default_col),",
+    "        axis.text = element_text(colour = default_col),",
+    "        axis.title = element_text(colour = default_col),",
+    "        strip.background = element_rect(fill = default_col, colour = default_col),",
+    "        strip.text = element_text(colour = bg_col)",
+    "  )",
+    "update_geom_defaults(\"bar\", list(fill = bg_col, colour = default_col))",
+    "ggplot2::theme_set(my_theme)",
+    "```",
+    " "
   )
   
 
   
   h <- as.vector(na.omit(h))
   x <- c(h, x)
+  if (handout) x <- c(
+    x,
+    " ", "\ ", " ", "\ ", " ", "<div class=\"warn\">",
+    "**Don't forget to save this page on your computer, otherwise you will lose all notes!**",
+    "</div>", " ", "\ ", " ", " ", "\ ", " ")
   
   css <- "https://mivalek.github.io/sheet_files/sheets.css"
   js <- "https://mivalek.github.io/sheet_files/sheets.js"
