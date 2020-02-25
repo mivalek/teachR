@@ -10,6 +10,7 @@ make.sheet(
   solution = FALSE,
   handout = FALSE,
   tasks_to_headings = TRUE,
+  tsk_correct = TRUE,
   notes = TRUE,
   ntb = FALSE,
   color = NULL,
@@ -34,6 +35,8 @@ make.sheet(
 \item{handout}{\code{logical}. \code{TRUE} adds "Click for slides" link under author. To be used only for slide handout HTML files. \code{FALSE} by default.}
 
 \item{tasks_to_headings}{\code{logical}. Should individual tasks and subtaks be rendered as level 2 and 3 (respectively) headings? \code{TRUE} by default.}
+
+\item{tsk_correct}{\code{logical}. Should suspected errors in \code{[sub]task()}, e.g., \code{`r task`} be corrected? \code{TRUE} by default.}
 
 \item{notes}{\code{logical}. If \code{handout=TRUE}, then if \code{TRUE} a writable box for notes will appear at the bottom of each slide.}
 

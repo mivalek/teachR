@@ -8,6 +8,7 @@
 #' @param solution \code{logical}. Should solutions to taks be rendered? \code{FALSE} by default.
 #' @param handout \code{logical}. \code{TRUE} adds "Click for slides" link under author. To be used only for slide handout HTML files. \code{FALSE} by default.
 #' @param tasks_to_headings \code{logical}. Should individual tasks and subtaks be rendered as level 2 and 3 (respectively) headings? \code{TRUE} by default.
+#' @param tsk_correct \code{logical}. Should suspected errors in \code{[sub]task()}, e.g., \code{`r task`} be corrected? \code{TRUE} by default.
 #' @param notes \code{logical}. If \code{handout=TRUE}, then if \code{TRUE} a writable box for notes will appear at the bottom of each slide.
 #' @param ntb \code{logical}. \code{TRUE} to render document as R Notebook. \code{FALSE} by default.
 #' @param color \code{character}. Either a single valid colour (hex code or any of the values in \code{colours()}) or any valid value of the \code{course=} argument. If provided, it will be used to set colour scheme instead of \code{course=}.
@@ -25,9 +26,9 @@
 #' make.sheet("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 
 
-make.sheet <- function(file, course, solution = FALSE, handout = FALSE, tasks_to_headings = TRUE, notes = TRUE, ntb = FALSE,
-                       color = NULL, toc = TRUE, toc_depth = 3, toc_float = TRUE, fig_width = 5, fig_height = 3.5,
-                       highlight = "tango", colour = color, keep_temp_Rmd = FALSE, ...) {
+make.sheet <- function(file, course, solution = FALSE, handout = FALSE, tasks_to_headings = TRUE, tsk_correct = TRUE,
+                       notes = TRUE, ntb = FALSE, color = NULL, toc = TRUE, toc_depth = 3, toc_float = TRUE,
+                       fig_width = 5, fig_height = 3.5, highlight = "tango", colour = color, keep_temp_Rmd = FALSE, ...) {
   if (!file.exists(file)) stop("The file does not exist.")
   if (!grepl("\\.[rR]md$", file)) stop("file= needs to be an .Rmd file.")
   if (!tolower(course) %in% c("dapr_1", "dapr_2", "dapr_3", "usmr", "msmr", "and", "ad", "adata", "fun_ind", "other"))
@@ -76,9 +77,17 @@ make.sheet <- function(file, course, solution = FALSE, handout = FALSE, tasks_to
   
   x <- readLines(file)
   tsk_error <- grep("^\\s*`r\\s+(sub)?task`|^\\s*`\\s*(sub)?task(\\(\\))?`", x)
+  
   if (length(tsk_error) > 0) {
-    stop(paste("Did you get the markdown for tasks and subtasks right? Check line(s):\n\n\t",
-               paste(tsk_error, collapse = "\n\t")))
+    if (tsk_correct) {
+      x <- gsub("^\\s*`r\\s+(sub)?task`|^\\s*`\\s*(sub)?task(\\(\\))?`", "`r \\1task()`", x)
+      warning(paste("I corrected suspected erroneous task() calls.",
+                    "Try again with tsk_correct=F to override.",
+                    "Check line(s):\n\n\t", paste(tsk_error, collapse = "\n\t")))
+    } else {
+      on.exit(message(paste("Did you get the markdown for tasks and subtasks right? Check line(s):\n\n\t",
+                    paste(tsk_error, collapse = "\n\t"))))
+    }
   }
   
   x <- gsub("^(\\s*?)>\\s*?-", "\\1-", x) # get rid of incremental bulletpoints if used ( > - ...)
