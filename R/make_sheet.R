@@ -75,6 +75,12 @@ make.sheet <- function(file, course, solution = FALSE, handout = FALSE, tasks_to
   on.exit(setwd(oldwd))
   
   x <- readLines(file)
+  tsk_error <- grep("^\\s*`r\\s+(sub)?task`|^\\s*`\\s*(sub)?task(\\(\\))?`", x)
+  if (length(tsk_error) > 0) {
+    stop(paste("Did you get the markdown for tasks and subtasks right? Check line(s):\n\n\t",
+               paste(tsk_error, collapse = "\n\t")))
+  }
+  
   x <- gsub("^(\\s*?)>\\s*?-", "\\1-", x) # get rid of incremental bulletpoints if used ( > - ...)
   x <- gsub("#\\s*?inc\\s*?$", "", x) # get rid of #inc
   yaml <- grep("---", x)
