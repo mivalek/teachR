@@ -6,14 +6,17 @@
 \usage{
 mark(
   file,
+  file_name = file,
   feedback = F,
   count_words = !feedback,
-  limit = 1000,
+  limit = 2000,
   color = "#b38ed2"
 )
 }
 \arguments{
-\item{file}{\code{character}. Path to .Rmd file to mark.}
+\item{file}{\code{character}. Either path to .Rmd file to mark or URL from which to read the file.}
+
+\item{file_name}{\code{character}. If \code{file=} is a URL, name of file to write to.}
 
 \item{feedback}{\code{logical}. Should feedback box with marker's comments appear at the bottom of document? \code{FALSE} by default.}
 

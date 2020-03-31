@@ -3,7 +3,8 @@
 #'
 #' For Rmd submissions of reports and other coursework. Function checks word count and inserts space for feedback.
 #'
-#' @param file \code{character}. Path to .Rmd file to mark.
+#' @param file \code{character}. Either path to .Rmd file to mark or URL from which to read the file.
+#' @param file_name \code{character}. If \code{file=} is a URL, name of file to write to.
 #' @param feedback \code{logical}. Should feedback box with marker's comments appear at the bottom of document? \code{FALSE} by default.
 #' @param count_words \code{logical}. \code{TRUE} counts body text words and if word count exceeds \code{limit}, inserts a warning line in HTML. \code{!feedback} by default.
 #' @param limit \code{numeric}. Word count limit
@@ -18,9 +19,14 @@
 #' # then
 #' mark("C:/work/201000.Rmd", T)
 
-mark <- function(file, feedback = F, count_words = !feedback, limit = 1000, color = "#b38ed2") {
+mark <- function(file, file_name = file, feedback = F, count_words = !feedback, limit = 2000, color = "#b38ed2") {
   ff <- readLines(file)
-  out_file <- ifelse(feedback, sub("\\.Rmd$", "_marked.Rmd", file), file)
+  if (grepl("^https://", file_name)) {
+    stop("Plesae provide value to file_name= when reading file from URL.")
+  } else if (!grepl("\\.rmd$", tolower(file_name)))
+    file_name <- paste0(file_name, ".Rmd")
+  
+  out_file <- ifelse(feedback, sub("\\.Rmd$", "_marked.Rmd", file_name), file_name)
   
   # word limit reached line
   insert <- '\n\\ \n\n<div>
@@ -77,10 +83,12 @@ mark <- function(file, feedback = F, count_words = !feedback, limit = 1000, colo
       ff <- unlist(strsplit(paste(ff, collapse = "\n"), "\n"))
       out <- c(ff[1:cutoff_line], insert, ff[(cutoff_line + 1):length(ff)], feedback)
     }
-      
+    out <- gsub("candidate_number\\s*<-", "candidate_number <<-", out)  
     writeLines(out, out_file)
     
-    render(input = out_file, output_format = html_document(toc = F))
+    rmarkdown::render(input = out_file,
+                      output_format = rmarkdown::html_document(toc = F),
+                      envir = new.env())
     
   } else if (feedback) {
     
@@ -127,9 +135,11 @@ mark <- function(file, feedback = F, count_words = !feedback, limit = 1000, colo
     
     writeLines(ff, out_file)
     
-    render(input = out_file, output_format = html_document(
+    rmarkdown::render(input = out_file,
+                      output_format = rmarkdown::html_document(
       toc = F, includes = includes(after_body = paste0(path.package("teachR"), "/feedback.css")))
     )
-  }  
+  } 
+  return(T)
 }
 
