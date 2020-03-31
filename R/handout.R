@@ -23,9 +23,13 @@
 #' handout("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
 
 
-handout <- function(file, course, tasks_to_headings = FALSE, ntb = FALSE, color = NULL, toc = T, toc_depth = 2, toc_float = T,
-                       fig_width = 5, fig_height = 3.5, highlight = "tango", colour = color, keep_temp_Rmd = F, ...) {
-  make.sheet(file = file, course = course, handout = TRUE, tasks_to_headings = tasks_to_headings, ntb = ntb, color = color,
+handout <- function(file, course, tasks_to_headings = FALSE, ntb = FALSE,
+                    color = NULL, toc = T, toc_depth = 2, toc_float = T,
+                    fig_width = 5, fig_height = 3.5, highlight = "tango",
+                    colour = color, keep_temp_Rmd = F, ...) {
+  make.sheet(file = file, course = course, handout = TRUE,
+             tasks_to_headings = tasks_to_headings, ntb = ntb, color = color,
              toc = toc, toc_depth = toc_depth, toc_float = toc_float,
-             fig_width = fig_width, fig_height = fig_height, highlight = highlight, colour = colour, keep_temp_Rmd = keep_temp_Rmd, ...)
+             fig_width = fig_width, fig_height = fig_height, highlight = highlight,
+             colour = colour, keep_temp_Rmd = keep_temp_Rmd, ...)
 }
