@@ -7,6 +7,7 @@
 mark(
   file,
   file_name = file,
+  study = NULL,
   mark = NULL,
   feedback = F,
   count_words = !feedback,
@@ -21,6 +22,8 @@ mark(
 \item{file}{\code{character}. Either path to .Rmd file to mark or URL from which to read the file.}
 
 \item{file_name}{\code{character}. If \code{file=} is a URL, name of file to write to.}
+
+\item{study}{\code{character}. Which study to get correct results for? Currently either \code{"red"} or \code{"green"}.}
 
 \item{mark}{\code{numeric}. Total mark/grade for given assignment.}
 

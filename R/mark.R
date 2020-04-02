@@ -5,6 +5,7 @@
 #'
 #' @param file \code{character}. Either path to .Rmd file to mark or URL from which to read the file.
 #' @param file_name \code{character}. If \code{file=} is a URL, name of file to write to.
+#' @param study \code{character}. Which study to get correct results for? Currently either \code{"red"} or \code{"green"}.
 #' @param mark \code{numeric}. Total mark/grade for given assignment.
 #' @param feedback \code{logical}. Should feedback box with marker's comments appear at the bottom of document? \code{FALSE} by default.
 #' @param count_words \code{logical}. \code{TRUE} counts body text words and if word count exceeds \code{limit}, inserts a warning line in HTML. \code{!feedback} by default.
@@ -23,7 +24,7 @@
 #' # then
 #' mark("C:/work/201000.Rmd", T)
 
-mark <- function(file, file_name = file, mark = NULL, feedback = F, count_words = !feedback, limit = 2000, include_results = F, results_obj = NULL, remove_results = F, color = "#b38ed2") {
+mark <- function(file, file_name = file, study = NULL, mark = NULL, feedback = F, count_words = !feedback, limit = 2000, include_results = F, results_obj = NULL, remove_results = F, color = "#b38ed2") {
   ff <- readLines(file)
   if (grepl("^https://", file_name)) {
     stop("Plesae provide value to file_name= when reading file from URL.")
@@ -103,19 +104,19 @@ mark <- function(file, file_name = file, mark = NULL, feedback = F, count_words 
     
     out <- readLines(sub("[Rr]md$", "html", out_file))
     if (include_results) {
-      if (is_green) {
+      if (study == "green") {
         chisq_res <- list()
         for (i in c("car", "cleaner", "dishwasher")) {
           chisq_res[i] <- paste0(
-            "<p><strong>", i, ": </strong></p>",
-            "<p>&chi;^2^(",
+            "<p><strong>", i, ": </strong><br>",
+            "&chi;^2^(",
             results_obj[[i]]$parameter,
             ") = ", round(results_obj[[i]]$statistic, 2),
             ", <em>p</em> ", ifelse(results_obj[[i]]$p.value < .001, "&lt; ", "= "),
             pround(results_obj[[i]]$p.value), "</p>")
         }
-        test_res <- paste(unlist(chisq_res), collapse = "<br>")
-      } else if (is_red) {
+        test_res <- paste(unlist(chisq_res), collapse = "")
+      } else if (study == "red") {
         test_res <- paste0(
           "<p><em>t</em>(",
           round(results_obj$result$parameter, 2),
@@ -135,19 +136,16 @@ mark <- function(file, file_name = file, mark = NULL, feedback = F, count_words 
         "<p><strong><em>N</em> total clean:</strong> ", results_obj$n_clean, "</p>",
         "</div>",
         "<div class=\"results-item item2\">",
-        if (is_green) 
-          kableExtra::kable_styling(
-            kableExtra::kable(results_obj$gen_desc[ , c(1:3,7)]),
-            full_width = F,
-            position = "left"
-            ), "",
-        kableExtra::kable_styling(
-          kableExtra::kable(results_obj$cond_desc[ , c(1:3,7)]),
-          full_width = F,
-          position = "left"
-          ),
+        results_obj$cond_desc_tab,
         "</div>",
-        "<div class=\"results-item item3\">",
+        if (study == "green") {
+          c("<div class=\"results-item item3\">",
+          results_obj$gen_desc_tab,
+          "</div>",
+          "<div class=\"results-item item4\">")
+        } else if (study == "red") {
+          "<div class=\"results-item item3\">"
+        },
         "<p><strong>Main analysis results</strong></p>",
         test_res,
         "</div>",
@@ -155,7 +153,25 @@ mark <- function(file, file_name = file, mark = NULL, feedback = F, count_words 
         "</div>",
         "</div>"
       )
-    
+      
+      style_end <- grep("</style>", out)[1]
+      out <- c(out[1:(style_end - 1)],
+               ":root {",
+               paste0("  --res-width: ",
+                      if (study == "green") {
+                        745
+                      } else if (study == "red") {
+                        605
+                      }, "px;"),
+               paste0("  --res-offset: ",
+                      if (study == "green") {
+                        280
+                      } else if (study == "red") {
+                        220
+                      }, "px;"),
+               paste0("  --theme-col: ", paste(col2rgb(color), collapse=", "), ";"),
+               "}",
+               out[style_end:length(out)])
       start_row <- grep("<div class=\"container-fluid main-container\">", out)
       end_row <- rev(grep("</div>", out))[1]
       out <- c(
@@ -163,9 +179,9 @@ mark <- function(file, file_name = file, mark = NULL, feedback = F, count_words 
         "<div class=\"col-md-12\">",
         "<div class=\"inner\">",
         res,
-        "<div class=\"sidebar2\" style=\"display: none\">",
-        "<div class=\"mark-container\">",
-        "<div class=\"mark\">",
+        "<div class=\"sidebar2\">",
+        "<div class=\"mark-container\" style=\"display: none\">",
+        "<div class=\"mark\">NA",
         "</div>",
         "</div>",
         "</div>",
@@ -200,32 +216,14 @@ mark <- function(file, file_name = file, mark = NULL, feedback = F, count_words 
       ""
     )
     
-    # code chunk that defines --theme-col for CSS
-    color_chunk <-  c("```{r, echo=F, include=T, eval=T, results='asis'}",
-    "cat(\"",
-    "<style>",
-    ":root {",
-    paste0("--theme-col: ", paste(col2rgb(color), collapse=", "), ";"),
-    "}",
-    "</style>",
-    "\")",
-    "```")
-    
-    # insert chunk
-    ff <- c(
-      ff[1:grep("^\\s*---", ff)[2]],
-      "", color_chunk, "",
-      ff[(grep("^\\s*---", ff)[2] + 1):length(ff)]
-    )
-    
     
     if (missing(mark)) {
       warning("mark= is missing: Final mark will not be displayed.")
     } else {
-      ff <- sub("<div class=\"sidebar2\" style=\"display: none\">",
-                "<div class=\"sidebar2\">", ff)
-      ff <- sub("<div class=\"mark\">",
-                paste0("<div class=\"mark\"><p>", mark, "</p>"), ff)
+      ff <- sub("<div class=\"mark-container\" style=\"display: none\">",
+                "<div class=\"mark-container\">", ff)
+      ff <- sub("<div class=\"mark\">NA",
+                paste0("<div class=\"mark\">", mark), ff)
     }
     
     ff[grep("<!-- THE GOOD", ff)] <- paste(good_text, collapse = "\n")

@@ -55,7 +55,7 @@ fb {
 }
 
 .main-content {
-	width: calc(100% - 250px - 250px);
+	width: calc(100% - 500px);
     min-height: 2000px;
     left: 300px;
     position: relative;
@@ -63,20 +63,22 @@ fb {
 
 .sidebar1 {
 	position: fixed;
+	left: 15px;
+	width: 260px;
 }
 
 .sidebar2 {
     position: absolute;
     right: 0;
     top: 0;
-    width: 200px;
+    width: 180px;
     height: 100%;
 }
 
 .mark-container {
 	position: absolute;
 	top: 0;
-	left: 20px;
+	/*left: 20px;*/
 	width: 100%;
 	height: 100%;
 }
@@ -107,6 +109,9 @@ fb {
     left: 20px;
     border: solid 1px rgb(var(--warn-col));
     padding: 20px 6px 0px 10px;
+	max-height: 90vh;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 .results-container::before {
@@ -117,8 +122,9 @@ fb {
 	top: -12px;
 }
 
-.results strong, .results th {
+.results strong, .results .table > thead > tr > th {
 	color: rgb(var(--warn-col));
+	padding-top: 0;
 }
 
 
@@ -129,12 +135,13 @@ fb {
 	
 	.mark {
 		position: relative;
-		top: 65px;		
+		top: 65px;
+		left: 30px;
 	}
 	
 	.main-content {
-		width: calc(100% - 300px);
-		left: 300px;
+		width: calc(100% - 260px);
+		left: 270px;
 	}
 }
 
@@ -143,7 +150,7 @@ fb {
 	
 	.main-content {
 		position: absolute;
-		top: 220px;
+		top: var(--res-offset);
 		width: 100%;
 		left: 0px;
 	}
@@ -151,13 +158,16 @@ fb {
 	.sidebar1 {
 		position: absolute;
 		top: 10px;
+		left:0;
 		height: 100%;
+		width: 100%;
 		min-height: 5000px;
 		z-index: 1;
 	}
 	
 	.results-container {
 		overflow-x: auto;
+		overflow-y: hidden;
 		position: sticky;
 		background-color: white;
 	}
@@ -166,7 +176,7 @@ fb {
 		display: inline-grid;
 		padding: 30px 0px 0px 0px;
 		grid-gap: 5px;
-		min-width: 605px;
+		min-width: var(--res-width);
 		
 	}
 	
@@ -187,7 +197,6 @@ fb {
 	.item2 {
 		grid-column: 2;
 		grid-row: 1;
-		margin-top: -8px;
 	}
 	
 	.item3 {
@@ -195,33 +204,51 @@ fb {
 		grid-row: 1;
 	}
 	
+	.item4 {
+		grid-column: 4;
+		grid-row: 1;
+	}
+	
 	.mark {
-		top: 310px;		
+		top: calc(var(--res-offset) + 85px);		
 	}
 }
 
 
 @media screen and (max-width: 728px) { 
 	.sidebar2 {
-		left: calc(720px - 267px);
+		left: calc(711px - 240px);
 	}
 }
 
-@media screen and (max-width: 560px) { 
+@media screen and (max-width: 600px) { 
 	.sidebar2 {
 		left: 0;
+		width: 100%;
+		position: relative;
+		top: var(--res-offset);
+		height: auto;
 	}
 	
 	.mark-container {
+		height: 150px;
+		position: relative;
 		left: 0;
 	}
 	
 	.mark {
-		top: 240px;		
+		position: absolute;
+		bottom: 10px;
+		top: auto;
+		left: 0;
+	}
+	
+	.mark::before {
+		position: absolute;
 	}
 	
 	.main-content {
-		top: 360px;
+		position: relative;
 	}
 }
 
