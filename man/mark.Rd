@@ -7,9 +7,13 @@
 mark(
   file,
   file_name = file,
+  mark = NULL,
   feedback = F,
   count_words = !feedback,
   limit = 2000,
+  include_results = F,
+  results_obj = NULL,
+  remove_results = F,
   color = "#b38ed2"
 )
 }
@@ -18,11 +22,19 @@ mark(
 
 \item{file_name}{\code{character}. If \code{file=} is a URL, name of file to write to.}
 
+\item{mark}{\code{numeric}. Total mark/grade for given assignment.}
+
 \item{feedback}{\code{logical}. Should feedback box with marker's comments appear at the bottom of document? \code{FALSE} by default.}
 
 \item{count_words}{\code{logical}. \code{TRUE} counts body text words and if word count exceeds \code{limit}, inserts a warning line in HTML. \code{!feedback} by default.}
 
 \item{limit}{\code{numeric}. Word count limit}
+
+\item{include_results}{\code{logical}. If \code{TRUE}, object provided to \code{results_obj=} will get inserted into a formatted box in knitted HTML. \code{FALSE} by default.}
+
+\item{results_obj}{See \code{include_results}.}
+
+\item{remove_results}{\code{logical}. If \code{TRUE}, correct results will not be displayed in final marked HTML document. \code{FALSE} by default.}
 
 \item{color}{\code{character}. Single valid colour string (hex code or any of the values in \code{colours()}).}
 }
