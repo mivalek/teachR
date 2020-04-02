@@ -95,7 +95,10 @@ mark <- function(file, file_name = file, mark = NULL, feedback = F, count_words 
     writeLines(out, out_file)
     
     rmarkdown::render(input = out_file,
-                      output_format = rmarkdown::html_document(toc = F),
+                      output_format = rmarkdown::html_document(
+                        toc = F,
+                        includes = rmarkdown::includes(
+                          after_body = paste0(path.package("teachR"), "/feedback.css"))),
                       envir = new.env())
     
     out <- readLines(sub("[Rr]md$", "html", out_file))
@@ -233,7 +236,8 @@ mark <- function(file, file_name = file, mark = NULL, feedback = F, count_words 
     rmarkdown::render(input = out_file,
                       output_format = rmarkdown::html_document(
       toc = F,
-      includes = rmarkdown::includes(after_body = paste0(path.package("teachR"), "/feedback.css")))
+      includes = rmarkdown::includes(after_body = paste0(path.package("teachR"), "/feedback.css"))),
+      envir = new.env()
     )
   } 
   return(T)
