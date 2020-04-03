@@ -76,6 +76,17 @@ make.sheet <- function(file, course, solution = FALSE, handout = FALSE, tasks_to
   on.exit(setwd(oldwd))
   
   x <- readLines(file)
+  
+  # replace relative with absolute paths to external images
+  external_pics <- grepl("![](", x, fixed = T)
+  pic_path <- gsub(".*?\\]\\((.*?)\\)\\{.*", "\\1", x[external_pics])
+  pic_path <- normalizePath(pic_path, winslash = "/")
+  for (i in seq_along(which(external_pics))) {
+  x[external_pics][i] <- gsub("(.*?\\]\\()(.*?)(\\)\\{.*)",
+                           paste0("\\1", pic_path[i], "\\3"),
+                           x[external_pics][i])
+  }
+  
   tsk_error <- grep("^\\s*`r\\s+(sub)?task`|^\\s*`\\s*(sub)?task(\\(\\))?`", x)
   
   if (length(tsk_error) > 0) {
@@ -148,7 +159,7 @@ make.sheet <- function(file, course, solution = FALSE, handout = FALSE, tasks_to
     if (handout) paste0("date: \"[Click for slides](", sub("\\.[Rr]md$", "_slides.html", file), ")\""),
     "---",
     " ",
-    "```{r, echo=F, results='asis'}",
+    "```{r, eval=T, echo=F, include=T, results='asis'}",
     "cat(\"",
     "<style>",
       ":root {",
