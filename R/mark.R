@@ -26,6 +26,8 @@
 
 mark <- function(file, file_name = file, study = NULL, mark = NULL, feedback = F, count_words = !feedback, limit = 2000, include_results = F, results_obj = NULL, remove_results = F, color = "#b38ed2") {
   ff <- readLines(file)
+  # remove author
+  ff <- ff[!grepl("^author:", ff)]
   if (grepl("^https://", file_name)) {
     stop("Plesae provide value to file_name= when reading file from URL.")
   } else if (!grepl("\\.rmd$", tolower(file_name)))
@@ -102,100 +104,6 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, feedback = F
                           after_body = paste0(path.package("teachR"), "/feedback.css"))),
                       envir = new.env())
     
-    out <- readLines(sub("[Rr]md$", "html", out_file))
-    if (include_results) {
-      if (study == "green") {
-        chisq_res <- list()
-        for (i in c("car", "cleaner", "dishwasher")) {
-          chisq_res[i] <- paste0(
-            "<p><strong>", i, ": </strong><br>",
-            "&chi;^2^(",
-            results_obj[[i]]$parameter,
-            ") = ", round(results_obj[[i]]$statistic, 2),
-            ", <em>p</em> ", ifelse(results_obj[[i]]$p.value < .001, "&lt; ", "= "),
-            pround(results_obj[[i]]$p.value), "</p>")
-        }
-        test_res <- paste(unlist(chisq_res), collapse = "")
-      } else if (study == "red") {
-        test_res <- paste0(
-          "<p><em>t</em>(",
-          round(results_obj$result$parameter, 2),
-          ") = ", round(results_obj$result$statistic, 2),
-          ", <em>p</em> ", ifelse(results_obj$result$p.value < .001, "&lt; ", "= "),
-          pround(results_obj$resul$p.value), "</p>")
-      }
-      
-      res <- c(
-        "<div class=\"sidebar1\">",
-        "<div class=\"results-container\">",
-        "<div class=\"results\">",
-        "<div class=\"results-item item1\">",
-        "<p><strong><em>N</em> removed NAs:</strong> ", results_obj$rem_age_na, "</p>",
-        "<p><strong><em>N</em> removed &lt;18:</strong> ", results_obj$rem_age_young, "</p>",
-        "<p><strong><em>N</em> total clean:</strong> ", results_obj$n_clean, "</p>",
-        "<p><strong><em>N</em> total clean:</strong> ", results_obj$n_clean, "</p>",
-        "</div>",
-        "<div class=\"results-item item2\">",
-        results_obj$cond_desc_tab,
-        "</div>",
-        if (study == "green") {
-          c("<div class=\"results-item item3\">",
-          results_obj$gen_desc_tab,
-          "</div>",
-          "<div class=\"results-item item4\">")
-        } else if (study == "red") {
-          "<div class=\"results-item item3\">"
-        },
-        "<p><strong>Main analysis results</strong></p>",
-        test_res,
-        "</div>",
-        "</div>",
-        "</div>",
-        "</div>"
-      )
-      
-      style_end <- grep("</style>", out)[1]
-      out <- c(out[1:(style_end - 1)],
-               ":root {",
-               paste0("  --res-width: ",
-                      if (study == "green") {
-                        745
-                      } else if (study == "red") {
-                        605
-                      }, "px;"),
-               paste0("  --res-offset: ",
-                      if (study == "green") {
-                        280
-                      } else if (study == "red") {
-                        220
-                      }, "px;"),
-               paste0("  --theme-col: ", paste(col2rgb(color), collapse=", "), ";"),
-               "}",
-               out[style_end:length(out)])
-      start_row <- grep("<div class=\"container-fluid main-container\">", out)
-      end_row <- rev(grep("</div>", out))[1]
-      out <- c(
-        out[1:start_row],
-        "<div class=\"col-md-12\">",
-        "<div class=\"inner\">",
-        res,
-        "<div class=\"sidebar2\">",
-        "<div class=\"mark-container\" style=\"display: none\">",
-        "<div class=\"mark\">NA",
-        "</div>",
-        "</div>",
-        "</div>",
-        "<div class=\"main-content\">", 
-        out[(start_row+1):end_row],
-        "</div>",
-        "</div>",
-        "</div>",
-        out[(end_row+1):length(out)]
-      )
-      
-      writeLines(out, sub("[Rr]md$", "html", out_file))
-    }
-    
   } else if (feedback) {
     
     good_text <- c(
@@ -238,7 +146,103 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, feedback = F
       includes = rmarkdown::includes(after_body = paste0(path.package("teachR"), "/feedback.css"))),
       envir = new.env()
     )
-  } 
+  }
+  
+  ### add HTML magic
+  out <- readLines(sub("[Rr]md$", "html", out_file))
+  if (include_results) {
+    if (study == "green") {
+      chisq_res <- list()
+      for (i in c("car", "cleaner", "dishwasher")) {
+        chisq_res[i] <- paste0(
+          "<p><strong>", i, ": </strong><br>",
+          "&chi;^2^(",
+          results_obj[[i]]$parameter,
+          ") = ", round(results_obj[[i]]$statistic, 2),
+          ", <em>p</em> ", ifelse(results_obj[[i]]$p.value < .001, "&lt; ", "= "),
+          pround(results_obj[[i]]$p.value), "</p>")
+      }
+      test_res <- paste(unlist(chisq_res), collapse = "")
+    } else if (study == "red") {
+      test_res <- paste0(
+        "<p><em>t</em>(",
+        round(results_obj$result$parameter, 2),
+        ") = ", round(results_obj$result$statistic, 2),
+        ", <em>p</em> ", ifelse(results_obj$result$p.value < .001, "&lt; ", "= "),
+        pround(results_obj$resul$p.value), "</p>")
+    }
+    
+    res <- c(
+      "<div class=\"sidebar1\">",
+      "<div class=\"results-container\">",
+      "<div class=\"results\">",
+      "<div class=\"results-item item1\">",
+      "<p><strong><em>N</em> removed NAs:</strong> ", results_obj$rem_age_na, "</p>",
+      "<p><strong><em>N</em> removed &lt;18:</strong> ", results_obj$rem_age_young, "</p>",
+      "<p><strong><em>N</em> total clean:</strong> ", results_obj$n_clean, "</p>",
+      "<p><strong><em>N</em> total clean:</strong> ", results_obj$n_clean, "</p>",
+      "</div>",
+      "<div class=\"results-item item2\">",
+      results_obj$cond_desc_tab,
+      "</div>",
+      if (study == "green") {
+        c("<div class=\"results-item item3\">",
+          results_obj$gen_desc_tab,
+          "</div>",
+          "<div class=\"results-item item4\">")
+      } else if (study == "red") {
+        "<div class=\"results-item item3\">"
+      },
+      "<p><strong>Main analysis results</strong></p>",
+      test_res,
+      "</div>",
+      "</div>",
+      "</div>",
+      "</div>"
+    )
+    
+    style_end <- grep("</style>", out)[1]
+    out <- c(out[1:(style_end - 1)],
+             ":root {",
+             paste0("  --res-width: ",
+                    if (study == "green") {
+                      745
+                    } else if (study == "red") {
+                      605
+                    }, "px;"),
+             paste0("  --res-offset: ",
+                    if (study == "green") {
+                      280
+                    } else if (study == "red") {
+                      220
+                    }, "px;"),
+             paste0("  --theme-col: ", paste(col2rgb(color), collapse=", "), ";"),
+             paste0("  --warn-col: var(--", ifelse(study == "green", "green", "red"), "-col);"),
+             "}",
+             out[style_end:length(out)])
+    start_row <- grep("<div class=\"container-fluid main-container\">", out)
+    end_row <- rev(grep("</div>", out))[1]
+    out <- c(
+      out[1:start_row],
+      "<div class=\"col-md-12\">",
+      "<div class=\"inner\">",
+      res,
+      "<div class=\"sidebar2\">",
+      paste0("<div class=\"mark-container\"", ifelse(missing(mark), "style=\"display: none\"", ""), ">"),
+      paste0("<div class=\"mark\">", ifelse(missing(mark), "NA", mark)),
+      "</div>",
+      "</div>",
+      "</div>",
+      "<div class=\"main-content\">", 
+      out[(start_row+1):end_row],
+      "</div>",
+      "</div>",
+      "</div>",
+      out[(end_row+1):length(out)]
+    )
+    
+    writeLines(out, sub("[Rr]md$", "html", out_file))
+  }
   return(T)
 }
 

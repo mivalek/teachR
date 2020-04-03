@@ -84,7 +84,7 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
   
   setup <- c(
     " ",
-    "```{r, echo=F, results='asis'}",
+    "```{r, echo=F, include=T, eval=T, results='asis'}",
     "cat(\"",
     "<style>",
     ":root {",
