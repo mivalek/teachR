@@ -156,7 +156,7 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, feedback = F
       for (i in c("car", "cleaner", "dishwasher")) {
         chisq_res[i] <- paste0(
           "<p><strong>", i, ": </strong><br>",
-          "&chi;^2^(",
+          "&chi;<sup>2</sup>(",
           results_obj[[i]]$parameter,
           ") = ", round(results_obj[[i]]$statistic, 2),
           ", <em>p</em> ", ifelse(results_obj[[i]]$p.value < .001, "&lt; ", "= "),
