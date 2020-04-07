@@ -74,7 +74,6 @@ c1:hover::after {
 c2 {
 	background-color: rgba(var(--c2-col), .3);
 	border-color: rgb(var(--c2-col));
-	color: rgb(var(--c2-col));
 }
 
 c2 > strong {
@@ -84,6 +83,7 @@ c2 > strong {
 c2:hover::before {
     content: var(--c2-name);
     border-color: rgb(var(--c2-col));
+	color: rgb(var(--c3-col));
 }
 	
 c2:hover::after {
