@@ -7,9 +7,12 @@
 #' @param file_name \code{character}. If \code{file=} is a URL, name of file to write to.
 #' @param study \code{character}. Which study to get correct results for? Currently either \code{"red"} or \code{"green"}.
 #' @param mark \code{numeric}. Total mark/grade for given assignment.
+#' @param rubric_grades. Mark for each rubric criterion. See \code{rubric} for more info.
+#' @param rubric A named list containing the rubric criteria (c1, c2, etc). Each criterion should be a list with \code{name}, \code{col}, and \code{text} elements containing the name, colour, and description of the criterion, respectively.
 #' @param feedback \code{logical}. Should feedback box with marker's comments appear at the bottom of document? \code{FALSE} by default.
 #' @param count_words \code{logical}. \code{TRUE} counts body text words and if word count exceeds \code{limit}, inserts a warning line in HTML. \code{!feedback} by default.
 #' @param limit \code{numeric}. Word count limit
+#' @param rubric A named list containing the rubric criteria (c1, c2, etc). Each criterion should be a list with \code{name}, \code{col}, and \code{text} elements containing the name, colour, and description of the criterion, respectively.
 #' @param include_results \code{logical}. If \code{TRUE}, object provided to \code{results_obj=} will get inserted into a formatted box in knitted HTML. \code{FALSE} by default.
 #' @param results_obj See \code{include_results}.
 #' @param remove_results \code{logical}. If \code{TRUE}, correct results will not be displayed in final marked HTML document. \code{FALSE} by default.
@@ -24,16 +27,21 @@
 #' # then
 #' mark("C:/work/201000.Rmd", T)
 
-mark <- function(file, file_name = file, study = NULL, mark = NULL, feedback = F, count_words = !feedback, limit = 2000, include_results = F, results_obj = NULL, remove_results = F, color = "#b38ed2") {
+mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grades = NULL, rubric = NULL,
+                 feedback = F, count_words = !feedback, limit = 2000, include_results = F, results_obj = NULL,
+                 remove_results = F, color = "#b38ed2") {
   ff <- readLines(file)
   # remove author
   ff <- ff[!grepl("^author:", ff)]
+  # comment out install.packages()
+  ff <- gsub("(^\\s*install\\.packages\\(.*$)", "# \\1", ff)
+  
   if (grepl("^https://", file_name)) {
     stop("Plesae provide value to file_name= when reading file from URL.")
   } else if (!grepl("\\.rmd$", tolower(file_name)))
     file_name <- paste0(file_name, ".Rmd")
   
-  if (include_results && missing(results_obj))
+  if (include_results && is.null(results_obj))
     stop("Please provide results_obj= if include_results = TRUE.")
   
   out_file <- ifelse(feedback, sub("\\.Rmd$", "_marked.Rmd", file_name), file_name)
@@ -72,17 +80,18 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, feedback = F
     cutoff_line <- cutoff[1]
     cutoff_word <- cutoff[2]
     
-    feedback <- c('\n\n\\ \n',
+    fdbck <- c('</div>\n\n',
+                  '\n\n\\ \n',
+                  '<a name="feedback"></a>',
                   '<div class="feedback">',
                   '<!-- THE GOOD -->',
                   '\n\n',
                   '<!-- THE BAD -->',
                   '\n\n',
                   '<!-- RECOMMENDATIONS -->',
-                  '\n\n',
-                  '</div>\n\n')
+                  '\n\n')
     if (is.na(cutoff)[1]) {
-      out <- c(ff, feedback)
+      out <- c(ff, fdbck)
     } else {
       words <- words[grep(paste0("^", cutoff_line, "_"), names(words))]
       words_sane <- gsub(" ", "", gsub("([\\(\\[\\{\\*\\$\\.\\^\\#\\)\\}]|\\])", "\\\\ \\1", words))
@@ -91,7 +100,7 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, feedback = F
       ff[cutoff_line] <- sub(paste0("(", ptrn, ")"), "\\1\n", ff[cutoff_line])
       # split by \n again
       ff <- unlist(strsplit(paste(ff, collapse = "\n"), "\n"))
-      out <- c(ff[1:cutoff_line], insert, ff[(cutoff_line + 1):length(ff)], feedback)
+      out <- c(ff[1:cutoff_line], insert, ff[(cutoff_line + 1):length(ff)], fdbck)
     }
     # out <- gsub("candidate_number\\s*<-", "candidate_number <<-", out)
     
@@ -105,6 +114,8 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, feedback = F
                       envir = new.env())
     
   } else if (feedback) {
+    # replace comment mkd with html tags
+    ff <- gsub("<--([a-z0-9]*)\\s(.*?)-->", "<\\1>\\2</\\1>", ff)
     
     good_text <- c(
       "\n\\ \n\n",
@@ -125,13 +136,13 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, feedback = F
     )
     
     
-    if (missing(mark)) {
+    if (is.null(mark)) {
       warning("mark= is missing: Final mark will not be displayed.")
     } else {
-      ff <- sub("<div class=\"mark-container\" style=\"display: none\">",
-                "<div class=\"mark-container\">", ff)
-      ff <- sub("<div class=\"mark\">NA",
-                paste0("<div class=\"mark\">", mark), ff)
+      # ff <- sub("<div class=\"mark-container\" style=\"display: none\">",
+      #           "<div class=\"mark-container\">", ff)
+      # ff <- sub("<div class=\"mark\">NA",
+      #           paste0("<div class=\"mark\">", mark), ff)
     }
     
     ff[grep("<!-- THE GOOD", ff)] <- paste(good_text, collapse = "\n")
@@ -201,6 +212,26 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, feedback = F
       "</div>"
     )
     
+    rub_grades <- rubric_vars <- c()
+    for (i in seq_along(names(rubric))) {
+      # add bold prefix with first 3 letters of rubric criterion name to comments
+      comment_prefix <- paste(unlist(strsplit(rubric[[i]]$name, ""))[1:3], collapse = "")
+      out <- gsub(
+        paste0("<c", i, ">"),
+        paste0("<c", i, "><strong>", comment_prefix, ":</strong> "),
+        out)
+      
+      for (j in names(rubric[[i]]))
+        rubric_vars <- c(rubric_vars,
+                         paste0("  --", names(rubric)[i], "-", j, ": ",
+                                ifelse(j == "col", paste(col2rgb(rubric[[i]][[j]]), collapse = ", "),
+                                       paste0("\"", rubric[[i]][[j]], "\"")), ";")
+        )
+      rub_grades <- c(rub_grades,
+                      paste0("<details class=\"c", i, "\"><summary>", rubric_grades[i],
+                             "</summary>", rubric[[i]]$text,"</details>"))
+    }
+    
     style_end <- grep("</style>", out)[1]
     out <- c(out[1:(style_end - 1)],
              ":root {",
@@ -218,23 +249,28 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, feedback = F
                     }, "px;"),
              paste0("  --theme-col: ", paste(col2rgb(color), collapse=", "), ";"),
              paste0("  --warn-col: var(--", ifelse(study == "green", "green", "red"), "-col);"),
+             rubric_vars,
              "}",
              out[style_end:length(out)])
     start_row <- grep("<div class=\"container-fluid main-container\">", out)
     end_row <- rev(grep("</div>", out))[1]
+    fb_row <- grep('<div class="feedback"', out, fixed = T) - 1
     out <- c(
       out[1:start_row],
       "<div class=\"col-md-12\">",
       "<div class=\"inner\">",
       res,
       "<div class=\"sidebar2\">",
-      paste0("<div class=\"mark-container\"", ifelse(missing(mark), "style=\"display: none\"", ""), ">"),
-      paste0("<div class=\"mark\">", ifelse(missing(mark), "NA", mark)),
-      "</div>",
+      paste0("<div class=\"mark-container\"", ifelse(is.null(mark), "style=\"display: none\"", ""), ">"),
+      paste0("<a href=\"#feedback\" class=\"mark\">", ifelse(is.null(mark), "NA", mark)),
+      "</a>",
       "</div>",
       "</div>",
       "<div class=\"main-content\">", 
-      out[(start_row+1):end_row],
+      out[(start_row+1):fb_row],
+      if (feedback && !is.null(rubric_grades))
+        c("<div class=\"grade\">", rub_grades, "</div>"),
+      out[(fb_row + 1):end_row],
       "</div>",
       "</div>",
       "</div>",
@@ -243,6 +279,7 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, feedback = F
     
     writeLines(out, sub("[Rr]md$", "html", out_file))
   }
+  
   return(T)
 }
 

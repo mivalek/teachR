@@ -9,6 +9,8 @@ mark(
   file_name = file,
   study = NULL,
   mark = NULL,
+  rubric_grades = NULL,
+  rubric = NULL,
   feedback = F,
   count_words = !feedback,
   limit = 2000,
@@ -27,6 +29,8 @@ mark(
 
 \item{mark}{\code{numeric}. Total mark/grade for given assignment.}
 
+\item{rubric}{A named list containing the rubric criteria (c1, c2, etc). Each criterion should be a list with \code{name}, \code{col}, and \code{text} elements containing the name, colour, and description of the criterion, respectively.}
+
 \item{feedback}{\code{logical}. Should feedback box with marker's comments appear at the bottom of document? \code{FALSE} by default.}
 
 \item{count_words}{\code{logical}. \code{TRUE} counts body text words and if word count exceeds \code{limit}, inserts a warning line in HTML. \code{!feedback} by default.}
@@ -40,6 +44,8 @@ mark(
 \item{remove_results}{\code{logical}. If \code{TRUE}, correct results will not be displayed in final marked HTML document. \code{FALSE} by default.}
 
 \item{color}{\code{character}. Single valid colour string (hex code or any of the values in \code{colours()}).}
+
+\item{rubric_grades.}{Mark for each rubric criterion. See \code{rubric} for more info.}
 }
 \value{
 \code{TRUE} if output .Rmd and .html file were successfully created.

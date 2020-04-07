@@ -1,7 +1,10 @@
 <style>
 
 :root {
-	--warn-col: 204, 0, 0;
+	--red-col: 204, 0, 0;
+	--green-col: 0, 170, 0;
+	--comment-col: 204, 0, 0;
+	--font-col: 110, 110, 110;
 }
 
 .main-container {
@@ -13,6 +16,7 @@
     padding: 1em 1em 0.5em 1em;
     background-color: rgba(var(--theme-col), .3);
     margin-bottom: 3em;
+	border-radius: 6px;
 }
 
 .feedback > title {
@@ -40,22 +44,277 @@
 	margin-bottom: 10px;
 }
 
-fb {
-	color: rgb(var(--warn-col));
-	background-color: rgba(var(--warn-col), .3);
-	padding: 2px;
-	border: solid 1px rgb(var(--warn-col));
-	margin: 3px;
+
+warn {
+	color: rgb(var(--comment-col));
+	background-color: rgba(var(--comment-col), .3);
+	border: solid 1px rgb(var(--comment-col));
 }
 
+c1 {
+	background-color: rgba(var(--c1-col), .3);
+	border-color: rgb(var(--c1-col));
+}
 
+c1 > strong {
+	color: rgb(var(--c1-col));
+}
+
+c1:hover::before {
+    content: var(--c1-name);
+    border-color: rgb(var(--c1-col));
+	color: rgb(var(--c1-col));
+}
+	
+c1:hover::after {
+    content: var(--c1-text);
+    border-color: rgb(var(--c1-col));
+}
+
+c2 {
+	background-color: rgba(var(--c2-col), .3);
+	border-color: rgb(var(--c2-col));
+	color: rgb(var(--c2-col));
+}
+
+c2 > strong {
+	color: rgb(var(--c2-col));
+}
+
+c2:hover::before {
+    content: var(--c2-name);
+    border-color: rgb(var(--c2-col));
+}
+	
+c2:hover::after {
+    content: var(--c2-text);
+    border-color: rgb(var(--c2-col));
+}
+
+c3 {
+	background-color: rgba(var(--c3-col), .3);
+	border-color: rgb(var(--c3-col));
+}
+
+c3 > strong {
+	color: rgb(var(--c3-col));
+}
+
+c3:hover::before {
+    content: var(--c3-name);
+    border-color: rgb(var(--c3-col));
+	color: rgb(var(--c3-col));
+}
+	
+c3:hover::after {
+    content: var(--c3-text);
+    border-color: rgb(var(--c3-col));
+}
+
+c4 {
+	background-color: rgba(var(--c4-col), .3);
+	border-color: rgb(var(--c4-col));
+}
+
+c4 > strong {
+	color: rgb(var(--c4-col));
+}
+
+c4:hover::before {
+    content: var(--c4-name);
+    border-color: rgb(var(--c4-col));
+	color: rgb(var(--c4-col));
+}
+	
+c4:hover::after {
+    content: var(--c4-text);
+    border-color: rgb(var(--c4-col));
+}
+
+c5 {
+	background-color: rgba(var(--c5-col), .3);
+	border-color: rgb(var(--c5-col));
+}
+
+c5 > strong {
+	color: rgb(var(--c5-col));
+}
+
+c5:hover::before {
+    content: var(--c5-name);
+    border-color: rgb(var(--c5-col));
+	color: rgb(var(--c5-col));
+}
+	
+c5:hover::after {
+    content: var(--c5-text);
+    border-color: rgb(var(--c5-col));
+
+}
+
+warn, c1,  c2, c3, c4, c5 {
+	padding: 1px 3px;
+	margin: 0 5px;
+	position: relative;
+	border-style: solid;
+	border-width: 1px;
+	box-decoration-break: clone;
+	color: #444;
+}
+
+c1:hover::before, c2:hover::before, c3:hover::before,
+c4:hover::before, c5:hover::before {
+    position: fixed;
+    background-color: white;
+    top: 112px;
+    right: 15px;
+    border-radius: 0px;
+    border-top-right-radius: 6px;
+    border-top-left-radius: 6px;
+    padding: 5px;
+    z-index: 3;
+    border-bottom: 0;
+    width: 220px;
+	font-size: larger;
+	font-weight: bold;
+	border-style: solid;
+	border-width: 1px;
+	border-bottom: 0;
+}
+
+c1:hover::after, c2:hover::after, c3:hover::after,
+c4:hover::after, c5:hover::after {
+    position: fixed;
+    background-color: white;
+	color: rgb(var(--font-col));
+    top: 141px;
+    right: 15px;
+    white-space: pre;
+    border-radius: 6px;
+    padding: 5px;
+    width: 220px;
+	white-space: break-spaces;
+	z-index:2;
+	border-style: solid;
+	border-width: 1px;
+}
+
+details {
+    display: inline-block;
+    position: relative;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 6px;
+    margin: 5px;
+    padding: 5px;
+    width: 220px;
+	cursor: pointer;
+}
+
+summary {	
+    text-align: right;
+    font-size: 16pt;
+}
+
+summary::after {
+    content: '';
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+}
+
+summary::marker {
+	content: '';
+}
+
+.c1 {
+	background-color: rgba(var(--c1-col), .3);
+	border-color: rgb(var(--c1-col));
+}
+
+.c1 > summary {	
+	color: rgb(var(--c1-col));
+}
+
+.c2 {
+	background-color: rgba(var(--c2-col), .3);
+	border-color: rgb(var(--c2-col));
+}
+
+.c2 > summary {	
+	color: rgb(var(--c2-col));
+}
+
+.c3 {
+	background-color: rgba(var(--c3-col), .3);
+	border-color: rgb(var(--c3-col));
+}
+
+.c3 > summary {	
+	color: rgb(var(--c3-col));
+}
+
+.c4 {
+	background-color: rgba(var(--c4-col), .3);
+	border-color: rgb(var(--c4-col));
+}
+
+.c4 > summary {	
+	color: rgb(var(--c4-col));
+}
+
+.c5 {
+	background-color: rgba(var(--c5-col), .3);
+	border-color: rgb(var(--c5-col));
+}
+
+.c5 > summary {	
+	color: rgb(var(--c5-col));
+}
+
+.c1 > summary::before, .c2 > summary::before, .c3 > summary::before,
+.c4 > summary::before, .c5 > summary::before {
+	position: absolute;
+	left: 5px;
+	top: 9px;
+	font-size: 13pt;
+}
+
+.c1 > summary::before {
+    content: var(--c1-name);
+}
+
+.c2 > summary::before {
+    content: var(--c2-name);
+}
+
+.c3 > summary::before {
+    content: var(--c3-name);
+}
+
+.c4 > summary::before {
+    content: var(--c4-name);
+}
+
+.c5 > summary::before {
+    content: var(--c5-name);
+}
+
+.grade {
+    position: fixed;
+    top: 107px;
+    width: 300px;
+    right: -60px;
+}
 
 .inner {
     position: relative;
 }
 
 .main-content {
-	width: calc(100% - 500px);
+	width: calc(100% - 520px);
     min-height: 2000px;
     left: 300px;
     position: relative;
@@ -71,7 +330,7 @@ fb {
     position: absolute;
     right: 0;
     top: 0;
-    width: 180px;
+    width: 205px;
     height: 100%;
 }
 
@@ -86,23 +345,31 @@ fb {
 .mark {
 	position: sticky;
 	position: -webkit-sticky;
-	top: 25px;
+	top: 20px;
 	border: solid 1px rgb(var(--theme-col));
     font-size: 4em;
     color: rgb(var(--theme-col));
-    padding: .5em .3em 0em 0.7em;
+    padding: 0 10px;
     background-color: rgba(var(--theme-col), .3);
-	width: 150px;
+	width: 220px;
+	border-radius: 6px;
+	text-align: right;
+	display: block;
+	z-index: 1;
+}
+
+.mark:hover {
+    text-decoration: none;
+    color: rgb(var(--theme-col));
 }
 
 .mark::before {
-    content: 'Mark';
-    font-size: 18pt;
-    top: 3px;
-    left: 10px;
+    content: 'Grade';
+    font-size: 25pt;
+    top: 25px;
+    left: 5px;
 	position: absolute;
 }
-
 
 .results-container {
 	top: 25px;
@@ -112,6 +379,7 @@ fb {
 	max-height: 90vh;
 	overflow-y: auto;
 	overflow-x: hidden;
+	border-radius: 6px;
 }
 
 .results-container::before {
@@ -136,12 +404,38 @@ fb {
 	.mark {
 		position: relative;
 		top: 65px;
-		left: 30px;
+		left: 65px;
+		width: 150px;
+		padding: .5em .3em 0em 0.7em;
 	}
-	
+
+	.mark::before {
+		font-size: 18pt;
+		top: 3px;
+	}
 	.main-content {
 		width: calc(100% - 260px);
 		left: 270px;
+	}
+	
+	c1:hover::before, c2:hover::before, c3:hover::before,
+	c4:hover::before, c5:hover::before {
+		top: 20px;
+	}
+
+	c1:hover::after, c2:hover::after, c3:hover::after,
+	c4:hover::after, c5:hover::after {
+		top: 50px;
+	}
+			
+	.grade {
+		position: relative;
+		width: 100%;
+		top: 0;
+		right:0;
+		text-align: center;
+		margin: -5px;
+		padding-bottom: 20px;
 	}
 }
 
@@ -162,7 +456,6 @@ fb {
 		height: 100%;
 		width: 100%;
 		min-height: 5000px;
-		z-index: 1;
 	}
 	
 	.results-container {
@@ -170,6 +463,7 @@ fb {
 		overflow-y: hidden;
 		position: sticky;
 		background-color: white;
+		z-index: 2;
 	}
 	
 	.results {
@@ -210,14 +504,28 @@ fb {
 	}
 	
 	.mark {
-		top: calc(var(--res-offset) + 85px);		
+		top: calc(var(--res-offset) + 85px);
+		left: 55px;	
+	}	
+	
+	c1:hover::before, c2:hover::before, c3:hover::before,
+	c4:hover::before, c5:hover::before {
+		top: 32vh;
+		right: 25px;
 	}
+
+	c1:hover::after, c2:hover::after, c3:hover::after,
+	c4:hover::after, c5:hover::after {
+		top: calc(32vh + 30px);
+		right: 25px;
+	}
+
 }
 
 
 @media screen and (max-width: 728px) { 
 	.sidebar2 {
-		left: calc(711px - 240px);
+		left: calc(711px - 274px);
 	}
 }
 
@@ -250,6 +558,14 @@ fb {
 	.main-content {
 		position: relative;
 	}
+	
 }
 
+
+@media screen and (max-width: 535px) {
+	
+	.c1, .c2, .c3, .c4, .c5 {
+		width: 98%;
+	}
+}
 </style>
