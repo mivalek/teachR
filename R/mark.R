@@ -65,7 +65,7 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grade
     chunk_limits <- matrix(grep("```", ff), ncol = 2, byrow= T)
     
     chunk_ind <- unlist(apply(chunk_limits, 1, function(x) seq(x[1], x[2])))
-    ff[chunk_ind] <- gsub("\\s*#.*$", "", ff[chunk_ind])
+    ff[chunk_ind] <- gsub("^\\s*#.*$", "", ff[chunk_ind])
     
     ff_edit <- ff
     
