@@ -7,8 +7,9 @@
 #' @param file_name \code{character}. If \code{file=} is a URL, name of file to write to.
 #' @param study \code{character}. Which study to get correct results for? Currently either \code{"red"} or \code{"green"}.
 #' @param mark \code{numeric}. Total mark/grade for given assignment.
-#' @param rubric_grades. Mark for each rubric criterion. See \code{rubric} for more info.
+#' @param rubric_grades. Mark for each rubric criterion. Can be a factor with levels sorted from lowest mark to highest mark. See \code{rubric} and \code{include_rubric_desc} for more info.
 #' @param rubric A named list containing the rubric criteria (c1, c2, etc). Each criterion should be a list with \code{name}, \code{col}, and \code{text} elements containing the name, colour, and description of the criterion, respectively.
+#' @param include_rubric_desc \code{logical}. If \code{TRUE} and if \code{rubric_grades} is a factor, grade descriptors for each marking criterion will be included in sidebar boxes.
 #' @param feedback \code{logical}. Should feedback box with marker's comments appear at the bottom of document? \code{FALSE} by default.
 #' @param count_words \code{logical}. \code{TRUE} counts body text words and if word count exceeds \code{limit}, inserts a warning line in HTML. \code{!feedback} by default.
 #' @param limit \code{numeric}. Word count limit
@@ -28,13 +29,9 @@
 #' mark("C:/work/201000.Rmd", T)
 
 mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grades = NULL, rubric = NULL,
-                 feedback = F, count_words = !feedback, limit = 2000, include_results = F, results_obj = NULL,
-                 remove_results = F, color = "#b38ed2") {
-  ff <- readLines(file)
-  # remove author
-  ff <- ff[!grepl("^author:", ff)]
-  # comment out install.packages()
-  ff <- gsub("(^\\s*install\\.packages\\(.*$)", "# \\1", ff)
+                 include_rubric_desc = F, feedback = F, count_words = !feedback, limit = 2000,
+                 include_results = F, results_obj = NULL, remove_results = F, color = "#b38ed2") {
+  
   
   if (grepl("^https://", file_name)) {
     stop("Plesae provide value to file_name= when reading file from URL.")
@@ -43,6 +40,16 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grade
   
   if (include_results && is.null(results_obj))
     stop("Please provide results_obj= if include_results = TRUE.")
+  
+  if (include_rubric_desc && !is.factor(rubric_grades))
+    stop("rubric_grades= must be a factor if include_rubric_desc=TRUE. See ?mark.")
+  
+  ff <- readLines(file)
+  # remove author
+  ff <- ff[!grepl("^author:", ff)]
+  # comment out install.packages()
+  ff <- gsub("(^\\s*install\\.packages\\(.*$)", "# \\1", ff)
+
   
   out_file <- ifelse(feedback, sub("\\.Rmd$", "_marked.Rmd", file_name), file_name)
   
@@ -53,6 +60,12 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grade
   </div>\n\n\\ \n'
   
   if (count_words && !any(grepl(insert, ff, fixed = T))) {
+    
+    ### remove comments from code chunks
+    chunk_limits <- matrix(grep("```", ff), ncol = 2, byrow= T)
+    
+    chunk_ind <- unlist(apply(chunk_limits, 1, function(x) seq(x[1], x[2])))
+    ff[chunk_ind] <- gsub("\\s*#.*$", "", ff[chunk_ind])
     
     ff_edit <- ff
     
@@ -114,6 +127,25 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grade
                       envir = new.env())
     
   } else if (feedback) {
+    ### EDIT CHUNK OPTS
+    # if chunk opts set to include=F
+    if (any(grepl("opts_chunk\\$set\\(.*?include\\s*=\\s*F", ff))) {
+      # change all include=T to results='markup'
+      ff <- sub("(include\\s*=\\s*)TRUE|(include\\s*=\\s*)T", "\\1\\2T, results='markup'", ff)
+      # identify chunks with BOTH results='markup' and results='asis' due to line above
+      results_conflict <- base::intersect(grep("results='markup'", ff), grep("results\\s*=\\s*['\"]asis", ff))
+      if (length(results_conflict) > 0) {
+        # delete results='markup' from those
+        ff[results_conflict] <- gsub(", results='markup'", "", ff[results_conflict])
+      }
+    }
+    
+    # change all echo=F to echo=T
+    ff <- sub("(echo\\s*=\\s*)FALSE|(echo\\s*=\\s*)F", "\\1\\2T", ff)
+    # change all include=F to include=T, results='hidden'
+    ff <- sub("(include\\s*=\\s*)FALSE|(include\\s*=\\s*)F", "\\1\\2T, results='hide'", ff)
+    
+    
     # replace comment mkd with html tags
     ff <- gsub("<--([a-z0-9]*)\\s(.*?)-->", "<\\1>\\2</\\1>", ff)
     
@@ -138,11 +170,6 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grade
     
     if (is.null(mark)) {
       warning("mark= is missing: Final mark will not be displayed.")
-    } else {
-      # ff <- sub("<div class=\"mark-container\" style=\"display: none\">",
-      #           "<div class=\"mark-container\">", ff)
-      # ff <- sub("<div class=\"mark\">NA",
-      #           paste0("<div class=\"mark\">", mark), ff)
     }
     
     ff[grep("<!-- THE GOOD", ff)] <- paste(good_text, collapse = "\n")
@@ -154,6 +181,7 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grade
     rmarkdown::render(input = out_file,
                       output_format = rmarkdown::html_document(
       toc = F,
+      code_folding = "hide",
       includes = rmarkdown::includes(after_body = paste0(path.package("teachR"), "/feedback.css"))),
       envir = new.env()
     )
@@ -212,7 +240,7 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grade
       "</div>"
     )
     
-    rub_grades <- rubric_vars <- c()
+    rub_desc <- rub_grades <- rubric_vars <- c()
     for (i in seq_along(names(rubric))) {
       # add bold prefix with first 3 letters of rubric criterion name to comments
       comment_prefix <- paste(unlist(strsplit(rubric[[i]]$name, ""))[1:3], collapse = "")
@@ -229,7 +257,10 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grade
         )
       rub_grades <- c(rub_grades,
                       paste0("<details class=\"c", i, "\"><summary>", rubric_grades[i],
-                             "</summary>", rubric[[i]]$text,"</details>"))
+                             "</summary>",
+                             # grade descriptor if include_rubric_desc, rubric text otherwise
+                             ifelse(include_rubric_desc, rubric[[i]]$grade[rubric_grades[i]], rubric[[i]]$text),
+                             "</details>"))
     }
     
     style_end <- grep("</style>", out)[1]
@@ -277,6 +308,15 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grade
       out[(end_row+1):length(out)]
     )
     
+    if (feedback) {
+      ### remove #s from comments
+      code_limits <- cbind(grep('<pre class="r"><code>', out), grep('</code></pre>', out))
+      
+      code_ind <- unlist(apply(code_limits, 1, function(x) seq(x[1], x[2])))
+      out[code_ind] <- gsub('^(<pre class="r"><code>)?#+\\s*([^<]*)(</code></pre>.*)?',
+                            '\\1<span class="hljs-comment">\\2</span>\\3', out[code_ind])
+    }
+      
     writeLines(out, sub("[Rr]md$", "html", out_file))
   }
   

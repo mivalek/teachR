@@ -11,6 +11,7 @@ mark(
   mark = NULL,
   rubric_grades = NULL,
   rubric = NULL,
+  include_rubric_desc = F,
   feedback = F,
   count_words = !feedback,
   limit = 2000,
@@ -31,6 +32,8 @@ mark(
 
 \item{rubric}{A named list containing the rubric criteria (c1, c2, etc). Each criterion should be a list with \code{name}, \code{col}, and \code{text} elements containing the name, colour, and description of the criterion, respectively.}
 
+\item{include_rubric_desc}{\code{logical}. If \code{TRUE} and if \code{rubric_grades} is a factor, grade descriptors for each marking criterion will be included in sidebar boxes.}
+
 \item{feedback}{\code{logical}. Should feedback box with marker's comments appear at the bottom of document? \code{FALSE} by default.}
 
 \item{count_words}{\code{logical}. \code{TRUE} counts body text words and if word count exceeds \code{limit}, inserts a warning line in HTML. \code{!feedback} by default.}
@@ -45,7 +48,7 @@ mark(
 
 \item{color}{\code{character}. Single valid colour string (hex code or any of the values in \code{colours()}).}
 
-\item{rubric_grades.}{Mark for each rubric criterion. See \code{rubric} for more info.}
+\item{rubric_grades.}{Mark for each rubric criterion. Can be a factor with levels sorted from lowest mark to highest mark. See \code{rubric} and \code{include_rubric_desc} for more info.}
 }
 \value{
 \code{TRUE} if output .Rmd and .html file were successfully created.

@@ -149,10 +149,18 @@ c5:hover::before {
 c5:hover::after {
     content: var(--c5-text);
     border-color: rgb(var(--c5-col));
-
 }
 
-warn, c1,  c2, c3, c4, c5 {
+
+.hljs-comment {
+	border-color: rgb(var(--theme-col));
+    background-color: rgba(var(--theme-col), .3);
+    font-style: normal;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+}
+
+warn, c1,  c2, c3, c4, c5, .hljs-comment {
 	padding: 1px 3px;
 	margin: 0 5px;
 	position: relative;
@@ -160,6 +168,74 @@ warn, c1,  c2, c3, c4, c5 {
 	border-width: 1px;
 	box-decoration-break: clone;
 	color: #444;
+}
+
+pre {
+	border-color: rgb(var(--theme-col));
+	border-radius: 6px;
+	background-color: #fdfdfd;
+	word-break: break-word;
+}
+
+.r-code-collapse {
+	position: relative;
+}
+
+.r-code-collapse::before {
+    content: 'YOUR CODE';
+    font-size: 20pt;
+    font-weight: 900;
+    color: rgb(var(--theme-col));
+    position: absolute;
+    top: -28px;
+}
+
+.hljs-comment > .hljs-string, .hljs-comment > .hljs-number, .hljs-comment > .hljs-keyword, .hljs-comment > .hljs-literal {
+	font-weight: normal;
+	color: #444;
+}
+
+.btn-group-xs > .btn, .btn-xs {
+    font-size: 14px;
+    line-height: 1.5;
+    border-radius: 6px;
+    padding: 6px 10px;
+    border-color: rgb(var(--theme-col));
+    background-color: rgb(var(--theme-col));
+    color: white;
+	width: 70px;
+}
+
+.btn-default.active, .btn-default:active, .open > .dropdown-toggle.btn-default {
+    color: #fdfdfd;
+    background-color: rgb(var(--theme-col));
+    border-color: rgb(var(--theme-col));
+}
+
+.btn-default.active.focus, .btn-default.active:focus, .btn-default.active:hover, .btn-default:active.focus,
+.btn-default:active:focus, .btn-default:active:hover, .open > .dropdown-toggle.btn-default.focus,
+.open > .dropdown-toggle.btn-default:focus, .open > .dropdown-toggle.btn-default:hover,
+.btn-default:hover, .btn-default.active:hover, .btn-default:active:hover, .open > .dropdown-toggle.btn-default:hover {
+    color: rgb(var(--theme-col));
+    background-color: rgba(var(--theme-col), .3);
+    border-color: rgb(var(--theme-col));
+	outline: none;
+}
+
+.btn-default.focus, .btn-default:focus {
+    color: rgb(var(--theme-col));
+    background-color: #fdfdfd;
+    border-color: rgb(var(--theme-col));
+}
+
+.btn-group-vertical > .btn.active, .btn-group-vertical > .btn:active,
+.btn-group-vertical > .btn:focus, .btn-group-vertical > .btn:hover,.btn-group > .btn.active,
+.btn-group > .btn:active, .btn-group > .btn:focus, .btn-group > .btn:hover {
+    z-index: 1;
+}
+
+.dropdown-menu > li > a:focus, .dropdown-menu > li > a:hover {
+    background-color: rgba(var(--theme-col), .3);
 }
 
 c1:hover::before, c2:hover::before, c3:hover::before,
@@ -174,7 +250,7 @@ c4:hover::before, c5:hover::before {
     padding: 5px;
     z-index: 3;
     border-bottom: 0;
-    width: 220px;
+    width: 230px;
 	font-size: larger;
 	font-weight: bold;
 	border-style: solid;
@@ -192,12 +268,13 @@ c4:hover::after, c5:hover::after {
     white-space: pre;
     border-radius: 6px;
     padding: 5px;
-    width: 220px;
+    width: 230px;
 	white-space: break-spaces;
 	z-index:2;
 	border-style: solid;
 	border-width: 1px;
 }
+
 
 details {
     display: inline-block;
@@ -207,7 +284,7 @@ details {
     border-radius: 6px;
     margin: 5px;
     padding: 5px;
-    width: 220px;
+    width: 230px;
 	cursor: pointer;
 }
 
@@ -306,7 +383,7 @@ summary::marker {
     position: fixed;
     top: 107px;
     width: 300px;
-    right: -60px;
+    right: -50px;
 }
 
 .inner {
@@ -316,7 +393,7 @@ summary::marker {
 .main-content {
 	width: calc(100% - 520px);
     min-height: 2000px;
-    left: 300px;
+    left: 270px;
     position: relative;
 }
 
@@ -330,7 +407,7 @@ summary::marker {
     position: absolute;
     right: 0;
     top: 0;
-    width: 205px;
+    width: 215px;
     height: 100%;
 }
 
@@ -351,7 +428,7 @@ summary::marker {
     color: rgb(var(--theme-col));
     padding: 0 10px;
     background-color: rgba(var(--theme-col), .3);
-	width: 220px;
+	width: 230px;
 	border-radius: 6px;
 	text-align: right;
 	display: block;
@@ -397,6 +474,11 @@ summary::marker {
 
 
 @media screen and (max-width: 1130px) { 
+	
+	#header {
+		margin-bottom: 100px;
+	}
+	
 	.sidebar2 {
 		right: 0;
 	}
@@ -404,7 +486,7 @@ summary::marker {
 	.mark {
 		position: relative;
 		top: 65px;
-		left: 65px;
+		left: 75px;
 		width: 150px;
 		padding: .5em .3em 0em 0.7em;
 	}
@@ -509,7 +591,7 @@ summary::marker {
 	
 	.mark {
 		top: calc(var(--res-offset) + 85px);
-		left: 55px;	
+		left: 65px;	
 	}	
 	
 	c1:hover::before, c2:hover::before, c3:hover::before,
@@ -534,6 +616,11 @@ summary::marker {
 }
 
 @media screen and (max-width: 600px) { 
+
+	#header {
+		margin-bottom: 0;
+	}
+	
 	.sidebar2 {
 		left: 0;
 		width: 100%;
