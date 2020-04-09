@@ -16,8 +16,9 @@
 #' @param rubric A named list containing the rubric criteria (c1, c2, etc). Each criterion should be a list with \code{name}, \code{col}, and \code{text} elements containing the name, colour, and description of the criterion, respectively.
 #' @param include_results \code{logical}. If \code{TRUE}, object provided to \code{results_obj=} will get inserted into a formatted box in knitted HTML. \code{FALSE} by default.
 #' @param results_obj See \code{include_results}.
-#' @param remove_results \code{logical}. If \code{TRUE}, correct results will not be displayed in final marked HTML document. \code{FALSE} by default.
+#' @param format_comments \code{logical}. If \code{TRUE} (default), comments in code chunks will be formatted in line with other marker comments
 #' @param color \code{character}. Single valid colour string (hex code or any of the values in \code{colours()}). 
+#' @param color \code{text}. Alternative way of providing input from object rather than file. Requires \code{file_name=}
 #' @details Function run with \code{feedback = FALSE} will overwrite the original Rmd file and knit it into HTML. This should be done before marking in order to automate word count. The overwritten Rmd should then be used for comments and feedback. Once done, \code{mark(feedback = TRUE)} should be run on the edited Rmd. This will output a ..._marked.html file that can be returned to students.
 #' 
 #' In-text comments can be inserted into .Rmd file on a lew line surrounded by the <fb></fb> HTML tag.
@@ -26,17 +27,26 @@
 #' # first run
 #' mark("C:/work/201000.Rmd")
 #' # then
-#' mark("C:/work/201000.Rmd", T)
+#' mark("C:/work/201000.Rmd", feedback = T)
 
-mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grades = NULL, rubric = NULL,
+mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubric_grades = NULL, rubric = NULL,
                  include_rubric_desc = F, feedback = F, count_words = !feedback, limit = 2000,
-                 include_results = F, results_obj = NULL, remove_results = F, color = "#b38ed2") {
+                 include_results = F, results_obj = NULL, format_comments = T, color = "#b38ed2", text = NULL) {
   
-  
-  if (grepl("^https://", file_name)) {
-    stop("Plesae provide value to file_name= when reading file from URL.")
-  } else if (!grepl("\\.rmd$", tolower(file_name)))
-    file_name <- paste0(file_name, ".Rmd")
+  if (is.null(file)) {
+    if (!is.null(text)) {
+      if (is.null(file_name))
+        stop("Please provide a value to file_name= when using text=.")
+      ff <- text
+      text <- NULL # save memory?
+    } else stop("Please provide a file.")
+  } else {
+    if (grepl("^https://", file_name)) {
+      stop("Plesae provide value to file_name= when reading file from URL.")
+    }
+    
+    ff <- readLines(file)
+  }
   
   if (include_results && is.null(results_obj))
     stop("Please provide results_obj= if include_results = TRUE.")
@@ -44,14 +54,17 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grade
   if (include_rubric_desc && !is.factor(rubric_grades))
     stop("rubric_grades= must be a factor if include_rubric_desc=TRUE. See ?mark.")
   
-  ff <- readLines(file)
+  if (!grepl("\\.rmd$", tolower(file_name)))
+    file_name <- paste0(file_name, ".Rmd")
+  
+  
   # remove author
   ff <- ff[!grepl("^author:", ff)]
-  # comment out install.packages()
-  ff <- gsub("(^\\s*install\\.packages\\(.*$)", "# \\1", ff)
-
   
   out_file <- ifelse(feedback, sub("\\.Rmd$", "_marked.Rmd", file_name), file_name)
+  
+  if (!file.exists(out_file))
+    if (!file.create(out_file)) stop("I couldn't create file. Please check file_name=.")
   
   # word limit reached line
   insert <- '\n\\ \n\n<div>
@@ -59,65 +72,76 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grade
   <p style="color:#cc0000;text-align:center">(Scroll down for feedback)</p>
   </div>\n\n\\ \n'
   
-  if (count_words && !any(grepl(insert, ff, fixed = T))) {
-    
-    ### remove comments from code chunks
-    chunk_limits <- matrix(grep("```", ff), ncol = 2, byrow= T)
-    
-    chunk_ind <- unlist(apply(chunk_limits, 1, function(x) seq(x[1], x[2])))
-    ff[chunk_ind] <- gsub("^\\s*#.*$", "", ff[chunk_ind])
-    
-    ff_edit <- ff
-    
-    # name lines to identify limit-th line later
-    names(ff_edit) <- paste0(1:length(ff_edit), "_")
-    
-    # remove code chunks
-    code_chunks <- matrix(grep("^\\s*```", ff_edit), ncol = 2, byrow = T)
-    ff_edit <- ff_edit[-unlist(apply(code_chunks, 1, function(x) x[1]:x[2]))]
-    
-    # remove inserted pics
-    ff_edit <- grep("^!\\[", ff_edit, invert = T, value = T)
-    
-    # remove inline code
-    ff_edit <- gsub("`.*?`", "", ff_edit)
-    
-    # remove YAML header
-    ff_edit <- ff_edit[-c(1:grep("^\\s*---", ff_edit)[2])]
-    
-    words <- unlist(strsplit(ff_edit, "\\s+"))
-    words <- grep("[[:alnum:]]", words, value = T)
-    
-    # identify line that includes limit-th word
-    cutoff <- as.numeric(unlist(strsplit(names(words[limit]), "_")))
-    cutoff_line <- cutoff[1]
-    cutoff_word <- cutoff[2]
-    
-    fdbck <- c('</div>\n\n',
-                  '\n\n\\ \n',
-                  '<a name="feedback"></a>',
-                  '<div class="feedback">',
-                  '<!-- THE GOOD -->',
-                  '\n\n',
-                  '<!-- THE BAD -->',
-                  '\n\n',
-                  '<!-- RECOMMENDATIONS -->',
-                  '\n\n')
-    if (is.na(cutoff)[1]) {
-      out <- c(ff, fdbck)
-    } else {
-      words <- words[grep(paste0("^", cutoff_line, "_"), names(words))]
-      words_sane <- gsub(" ", "", gsub("([\\(\\[\\{\\*\\$\\.\\^\\#\\)\\}]|\\])", "\\\\ \\1", words))
-      ptrn <- paste(words_sane[1:cutoff_word], collapse = "[[:punct:] ]*?")
-      # introduce line break after limit has been reached
-      ff[cutoff_line] <- sub(paste0("(", ptrn, ")"), "\\1\n", ff[cutoff_line])
-      # split by \n again
-      ff <- unlist(strsplit(paste(ff, collapse = "\n"), "\n"))
-      out <- c(ff[1:cutoff_line], insert, ff[(cutoff_line + 1):length(ff)], fdbck)
-    }
-    # out <- gsub("candidate_number\\s*<-", "candidate_number <<-", out)
-    
-    writeLines(out, out_file)
+  
+  fdbck <- c('</div>\n\n',
+             '\n\n\\ \n',
+             '<a name="feedback"></a>',
+             '<div class="feedback">',
+             '<!-- THE GOOD -->',
+             '\n\n',
+             '<!-- THE BAD -->',
+             '\n\n',
+             '<!-- RECOMMENDATIONS -->',
+             '\n\n')
+  
+  if (count_words) {
+    if (!any(grepl(insert, ff, fixed = T))) {
+      
+      ff_edit <- ff
+      
+      # name lines to identify limit-th line later
+      names(ff_edit) <- paste0(1:length(ff_edit), "_")
+      
+      # remove code chunks
+      # can't just do matrix(grep("```", rmd), ncol = 2, byrow= T)
+      # it breaks if students include an extra ```
+      chunk_start <- grep("```{r", ff_edit, fixed = T)
+      chunk_end <- grep("```\\s*$", ff_edit)
+      # find ``` nearest to each ```{r
+      chunk_end <- sapply(chunk_start, function(x) chunk_end[which(chunk_end > x)[1]])
+      chunk_limits <- cbind(chunk_start, chunk_end)
+      
+      ff_edit <- ff_edit[-unlist(apply(chunk_limits, 1, function(x) x[1]:x[2]))]
+      
+      # remove inserted pics
+      ff_edit <- grep("^!\\[", ff_edit, invert = T, value = T)
+      
+      # remove inline code
+      ff_edit <- gsub("`.*?`", "", ff_edit)
+      
+      # remove YAML header
+      ff_edit <- ff_edit[-c(1:grep("^\\s*---", ff_edit)[2])]
+      
+      # remove HTML comments
+      ff_edit <- gsub("^(.*?)<!--.*?-->\\s*(.*)$", "\\1\\2", ff_edit)
+      ff_edit <- gsub("^(.*?)<!--.*$", "\\1", ff_edit)
+      # this is not safe so don't!
+      # ff_edit <- gsub(".*?-->\\s*(.*)$", "\\1", ff_edit)
+      
+      words <- unlist(strsplit(ff_edit, "\\s+"))
+      words <- grep("[[:alnum:]]", words, value = T)
+      
+      # identify line that includes limit-th word
+      cutoff <- as.numeric(unlist(strsplit(names(words[limit]), "_")))
+      cutoff_line <- cutoff[1]
+      cutoff_word <- cutoff[2]
+      
+      if (is.na(cutoff)[1]) {
+        out <- c(ff, fdbck)
+      } else {
+        words <- words[grep(paste0("^", cutoff_line, "_"), names(words))]
+        words_sane <- gsub(" ", "", gsub("([\\(\\[\\{\\*\\$\\.\\^\\#\\)\\}]|\\])", "\\\\ \\1", words))
+        ptrn <- paste(words_sane[1:cutoff_word], collapse = "[[:punct:] ]*?")
+        # introduce line break after limit has been reached
+        ff[cutoff_line] <- sub(paste0("(", ptrn, ")"), "\\1\n", ff[cutoff_line])
+        # split by \n again
+        ff <- unlist(strsplit(paste(ff, collapse = "\n"), "\n"))
+        out <- c(ff[1:cutoff_line], insert, ff[(cutoff_line + 1):length(ff)], fdbck)
+      }
+      
+      writeLines(out, out_file)
+      
+    } else writeLines(ff, out_file)
     
     rmarkdown::render(input = out_file,
                       output_format = rmarkdown::html_document(
@@ -185,6 +209,15 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grade
       includes = rmarkdown::includes(after_body = paste0(path.package("teachR"), "/feedback.css"))),
       envir = new.env()
     )
+  } else {
+    out <- c(ff, fdbck)
+    writeLines(out, out_file)
+    rmarkdown::render(input = out_file,
+                      output_format = rmarkdown::html_document(
+                        toc = F,
+                        includes = rmarkdown::includes(
+                          after_body = paste0(path.package("teachR"), "/feedback.css"))),
+                      envir = new.env())
   }
   
   ### add HTML magic
@@ -219,7 +252,6 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grade
       "<p><strong><em>N</em> removed NAs:</strong> ", results_obj$rem_age_na, "</p>",
       "<p><strong><em>N</em> removed &lt;18:</strong> ", results_obj$rem_age_young, "</p>",
       "<p><strong><em>N</em> total clean:</strong> ", results_obj$n_clean, "</p>",
-      "<p><strong><em>N</em> total clean:</strong> ", results_obj$n_clean, "</p>",
       "</div>",
       "<div class=\"results-item item2\">",
       results_obj$cond_desc_tab,
@@ -239,87 +271,89 @@ mark <- function(file, file_name = file, study = NULL, mark = NULL, rubric_grade
       "</div>",
       "</div>"
     )
+  } else res <- ""
+  
+  rub_desc <- rub_grades <- rubric_vars <- c()
+  for (i in seq_along(names(rubric))) {
+    # add bold prefix with first 3 letters of rubric criterion name to comments
+    comment_prefix <- paste(unlist(strsplit(rubric[[i]]$name, ""))[1:3], collapse = "")
+    out <- gsub(
+      paste0("<c", i, ">"),
+      paste0("<c", i, "><strong>", comment_prefix, ":</strong> "),
+      out)
     
-    rub_desc <- rub_grades <- rubric_vars <- c()
-    for (i in seq_along(names(rubric))) {
-      # add bold prefix with first 3 letters of rubric criterion name to comments
-      comment_prefix <- paste(unlist(strsplit(rubric[[i]]$name, ""))[1:3], collapse = "")
-      out <- gsub(
-        paste0("<c", i, ">"),
-        paste0("<c", i, "><strong>", comment_prefix, ":</strong> "),
-        out)
-      
-      for (j in names(rubric[[i]]))
-        rubric_vars <- c(rubric_vars,
-                         paste0("  --", names(rubric)[i], "-", j, ": ",
-                                ifelse(j == "col", paste(col2rgb(rubric[[i]][[j]]), collapse = ", "),
-                                       paste0("\"", rubric[[i]][[j]], "\"")), ";")
-        )
-      rub_grades <- c(rub_grades,
-                      paste0("<details class=\"c", i, "\"><summary>", rubric_grades[i],
-                             "</summary>",
-                             # grade descriptor if include_rubric_desc, rubric text otherwise
-                             ifelse(include_rubric_desc, rubric[[i]]$grade[rubric_grades[i]], rubric[[i]]$text),
-                             "</details>"))
-    }
-    
-    style_end <- grep("</style>", out)[1]
-    out <- c(out[1:(style_end - 1)],
-             ":root {",
-             paste0("  --res-width: ",
-                    if (study == "green") {
-                      745
-                    } else if (study == "red") {
-                      605
-                    }, "px;"),
-             paste0("  --res-offset: ",
-                    if (study == "green") {
-                      280
-                    } else if (study == "red") {
-                      220
-                    }, "px;"),
-             paste0("  --theme-col: ", paste(col2rgb(color), collapse=", "), ";"),
-             paste0("  --warn-col: var(--", ifelse(study == "green", "green", "red"), "-col);"),
-             rubric_vars,
-             "}",
-             out[style_end:length(out)])
-    start_row <- grep("<div class=\"container-fluid main-container\">", out)
-    end_row <- rev(grep("</div>", out))[1]
-    fb_row <- grep('<div class="feedback"', out, fixed = T) - 1
-    out <- c(
-      out[1:start_row],
-      "<div class=\"col-md-12\">",
-      "<div class=\"inner\">",
-      res,
-      "<div class=\"sidebar2\">",
-      paste0("<div class=\"mark-container\"", ifelse(is.null(mark), "style=\"display: none\"", ""), ">"),
-      paste0("<a href=\"#feedback\" class=\"mark\">", ifelse(is.null(mark), "NA", mark)),
-      "</a>",
-      "</div>",
-      "</div>",
-      "<div class=\"main-content\">", 
-      out[(start_row+1):fb_row],
-      if (feedback && !is.null(rubric_grades))
-        c("<div class=\"grade\">", rub_grades, "</div>"),
-      out[(fb_row + 1):end_row],
-      "</div>",
-      "</div>",
-      "</div>",
-      out[(end_row+1):length(out)]
-    )
-    
-    if (feedback) {
-      ### remove #s from comments
-      code_limits <- cbind(grep('<pre class="r"><code>', out), grep('</code></pre>', out))
-      
-      code_ind <- unlist(apply(code_limits, 1, function(x) seq(x[1], x[2])))
-      out[code_ind] <- gsub('^(<pre class="r"><code>)?#+\\s*([^<]*)(</code></pre>.*)?',
-                            '\\1<span class="hljs-comment">\\2</span>\\3', out[code_ind])
-    }
-      
-    writeLines(out, sub("[Rr]md$", "html", out_file))
+    for (j in names(rubric[[i]]))
+      rubric_vars <- c(rubric_vars,
+                       paste0("  --", names(rubric)[i], "-", j, ": ",
+                              ifelse(j == "col", paste(col2rgb(rubric[[i]][[j]]), collapse = ", "),
+                                     paste0("\"", rubric[[i]][[j]], "\"")), ";")
+      )
+    rub_grades <- c(rub_grades,
+                    paste0("<details class=\"c", i, "\"><summary>", rubric_grades[i],
+                           "</summary>",
+                           # grade descriptor if include_rubric_desc, rubric text otherwise
+                           ifelse(include_rubric_desc, rubric[[i]]$grade[rubric_grades[i]], rubric[[i]]$text),
+                           "</details>"))
   }
   
+  style_end <- grep("</style>", out)[1]
+  out <- c(out[1:(style_end - 1)],
+           ":root {",
+           paste0("  --res-width: ",
+                  if (study == "green") {
+                    745
+                  } else if (study == "red") {
+                    605
+                  }, "px;"),
+           paste0("  --res-offset: ",
+                  if (!include_results) {
+                    0
+                  } else if (study == "green") {
+                    280
+                  } else if (study == "red") {
+                    220
+                  }, "px;"),
+           paste0("  --theme-col: ", paste(col2rgb(color), collapse=", "), ";"),
+           paste0("  --warn-col: var(--", ifelse(study == "green", "green", "red"), "-col);"),
+           rubric_vars,
+           "}",
+           out[style_end:length(out)])
+  start_row <- grep("<div class=\"container-fluid main-container\">", out)
+  end_row <- rev(grep("</div>", out))[1]
+  fb_row <- grep('<div class="feedback"', out, fixed = T) - 1
+  out <- c(
+    out[1:start_row],
+    "<div class=\"col-md-12\">",
+    "<div class=\"inner\">",
+    res,
+    "<div class=\"sidebar2\">",
+    paste0("<div class=\"mark-container\"", ifelse(is.null(mark), "style=\"display: none\"", ""), ">"),
+    paste0("<a href=\"#feedback\" class=\"mark\">", ifelse(is.null(mark), "NA", mark)),
+    "</a>",
+    "</div>",
+    "</div>",
+    "<div class=\"main-content\">", 
+    out[(start_row+1):fb_row],
+    if (feedback && !is.null(rubric_grades))
+      c("<div class=\"grade\">", rub_grades, "</div>"),
+    out[(fb_row + 1):end_row],
+    "</div>",
+    "</div>",
+    "</div>",
+    out[(end_row+1):length(out)]
+  )
+  
+  if (feedback && format_comments) {
+    ### remove #s from comments
+    code_limits <- cbind(grep('<pre class="r"><code>', out), grep('</code></pre>', out))
+    
+    code_ind <- unlist(apply(code_limits, 1, function(x) seq(x[1], x[2])))
+    out[code_ind] <- gsub('^(<pre class="r"><code>)?#+\\s*([^<]*)(</code></pre>.*)?',
+                          '\\1<span class="hljs-comment">\\2</span>\\3', out[code_ind])
+  }
+  
+  writeLines(out, sub("[Rr]md$", "html", out_file))
+
   return(T)
 }
 

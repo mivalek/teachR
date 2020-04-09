@@ -5,7 +5,7 @@
 \title{Mark coursework assignment Rmd}
 \usage{
 mark(
-  file,
+  file = NULL,
   file_name = file,
   study = NULL,
   mark = NULL,
@@ -17,8 +17,9 @@ mark(
   limit = 2000,
   include_results = F,
   results_obj = NULL,
-  remove_results = F,
-  color = "#b38ed2"
+  format_comments = T,
+  color = "#b38ed2",
+  text = NULL
 )
 }
 \arguments{
@@ -44,9 +45,9 @@ mark(
 
 \item{results_obj}{See \code{include_results}.}
 
-\item{remove_results}{\code{logical}. If \code{TRUE}, correct results will not be displayed in final marked HTML document. \code{FALSE} by default.}
+\item{format_comments}{\code{logical}. If \code{TRUE} (default), comments in code chunks will be formatted in line with other marker comments}
 
-\item{color}{\code{character}. Single valid colour string (hex code or any of the values in \code{colours()}).}
+\item{color}{\code{text}. Alternative way of providing input from object rather than file. Requires \code{file_name=}}
 
 \item{rubric_grades.}{Mark for each rubric criterion. Can be a factor with levels sorted from lowest mark to highest mark. See \code{rubric} and \code{include_rubric_desc} for more info.}
 }
@@ -65,5 +66,5 @@ In-text comments can be inserted into .Rmd file on a lew line surrounded by the 
 # first run
 mark("C:/work/201000.Rmd")
 # then
-mark("C:/work/201000.Rmd", T)
+mark("C:/work/201000.Rmd", feedback = T)
 }
