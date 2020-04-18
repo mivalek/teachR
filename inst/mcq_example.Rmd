@@ -1,0 +1,74 @@
+
+<!-- No YAML front matter! -->
+<!-- SINGPLE items must have the following form: -->
+<!-- number followed by a full stop stem wording {[week][difficulty]}, -->
+<!-- wehre difficulty is one of S - simple, E - easy, M - moderate, D - difficult -->
+
+<!-- Stem can have multiple lines but the {} tag must be at the end of the first line with no full stop after it. -->
+
+<!-- Code chunks are allowed -->
+
+<!-- Response options are denoted using leading "- " -->
+<!-- No full stops after response options. -->
+<!-- Correct answer should be denoted with " (correct)" -->
+
+<!-- All valid markdown allowed including maths mode, e.g., $\bar{x}$ -->
+
+01. What is the name of the package you are learning to use? {02E}
+
+Items may contain a lead in line like this but question tag must be on the FIRST line.
+
+```{r}
+#code chunks are allowed
+```
+
+- `teachR` (correct)
+- `tidyverse`
+- `base`
+- `rcanvas`
+
+02. Items can be also just one-liners like this {02M}
+
+- Bilbo (correct)
+- Frodo
+- Gndalf
+- Elrond
+
+<!-- QUESTION GROUPS -->
+<!-- Items can share a single stem/paradigm -->
+<!-- This must be denoted with [multi] at the beginning of the group -->
+<!-- Group stems have NO NUMBER -->
+
+[multi]Answer the following 3 questions with respect to the plot below.
+
+```{r mv_scatter_print}
+# if objects are called but not generated, the code to create them
+# must be included in a separate Rmd file that gets passed to question.bank
+mv_violin
+```
+
+{ <!-- after group stem, there must be an opening curly brace closed after the end of the group -->
+
+38. What kind of plot is this? {04S}
+
+- Violin plot (correct)
+- Histogram
+- Scatterplot
+- Dotplot
+
+39. As for the number of variables plotted, this plot is: {04E}
+
+- Multivariate (correct)
+- Univariate
+- Bivariate
+- Facetted
+
+40. What kind of relationship does the plot show? {04M}
+
+- Negative (correct)
+- Positive
+- Causal
+- This kind of plot does not show relationships
+} <!-- close group -->
+
+<!-- Best to leave an empty last line -->
