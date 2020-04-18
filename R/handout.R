@@ -21,6 +21,8 @@
 #' @seealso \code{\link{make.sheet}()}
 #' @examples
 #' handout("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
+#' @export
+#' 
 
 
 handout <- function(file, course, tasks_to_headings = FALSE, ntb = FALSE,

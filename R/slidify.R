@@ -19,6 +19,8 @@
 #' @details Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/slides_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
 #' @examples
 #' slidify("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
+#' @export
+#' 
 
 
 slidify <- function(file, course, header_text = "default", incremental = FALSE,
@@ -42,6 +44,8 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
         stop("Invalid color provided.")
     }
   }
+  
+  handout <- F # for code chunk option include=!handout
   
   course <- gsub("r_", "R_", tolower(course))
   
@@ -182,7 +186,7 @@ slidify <- function(file, course, header_text = "default", incremental = FALSE,
   out_html <- sub("\\.[Rr]md$", "_slides.html", file)
   temp_html_dir <- sub("\\.[Rr]md$", "_files", temp_rmd)
   out_html_dir <- sub("_temp_", "_slides_", temp_html_dir)
-  render(
+  rmarkdown::render(
     input = temp_rmd,
     output_format = revealjs::revealjs_presentation(
       fig_width = fig_width, fig_height = fig_height, self_contained = F,

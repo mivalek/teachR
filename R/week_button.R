@@ -17,6 +17,8 @@
 #'
 #' # remove Lecture button
 #' week.button("msmr", label = "Lecture", rmeove = T)
+#' @export
+#' 
 
 week.button <- function(course, sem = NULL, label, link, remove = FALSE) {
   if (!course %in% c(paste0("dapR_", 1:3L), "usmr", "msmr"))

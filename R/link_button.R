@@ -15,6 +15,8 @@
 #' # Link Explainer button for each week to 10 different URLs
 #' link.button(course = "dapR_1", sem = 2, label = "Explainer",
 #' link = paste0("/explainers/topic_", sprintf("%02d", 1:10), ".html"))
+#' @export
+#' 
 
 link.button <- function(course, sem = NULL, weeks = "all", label, links) {
   if (!course %in% c(paste0("dapR_", 1:3L), "usmr", "msmr"))

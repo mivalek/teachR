@@ -12,6 +12,8 @@
 #' @examples
 #' # update course details for all courses
 #' update.course.details()
+#' @export
+#' 
 
 update.course.details <- function(details.file = "default",
                                   people.file = "default") {

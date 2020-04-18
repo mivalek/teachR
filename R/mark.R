@@ -28,6 +28,8 @@
 #' mark("C:/work/201000.Rmd")
 #' # then
 #' mark("C:/work/201000.Rmd", feedback = T)
+#' @export
+#' 
 
 mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubric_grades = NULL, rubric = NULL,
                  include_rubric_desc = F, feedback = F, count_words = !feedback, limit = 2000,
@@ -232,7 +234,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
           results_obj[[i]]$parameter,
           ") = ", round(results_obj[[i]]$statistic, 2),
           ", <em>p</em> ", ifelse(results_obj[[i]]$p.value < .001, "&lt; ", "= "),
-          pround(results_obj[[i]]$p.value), "</p>")
+          teachR:::pround(results_obj[[i]]$p.value), "</p>")
       }
       test_res <- paste(unlist(chisq_res), collapse = "")
     } else if (study == "red") {
@@ -241,7 +243,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
         round(results_obj$result$parameter, 2),
         ") = ", round(results_obj$result$statistic, 2),
         ", <em>p</em> ", ifelse(results_obj$result$p.value < .001, "&lt; ", "= "),
-        pround(results_obj$resul$p.value), "</p>")
+        teachR:::pround(results_obj$resul$p.value), "</p>")
     }
     
     res <- c(

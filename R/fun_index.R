@@ -10,12 +10,17 @@
 #' @param pattern \code{character}. Pattern to match when searching.  
 #' @param recursive \code{logical}. Should subfolders of \code{folder=} be searched? \code{TRUE} by default.
 #' @details It's best to keep website structure flat. Put all practicals/lab sheets in a single folder and leave \code{url=} at default. fun_index.html should be placed in the same folder. If this is not the case, \code{url=} must be change otherwise links will be broken.
+#' @importFrom magrittr "%>%"
+#' @importFrom dplyr filter
+#' @import kableExtra
 #' @examples
 #' fun.index("N:/teaching/analysing_data", , pattern = "practical\\d+\\.Rmd")
+#' @export
+#' 
 
 fun.index <- function(folder, output = "fun_index", course = "fun_ind", url = "", pattern = ".Rmd", recursive = T) {
   
-  `%>%` <- magrittr::`%>%`
+  # `%>%` <- magrittr::`%>%`
   
   if(!dir.exists(folder))
     stop("This folder does not exist.")

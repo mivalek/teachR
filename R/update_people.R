@@ -18,6 +18,8 @@
 #'
 #' # remove single person from all courses
 #' update.people("valasek", remove = T)
+#' @export
+#' 
 
 update.people <- function(surname = "all", course = "all",
                           file = "default", remove = F, inside = F) {
