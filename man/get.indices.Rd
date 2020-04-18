@@ -2,10 +2,21 @@
 % Please edit documentation in R/internal_func.R
 \name{get.indices}
 \alias{get.indices}
+\alias{get.name}
 \title{Functions used within \code{\link{update.course.details}()}}
 \usage{
 get.indices(x)
+
+get.name(x, get = "all", people)
 }
 \description{
 These are not to be used by user.
 }
+\details{
+get relevant lines of info.html
+}
+\section{Functions}{
+\itemize{
+\item \code{get.name}: Get display names / slugs / profile URLs of people
+}}
+

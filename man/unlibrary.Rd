@@ -2,10 +2,18 @@
 % Please edit documentation in R/internal_func.R
 \name{unlibrary}
 \alias{unlibrary}
+\alias{pround}
 \title{Functions used for marking and within \code{\link{mark}()}}
 \usage{
 unlibrary(x = default_pkgs)
+
+pround(x)
 }
 \description{
 Functions used for marking and within \code{\link{mark}()}
 }
+\section{Functions}{
+\itemize{
+\item \code{pround}: HTML formatting for p-values
+}}
+

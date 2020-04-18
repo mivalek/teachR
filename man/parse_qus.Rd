@@ -2,10 +2,23 @@
 % Please edit documentation in R/internal_func.R
 \name{parse_qus}
 \alias{parse_qus}
+\alias{get_questions}
+\alias{format_q}
 \title{Functions used for within \code{\link{make.paper}()} and \code{\link{question.bank}()}.}
 \usage{
 parse_qus(x, group = F, author)
+
+get_questions(x, group = NA, author)
+
+format_q(x, num, key = F, randomise_opts = T)
 }
 \description{
 Functions used for within \code{\link{make.paper}()} and \code{\link{question.bank}()}.
 }
+\section{Functions}{
+\itemize{
+\item \code{get_questions}: 
+
+\item \code{format_q}: 
+}}
+

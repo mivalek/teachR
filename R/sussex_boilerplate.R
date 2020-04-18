@@ -12,8 +12,10 @@
 #' @param section_weights \code{character}. Line to include with information about section weighting.
 #' @param sample \code{logical}. Should this be a sample paper title page? \code{FALSE} by default.
 #' @return Function returns a \code{data.frame} with following columns:
-#'     \code{title_page} Text of the title page
-#'     \code{yaml} YAML front matter
+#'   \itemize {
+#'     \item \code{title_page} Text of the title page
+#'     \item \code{yaml} YAML front matter
+#'   }
 #'     
 #'Week, and difficulty are extracted from the question tag, e.g. {02S} for week 2, simple. See example_items.Rmd in package folder for the correct markdown.
 #' @examples

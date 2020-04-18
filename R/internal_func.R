@@ -30,6 +30,7 @@ parse_qus <- function(x, group = F, author) {
   return(out)
 }
 
+#' @describeIn parse_qus 
 get_questions <- function(x, group = NA, author) {
   qu_ind <- cbind(
     grep("^\\d{2}\\.", x),
@@ -46,6 +47,7 @@ get_questions <- function(x, group = NA, author) {
   return(out)
 }
 
+#' @describeIn parse_qus 
 format_q <- function(x, num, key = F, randomise_opts = T) {
   stem <- x$stem
   
@@ -95,6 +97,8 @@ unlibrary <- function(x = default_pkgs) {
   if (length(unload) > 0)
     lapply(paste0("package:", unload), function(x) detach(x, unload = T, char = T, force = T))
 }
+
+#' @describeIn unlibrary HTML formatting for p-values
 
 pround <- function(x) {
   if (x < .001) {
@@ -260,8 +264,7 @@ res <- function(study = NA, cand_no = candidate_number) {
 #' 
 #' These are not to be used by user.
 #' 
-
-# get relevant lines of info.html
+#'  get relevant lines of info.html
 get.indices <- function(x) {
   sapply(c("co", "tc1", "tc2", "cs", paste0("lecturer", 1:2), paste0("lec_day", 1:2),
            paste0("lec_room", 1:2), paste0("lec_time", 1:2),
@@ -270,7 +273,8 @@ get.indices <- function(x) {
          function(y) grep(paste0("id=\"", y), x), simplify = F)
 }
 
-# get display names / slugs / profile URLs of people
+
+#' @describeIn get.indices Get display names / slugs / profile URLs of people
 get.name <- function(x, get = "all", people) {
   if (is.na(x)) {
     out <- list(name = NA, slug = NA, profile = NA)
@@ -289,6 +293,7 @@ get.name <- function(x, get = "all", people) {
   return(out[get])
 }
 
+#' @describeIn get.indices
 update.html <- function(x, sem_details, people) {
   attach(sem_details, warn.conflicts = F)
   one_lecture_course <- is.na(lec_day2)

@@ -6,15 +6,17 @@
 #' @param question_files \code{character}. Paths to Rmd files with items. Best to have one file per author if there are multiple authors of exam items. See mcq_example.Rmd.Rmd in package folder for the correct markdown.
 #' @param authors \code{character}. Requires one author per Rmd file.
 #' @return Function returns a \code{data.frame} with following columns:
-#'     \code{q_num} Original item number in the Rmd file
-#'     \code{week} Week of course/module the item pertains to
-#'     \code{diff} Difficulty (Simple, Easy, Medium, Hard)
-#'     \code{author} Author of the item
-#'     \code{stem} Stem/lead-in
-#'     \code{opts} Response options
-#'     \code{correct} Correct answer
-#'     \code{group} If item is a part of a group tht share a group stem, ID number identifying all items from the same group
-#'     \code{group_stem} Stem shared by a group of items.
+#'  \itemize{
+#'    \item \code{q_num} Original item number in the Rmd file
+#'    \item \code{week} Week of course/module the item pertains to
+#'    \item \code{diff} Difficulty (Simple, Easy, Medium, Hard)
+#'    \item \code{author} Author of the item
+#'    \item \code{stem} Stem/lead-in
+#'    \item \code{opts} Response options
+#'    \item \code{correct} Correct answer
+#'    \item \code{group} If item is a part of a group tht share a group stem, ID number identifying all items from the same group
+#'    \item \code{group_stem} Stem shared by a group of items.
+#'  }
 #'     
 #'Week, and difficulty are extracted from the question tag, e.g. {02S} for week 2, simple. See mcq_example.Rmd in package folder for the correct markdown.
 #' @importFrom tibble tibble
