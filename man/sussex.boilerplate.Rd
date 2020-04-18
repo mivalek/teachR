@@ -34,7 +34,7 @@ sussex.boilerplate(
 }
 \value{
 Function returns a \code{data.frame} with following columns:
-  \itemize {
+  \itemize{
     \item \code{title_page} Text of the title page
     \item \code{yaml} YAML front matter
   }

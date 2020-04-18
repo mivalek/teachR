@@ -12,7 +12,7 @@
 #' @param section_weights \code{character}. Line to include with information about section weighting.
 #' @param sample \code{logical}. Should this be a sample paper title page? \code{FALSE} by default.
 #' @return Function returns a \code{data.frame} with following columns:
-#'   \itemize {
+#'   \itemize{
 #'     \item \code{title_page} Text of the title page
 #'     \item \code{yaml} YAML front matter
 #'   }
