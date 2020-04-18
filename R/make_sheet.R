@@ -22,8 +22,11 @@
 #' @details Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/sheet_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
 #' @return \code{TRUE} if output .html file was successfully created.
 #' @seealso \code{\link{handout}()}
+#' @importFrom colortools complementary
 #' @examples
 #' make.sheet("C:/Users/mvalasek/slides/dapR_1_handout_demo.Rmd", "dapR_1")
+#' @export
+#' 
 
 
 make.sheet <- function(file, course, solution = FALSE, handout = FALSE, tasks_to_headings = TRUE, tsk_correct = TRUE,
@@ -79,7 +82,7 @@ make.sheet <- function(file, course, solution = FALSE, handout = FALSE, tasks_to
   
   # replace relative with absolute paths to external images
   external_pics <- grepl("![](", x, fixed = T)
-  pic_path <- gsub(".*?\\]\\((.*?)\\)\\{.*", "\\1", x[external_pics])
+  pic_path <- gsub(".*?\\]\\((.*?)\\)\\{?.*", "\\1", x[external_pics])
   pic_path <- normalizePath(pic_path, winslash = "/")
   for (i in seq_along(which(external_pics))) {
   x[external_pics][i] <- gsub("(.*?\\]\\()(.*?)(\\)\\{.*)",
@@ -206,7 +209,7 @@ make.sheet <- function(file, course, solution = FALSE, handout = FALSE, tasks_to
     "bg_col <- '#fdfdfd'",
     "default_col <- '#434b75'",
     paste("theme_col <-", theme_col),
-    "complement_col <- colortools::complementary(theme_col, F)[2]",
+    "complement_col <- complementary(theme_col, F)[2]",
     "point_col <- paste0(default_col, '88')",
     " ",
     "my_theme <- cowplot::theme_cowplot() +",
