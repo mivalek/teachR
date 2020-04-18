@@ -17,6 +17,7 @@
 #'     \code{group_stem} Stem shared by a group of items.
 #'     
 #'Week, and difficulty are extracted from the question tag, e.g. {02S} for week 2, simple. See mcq_example.Rmd in package folder for the correct markdown.
+#' @importFrom tibble tibble
 #' @examples
 #' question.bank("exam/and_qu_MV.Rmd", "MV")
 #' @export
@@ -77,7 +78,7 @@ question.bank <- function(question_files, authors) {
   
   group_stems <- gsub("^\\s*\\[multi\\]\\s*|\\s*\\{\\s*$", "", group_stems)
   
-  all_q_tib <- data.frame(
+  all_q_tib <- tibble::tibble(
     q_num = unlist(lapply(all_questions, function(x) x$q_num)),
     week = unlist(lapply(all_questions, function(x) x$week)),
     diff = factor(unlist(lapply(all_questions, function(x) x$diff)),
