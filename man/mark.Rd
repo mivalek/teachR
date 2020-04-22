@@ -18,8 +18,11 @@ mark(
   include_results = F,
   results_obj = NULL,
   format_comments = T,
+  collapse_chunks = F,
   color = "#b38ed2",
-  text = NULL
+  text = NULL,
+  install_missing_pkgs = F,
+  installed_pkgs = NULL
 )
 }
 \arguments{
@@ -45,14 +48,22 @@ mark(
 
 \item{results_obj}{See \code{include_results}.}
 
-\item{format_comments}{\code{logical}. If \code{TRUE} (default), comments in code chunks will be formatted in line with other marker comments}
+\item{format_comments}{\code{logical}. If \code{TRUE} (default), comments in code chunks will be formatted in line with other marker comments.}
 
-\item{color}{\code{text}. Alternative way of providing input from object rather than file. Requires \code{file_name=}}
+\item{collapse_chunks}{\code{logical}. If \code{TRUE} and  \code{feedback = TRUE}, adjacent code chunks will be collapsed into one to prevent multiple "code" buttons stacked on top of one another in rendered HTML. \code{FALSE} by default.}
+
+\item{color}{\code{character}. Single valid colour string (hex code or any of the values in \code{colours()}).}
+
+\item{text}{Alternative way of providing input from object rather than file. Requires \code{file_name=}}
+
+\item{install_missing_pkgs}{\code{logical}. Should packages loaded in reports but not installed on marker's machine be installed? \code{FALSE} by default.}
+
+\item{installed_pkgs}{\code{character}. Vector of installed packages. See Details.}
 
 \item{rubric_grades.}{Mark for each rubric criterion. Can be a factor with levels sorted from lowest mark to highest mark. See \code{rubric} and \code{include_rubric_desc} for more info.}
 }
 \value{
-\code{TRUE} if output .Rmd and .html file were successfully created.
+If output .Rmd and .html files were successfully created and if \code{count_words == TRUE}, returns list of \code{$word_count} and \code{$rendered=TRUE}. If \code{count_words == FALSE}, only returns a single \code{TRUE}. Otherwise returns an error.
 }
 \description{
 For Rmd submissions of reports and other coursework. Function checks word count and inserts space for feedback.
@@ -60,7 +71,9 @@ For Rmd submissions of reports and other coursework. Function checks word count 
 \details{
 Function run with \code{feedback = FALSE} will overwrite the original Rmd file and knit it into HTML. This should be done before marking in order to automate word count. The overwritten Rmd should then be used for comments and feedback. Once done, \code{mark(feedback = TRUE)} should be run on the edited Rmd. This will output a ..._marked.html file that can be returned to students.
 
-In-text comments can be inserted into .Rmd file on a lew line surrounded by the <fb></fb> HTML tag.
+If \code{install_missing_pkgs == TRUE} and \code{installed_pkgs} is \code{NULL}, a vector of installed packages will be retrieved internally. This will slow things down if the function is run iteratively so it's best to provide \code{installed_pkgs}.
+
+In-text comments can be inserted into .Rmd file on a lew line surrounded by <--/tag/ -->, where /tag/ is one of: warn, c1, c2, c3, c4, c5.
 }
 \examples{
 # first run
