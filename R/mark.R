@@ -16,13 +16,18 @@
 #' @param rubric A named list containing the rubric criteria (c1, c2, etc). Each criterion should be a list with \code{name}, \code{col}, and \code{text} elements containing the name, colour, and description of the criterion, respectively.
 #' @param include_results \code{logical}. If \code{TRUE}, object provided to \code{results_obj=} will get inserted into a formatted box in knitted HTML. \code{FALSE} by default.
 #' @param results_obj See \code{include_results}.
-#' @param format_comments \code{logical}. If \code{TRUE} (default), comments in code chunks will be formatted in line with other marker comments
+#' @param format_comments \code{logical}. If \code{TRUE} (default), comments in code chunks will be formatted in line with other marker comments.
+#' @param collapse_chunks \code{logical}. If \code{TRUE} and  \code{feedback = TRUE}, adjacent code chunks will be collapsed into one to prevent multiple "code" buttons stacked on top of one another in rendered HTML. \code{FALSE} by default.
 #' @param color \code{character}. Single valid colour string (hex code or any of the values in \code{colours()}). 
-#' @param color \code{text}. Alternative way of providing input from object rather than file. Requires \code{file_name=}
+#' @param text Alternative way of providing input from object rather than file. Requires \code{file_name=} 
+#' @param install_missing_pkgs \code{logical}. Should packages loaded in reports but not installed on marker's machine be installed? \code{FALSE} by default.
+#' @param installed_pkgs \code{character}. Vector of installed packages. See Details.
 #' @details Function run with \code{feedback = FALSE} will overwrite the original Rmd file and knit it into HTML. This should be done before marking in order to automate word count. The overwritten Rmd should then be used for comments and feedback. Once done, \code{mark(feedback = TRUE)} should be run on the edited Rmd. This will output a ..._marked.html file that can be returned to students.
 #' 
-#' In-text comments can be inserted into .Rmd file on a lew line surrounded by the <fb></fb> HTML tag.
-#' @return \code{TRUE} if output .Rmd and .html file were successfully created.
+#' If \code{install_missing_pkgs == TRUE} and \code{installed_pkgs} is \code{NULL}, a vector of installed packages will be retrieved internally. This will slow things down if the function is run iteratively so it's best to provide \code{installed_pkgs}.
+#' 
+#' In-text comments can be inserted into .Rmd file on a lew line surrounded by <--/tag/ -->, where /tag/ is one of: warn, c1, c2, c3, c4, c5.
+#' @return If output .Rmd and .html files were successfully created and if \code{count_words == TRUE}, returns list of \code{$word_count} and \code{$rendered=TRUE}. If \code{count_words == FALSE}, only returns a single \code{TRUE}. Otherwise returns an error.
 #' @examples
 #' # first run
 #' mark("C:/work/201000.Rmd")
@@ -33,7 +38,8 @@
 
 mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubric_grades = NULL, rubric = NULL,
                  include_rubric_desc = F, feedback = F, count_words = !feedback, limit = 2000,
-                 include_results = F, results_obj = NULL, format_comments = T, color = "#b38ed2", text = NULL) {
+                 include_results = F, results_obj = NULL, format_comments = T, collapse_chunks = F,
+                 color = "#b38ed2", text = NULL, install_missing_pkgs = F, installed_pkgs = NULL) {
   
   if (is.null(file)) {
     if (!is.null(text)) {
@@ -85,6 +91,19 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
              '\n\n',
              '<!-- RECOMMENDATIONS -->',
              '\n\n')
+  
+  if (install_missing_pkgs) {
+    if (is.null(installed_pkgs)) installed_pkgs <- installed.packages()[ , 1]
+    knitr::purl(text = ff, "temp.R")
+    r_code <- readLines("temp.R")
+    file.remove("temp.R") # tidy up
+    
+    # extract names of loaded packages
+    library_lines <- grep("^\\s*library\\s*\\(", r_code)
+    pkgs <- gsub("^\\s*library\\s*\\(['\"]?(.*?)['\"]?\\)\\s*$", "\\1", r_code[library_lines])
+    # install missing packages
+    sapply(setdiff(pkgs, installed_pkgs), install.packages)
+  }
   
   if (count_words) {
     if (!any(grepl(insert, ff, fixed = T))) {
@@ -148,6 +167,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
     rmarkdown::render(input = out_file,
                       output_format = rmarkdown::html_document(
                         toc = F,
+                        highlight = "tango",
                         includes = rmarkdown::includes(
                           after_body = paste0(path.package("teachR"), "/feedback.css"))),
                       envir = new.env())
@@ -202,12 +222,19 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
     ff[grep("<!-- THE BAD", ff)] <- paste(bad_text, collapse = "\n")
     ff[grep("<!-- RECOMMEND", ff)] <- paste(recom_text, collapse = "\n")
     
+    if (collapse_chunks) {
+      ff <- paste(ff, collapse = "-*-")
+      ff <- gsub(paste0("```(-\\*-)+```\\{.*?\\}"), "", ff)
+      ff <- unlist(strsplit(ff, "-*-", fixed = T))
+    }
+    
     writeLines(ff, out_file)
     
     rmarkdown::render(input = out_file,
                       output_format = rmarkdown::html_document(
       toc = F,
       code_folding = "hide",
+      highlight = "tango",
       includes = rmarkdown::includes(after_body = paste0(path.package("teachR"), "/feedback.css"))),
       envir = new.env()
     )
@@ -217,6 +244,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
     rmarkdown::render(input = out_file,
                       output_format = rmarkdown::html_document(
                         toc = F,
+                        highlight = "tango",
                         includes = rmarkdown::includes(
                           after_body = paste0(path.package("teachR"), "/feedback.css"))),
                       envir = new.env())
@@ -356,6 +384,11 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
   
   writeLines(out, sub("[Rr]md$", "html", out_file))
 
-  return(T)
+  if (exists("words")) {
+    return(list(rendered = T,
+                word_count = length(words))
+    )
+  } else
+    return(T)
 }
 
