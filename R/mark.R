@@ -141,6 +141,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       
       words <- unlist(strsplit(ff_edit, "\\s+"))
       words <- grep("[[:alnum:]]", words, value = T)
+      w_count <- length(words)
       
       # identify line that includes limit-th word
       cutoff <- as.numeric(unlist(strsplit(names(words[limit]), "_")))
@@ -226,6 +227,17 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       ff <- paste(ff, collapse = "-*-")
       ff <- gsub(paste0("```(-\\*-)+```\\{.*?\\}"), "", ff)
       ff <- unlist(strsplit(ff, "-*-", fixed = T))
+      
+      chunk_1 <- grep("^\\s*```", ff)[1:2]
+      clean_chunk <- ff[(chunk_1[1] + 1):(chunk_1[2] - 1)]
+      # remove blank lines from first chunk
+      clean_chunk <- unlist(strsplit(
+        paste(clean_chunk, collapse = "$$$"),
+        "\\${2,}"))
+      ff <- c(ff[1:chunk_1[1]],
+              clean_chunk,
+              ff[chunk_1[2]:length(ff)])
+      
     }
     
     writeLines(ff, out_file)
@@ -375,18 +387,19 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
   
   if (feedback && format_comments) {
     ### remove #s from comments
-    code_limits <- cbind(grep('<pre class="r"><code>', out), grep('</code></pre>', out))
-    
-    code_ind <- unlist(apply(code_limits, 1, function(x) seq(x[1], x[2])))
-    out[code_ind] <- gsub('^(<pre class="r"><code>)?#+\\s*([^<]*)(</code></pre>.*)?',
-                          '\\1<span class="hljs-comment">\\2</span>\\3', out[code_ind])
+    out <- gsub('<span class="co">(\\s*#+)+\\s*', '<span class="co">', out)
+    # code_limits <- cbind(grep('<pre class="r"><code>', out), grep('</code></pre>', out))
+    # 
+    # code_ind <- unlist(apply(code_limits, 1, function(x) seq(x[1], x[2])))
+    # out[code_ind] <- gsub('^(<pre class="r"><code>)?#+\\s*([^<]*)(</code></pre>.*)?',
+    #                       '\\1<span class="hljs-comment">\\2</span>\\3', out[code_ind])
   }
   
   writeLines(out, sub("[Rr]md$", "html", out_file))
 
-  if (exists("words")) {
+  if (exists("w_count")) {
     return(list(rendered = T,
-                word_count = length(words))
+                word_count = w_count)
     )
   } else
     return(T)

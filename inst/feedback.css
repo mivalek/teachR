@@ -151,6 +151,13 @@ c5:hover::after {
     border-color: rgb(var(--c5-col));
 }
 
+code span.co {
+	border-color: rgb(var(--theme-col));
+    background-color: rgba(var(--theme-col), .3);
+    font-style: normal;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+}
 
 .hljs-comment {
 	border-color: rgb(var(--theme-col));
@@ -160,7 +167,7 @@ c5:hover::after {
     font-size: 14px;
 }
 
-warn, c1,  c2, c3, c4, c5, .hljs-comment {
+warn, c1,  c2, c3, c4, c5, .hljs-comment, code span.co {
 	padding: 1px 3px;
 	margin: 0 5px;
 	position: relative;
