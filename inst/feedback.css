@@ -83,7 +83,7 @@ c2 > strong {
 c2:hover::before {
     content: var(--c2-name);
     border-color: rgb(var(--c2-col));
-	color: rgb(var(--c3-col));
+	color: rgb(var(--c2-col));
 }
 	
 c2:hover::after {
@@ -272,7 +272,6 @@ c4:hover::after, c5:hover::after {
 	color: rgb(var(--font-col));
     top: 141px;
     right: 15px;
-    white-space: pre;
     border-radius: 6px;
     padding: 5px;
     width: 230px;
@@ -280,6 +279,7 @@ c4:hover::after, c5:hover::after {
 	z-index:2;
 	border-style: solid;
 	border-width: 1px;
+	max-width: 230px;
 }
 
 
@@ -298,6 +298,7 @@ details {
 summary {	
     text-align: right;
     font-size: 16pt;
+	list-style-type: none;
 }
 
 summary::after {
@@ -309,8 +310,16 @@ summary::after {
     position: absolute;
 }
 
+summary:focus {
+    outline: none;
+}
+
 summary::marker {
 	content: '';
+}
+
+details summary::-webkit-details-marker {
+    display: none;
 }
 
 .c1 {
