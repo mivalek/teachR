@@ -44,6 +44,20 @@
 	margin-bottom: 10px;
 }
 
+.flag {
+    border: 1px solid rgb(var(--warn-col));
+    background-color: rgba(var(--warn-col), .3);
+    padding: 10px;
+    text-align: center;
+}
+
+.flag a {
+    color: rgb(var(--warn-col));
+}
+
+.flag a:focus {
+    outline: none;
+}
 
 warn {
 	color: rgb(var(--comment-col));
