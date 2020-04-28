@@ -49,6 +49,7 @@
     background-color: rgba(var(--warn-col), .3);
     padding: 10px;
     text-align: center;
+	margin: 30px;
 }
 
 .flag a {
