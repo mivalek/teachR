@@ -95,7 +95,7 @@ unlibrary <- function(x = default_pkgs) {
   
   unload <- setdiff(loaded_pkgs, x)
   if (length(unload) > 0)
-    lapply(paste0("package:", unload), function(x) detach(x, unload = T, char = T, force = T))
+    lapply(paste0("package:", unload), function(x) try(detach(x, unload = T, char = T, force = T), silent = T))
 }
 
 #' @describeIn unlibrary HTML formatting for p-values
