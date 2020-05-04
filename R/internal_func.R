@@ -155,7 +155,7 @@ res <- function(study = NA, cand_no = candidate_number) {
     
     out <- list(
       rem_age_na = sum(is.na(data$age)),
-      rem_age_typo = 1,
+      rem_age_typo = length(grep("[A-z]", data$age, value = T)),
       rem_age_young = sum(as.numeric(data$age) < 18, na.rm = T)
     )
     data$condition[data$condition == typo_cond] <- groups[which.min(adist(typo_cond, groups))]
@@ -203,7 +203,8 @@ res <- function(study = NA, cand_no = candidate_number) {
     )
     
     out <- list(
-      rem_age_na = sum(is.na(data$age)/3)
+      rem_age_na = sum(is.na(data$age)/3),
+      correct_age = as.numeric(correct_age)
     )
     data$condition[data$condition == typo_cond] <- groups[which.min(adist(typo_cond, groups))]
     data$age[which(data$age == typo_age)] <- correct_age
