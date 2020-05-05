@@ -11,6 +11,9 @@
 #' @param rubric A named list containing the rubric criteria (c1, c2, etc). Each criterion should be a list with \code{name}, \code{col}, and \code{text} elements containing the name, colour, and description of the criterion, respectively.
 #' @param include_rubric_desc \code{logical}. If \code{TRUE} and if \code{rubric_grades} is a factor, grade descriptors for each marking criterion will be included in sidebar boxes.
 #' @param feedback \code{logical}. Should feedback box with marker's comments appear at the bottom of document? \code{FALSE} by default.
+#' @param rubric_url \code{cahracter}. URL to a webpage containing markng rubric/criteria/guidelines for markers' quick reference.
+#' @param flowchart_url \code{cahracter}. URL to a webpage containing report flowchart students were supposed to follow. Also for for markers' quick reference.
+#' @param quick_comment_url \code{cahracter}. URL to a (Google?) spreadsheet containing quick comments for convenient marking. 
 #' @param count_words \code{logical}. \code{TRUE} counts body text words and if word count exceeds \code{limit}, inserts a warning line in HTML. \code{!feedback} by default.
 #' @param limit \code{numeric}. Word count limit
 #' @param rubric A named list containing the rubric criteria (c1, c2, etc). Each criterion should be a list with \code{name}, \code{col}, and \code{text} elements containing the name, colour, and description of the criterion, respectively.
@@ -37,7 +40,7 @@
 #' 
 
 mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubric_grades = NULL, rubric = NULL,
-                 include_rubric_desc = F, feedback = F, count_words = !feedback, limit = 2000,
+                 include_rubric_desc = F, feedback = F, rubric_url = NULL, flowchart_url = NULL, quick_comment_url = NULL, count_words = !feedback, limit = 2000,
                  include_results = F, results_obj = NULL, format_comments = T, collapse_chunks = F,
                  color = "#b38ed2", text = NULL, install_missing_pkgs = F, installed_pkgs = NULL) {
   
@@ -312,6 +315,33 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       test_res,
       "</div>",
       "</div>",
+      if (!feedback) {
+        c("<div class=\"rubric\">",
+          "<details>",
+          "<summary><img src=\"https://raw.githubusercontent.com/mivalek/mivalek.github.io/master/img/rubric.png\" width=\"25px\" height=\"22px\"></summary>",
+          paste0("<iframe src=\"", rubric_url, "\"></iframe>"),
+          "</details>",
+          "</div>",
+          if (!is.null(flowchart_url)) {
+            c("<div class=\"flow second\">",
+              "<details>",
+              "<summary><img src=\"https://raw.githubusercontent.com/mivalek/mivalek.github.io/master/img/flowchart.png\" width=\"25px\" height=\"22px\"></summary>",
+              ifelse(grepl("html$", flowchart_url),
+                     paste0("<iframe src=\"", flowchart_url, "\"></iframe>"),
+                     paste0("<img src=\"", flowchart_url, "\"></img>")),
+              "</details>",
+              "</div>")
+          },
+          if (!is.null(quick_comment_url)) {
+            c(paste0("<div class=\"quick-com ", ifelse(is.null(flowchart_url), "second", "third"), "\">"),
+              "<details>",
+              "<summary><img src=\"https://raw.githubusercontent.com/mivalek/mivalek.github.io/master/img/comment.png\" width=\"25px\" height=\"22px\"></summary>",
+              paste0("<iframe src=\"", quick_comment_url, "\"></iframe>"),
+              "</details>",
+              "</div>")
+          }
+        )
+      },
       "</div>",
       "</div>"
     )
