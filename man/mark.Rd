@@ -13,6 +13,9 @@ mark(
   rubric = NULL,
   include_rubric_desc = F,
   feedback = F,
+  rubric_url = NULL,
+  flowchart_url = NULL,
+  quick_comment_url = NULL,
   count_words = !feedback,
   limit = 2000,
   include_results = F,
@@ -39,6 +42,12 @@ mark(
 \item{include_rubric_desc}{\code{logical}. If \code{TRUE} and if \code{rubric_grades} is a factor, grade descriptors for each marking criterion will be included in sidebar boxes.}
 
 \item{feedback}{\code{logical}. Should feedback box with marker's comments appear at the bottom of document? \code{FALSE} by default.}
+
+\item{rubric_url}{\code{cahracter}. URL to a webpage containing markng rubric/criteria/guidelines for markers' quick reference.}
+
+\item{flowchart_url}{\code{cahracter}. URL to a webpage containing report flowchart students were supposed to follow. Also for for markers' quick reference.}
+
+\item{quick_comment_url}{\code{cahracter}. URL to a (Google?) spreadsheet containing quick comments for convenient marking.}
 
 \item{count_words}{\code{logical}. \code{TRUE} counts body text words and if word count exceeds \code{limit}, inserts a warning line in HTML. \code{!feedback} by default.}
 

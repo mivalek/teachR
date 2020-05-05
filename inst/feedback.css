@@ -433,6 +433,7 @@ details summary::-webkit-details-marker {
 	position: fixed;
 	left: 15px;
 	width: 260px;
+	z-index: 1;
 }
 
 .sidebar2 {
@@ -504,6 +505,102 @@ details summary::-webkit-details-marker {
 	padding-top: 0;
 }
 
+.quick-com, .flow, .rubric {
+    position: fixed;
+    top: 20px;
+}
+
+.rubric {
+    right: 280px;
+}
+
+.second {
+    right: 330px;
+}
+
+.third {
+    right: 380px;
+}
+
+.quick-com > details, .flow > details, .rubric > details {
+    border: none;
+	width: max-content;
+	margin: 0;
+	padding: 0;
+}
+
+.quick-com > details > summary, .flow > details > summary, .rubric > details > summary {
+    border: solid 1px rgb(var(--theme-col));
+    border-radius: 6px;
+    background-color: rgb(var(--theme-col));
+    width: 40px;
+    text-align: center;
+}
+
+.quick-com > details > iframe, .flow > details > iframe, .rubric > details > iframe {
+	top: -1px;
+    width: calc(100vw - 312px);
+    height: 90vh;
+    z-index: 3;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border: solid 1px rgb(var(--theme-col));
+	border-radius: 6px;
+}
+
+.quick-com > details[open], .flow > details[open], .rubric > details[open] {
+    width: calc(100vw - 312px);
+    position: relative;
+    z-index: 2;
+    padding-left: 0;
+}
+
+.second > details[open] {
+	right: -50px;
+}
+
+.third > details[open] {
+	right: -100px;
+}
+
+.quick-com > details[open] > summary, .flow > details[open] > summary,
+.rubric > details[open] > summary {
+	position: relative;
+	float: right;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.rubric > details[open] > iframe {
+	border-top-right-radius: 0;
+}
+
+.second > details[open] > summary {
+	position: relative;
+	right: 50px;
+}
+
+.third > details[open] > summary {
+	position: relative;
+	right: 100px;
+}
+
+summary > img {
+	vertical-align: top;
+    margin-top: 4px;
+}
+
+.flow > details > img {
+    max-height: 90vh;
+    float: right;
+    margin-top: 31px;
+    border: 1px solid rgb(var(--theme-col));
+    border-radius: 6px;
+    padding: 5px;
+    background-color: rgba(var(--theme-col), .7);
+    margin-right: -40px;
+}
 
 @media screen and (max-width: 1130px) { 
 	
@@ -554,6 +651,26 @@ details summary::-webkit-details-marker {
 	
 	details[open] {
 		width: 100%;
+	}
+	
+	.rubric {
+		right: 20px;
+	}
+
+	.second {
+		right: 70px;
+	}
+	
+	.third {
+		right: 120px;
+	}
+	
+	.quick-com > details[open], .flow > details[open], .rubric > details[open] {
+		width: calc(100vw - 52px);
+	}
+	
+	.quick-com > details > iframe, .flow > details > iframe, .rubric > details > iframe {
+		width: calc(100vw - 52px);
 	}
 }
 
@@ -637,7 +754,43 @@ details summary::-webkit-details-marker {
 		top: calc(32vh + 30px);
 		right: 25px;
 	}
+	
+	.quick-com, .flow, .rubric {
+		top: 30px;
+	}
+	
+	.rubric {
+		right: 30px;
+	}
 
+	.second {
+		right: 80px;
+	}
+	
+	.third {
+		right: 130px;
+	}
+	
+	.quick-com > details > summary, .flow > details > summary, .rubric > details > summary {
+		margin-right: 5px;
+	}
+	
+	.quick-com > details[open], .flow > details[open], .rubric > details[open] {
+		width: calc(100vw - 77px);
+	}
+	
+	.quick-com > details > iframe, .flow > details > iframe, .rubric > details > iframe {
+		width: calc(100vw - 77px);
+	}
+
+	.rubric > details[open] > iframe {
+		border-top-right-radius: 6px;
+	}
+	
+	.flow > details > img {
+		margin-top: 0;
+		margin-right: 0;
+	}
 }
 
 
@@ -680,6 +833,10 @@ details summary::-webkit-details-marker {
 	
 	.main-content {
 		position: relative;
+	}
+	
+	.quick-com, .flow, .rubric {
+		top: 35px;
 	}
 	
 }
