@@ -195,10 +195,11 @@ res <- function(study = NA, cand_no = candidate_number) {
     groups <- c("control", "experimental")
     typo_cond <- grep(paste(groups, collapse = "|"), unique(data$condition),
                       invert = T, value = T)
-    typo_age <- grep("[A-z]", data$age, value = T)
+    which_typo <- grep("[A-z]", data$age)
+    data$age[which_typo] <- "xxx"
     correct_age <- na.omit(
       unique(as.numeric(
-        data$age[data$id == data$id[which(data$age == typo_age)]]
+        data$age[data$id == data$id[which(data$age == "xxx")]]
       ))
     )
     
@@ -207,7 +208,7 @@ res <- function(study = NA, cand_no = candidate_number) {
       correct_age = as.numeric(correct_age)
     )
     data$condition[data$condition == typo_cond] <- groups[which.min(adist(typo_cond, groups))]
-    data$age[which(data$age == typo_age)] <- correct_age
+    data$age[which(data$age == "xxx")] <- correct_age
     
     out$rem_age_young = sum(as.numeric(data$age) < 18, na.rm = T)/3
     
