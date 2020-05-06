@@ -11,12 +11,12 @@
 #' @param rubric A named list containing the rubric criteria (c1, c2, etc). Each criterion should be a list with \code{name}, \code{col}, and \code{text} elements containing the name, colour, and description of the criterion, respectively.
 #' @param include_rubric_desc \code{logical}. If \code{TRUE} and if \code{rubric_grades} is a factor, grade descriptors for each marking criterion will be included in sidebar boxes.
 #' @param feedback \code{logical}. Should feedback box with marker's comments appear at the bottom of document? \code{FALSE} by default.
+#' @param fdbck_boiler_text \code{character}. Optional path to boilerplate text to be used in the Feedback sections. See details. 
 #' @param rubric_url \code{cahracter}. URL to a webpage containing markng rubric/criteria/guidelines for markers' quick reference.
-#' @param flowchart_url \code{cahracter}. URL to a webpage containing report flowchart students were supposed to follow. Also for for markers' quick reference.
+#' @param flowchart_url \code{cahracter}. URL to a webpage containing report flowchart students were supposed to follow. Also for for markers' quick reference. Can be either a .html file or image.
 #' @param quick_comment_url \code{cahracter}. URL to a (Google?) spreadsheet containing quick comments for convenient marking. 
 #' @param count_words \code{logical}. \code{TRUE} counts body text words and if word count exceeds \code{limit}, inserts a warning line in HTML. \code{!feedback} by default.
 #' @param limit \code{numeric}. Word count limit
-#' @param rubric A named list containing the rubric criteria (c1, c2, etc). Each criterion should be a list with \code{name}, \code{col}, and \code{text} elements containing the name, colour, and description of the criterion, respectively.
 #' @param include_results \code{logical}. If \code{TRUE}, object provided to \code{results_obj=} will get inserted into a formatted box in knitted HTML. \code{FALSE} by default.
 #' @param results_obj See \code{include_results}.
 #' @param format_comments \code{logical}. If \code{TRUE} (default), comments in code chunks will be formatted in line with other marker comments.
@@ -25,7 +25,9 @@
 #' @param text Alternative way of providing input from object rather than file. Requires \code{file_name=} 
 #' @param install_missing_pkgs \code{logical}. Should packages loaded in reports but not installed on marker's machine be installed? \code{FALSE} by default.
 #' @param installed_pkgs \code{character}. Vector of installed packages. See Details.
-#' @details Function run with \code{feedback = FALSE} will overwrite the original Rmd file and knit it into HTML. This should be done before marking in order to automate word count. The overwritten Rmd should then be used for comments and feedback. Once done, \code{mark(feedback = TRUE)} should be run on the edited Rmd. This will output a ..._marked.html file that can be returned to students.
+#' @details Function run with \code{feedback = FALSE} will overwrite the original Rmd file and knit it into HTML. This should be done before marking in order to automate word count, include correct results, and additional marking tools (see \code{rubric_url}, \code{flowchart_url}, and \code{quick_comment_url}). The overwritten Rmd should then be used for comments and feedback. Once done, \code{mark(feedback = TRUE)} should be run on the edited Rmd. This will output a ..._marked.html file that can be returned to students.
+#' 
+#'Initial run of \code{mark(feedback=F)} inserts an empty feedback section into Rmd with three placeholders: THE GOOD, THE BAD, and RECOMMENDATIONS. These are then replaced with boilerplate text passed to \code{fdbck_boiler_text}. If the argument is not used, function defualts to using text in \code{file.path(path.package("teachR"), "fdbck_boilerplate.txt")}. Any external file passed to the argument should follow the same structure.
 #' 
 #' If \code{install_missing_pkgs == TRUE} and \code{installed_pkgs} is \code{NULL}, a vector of installed packages will be retrieved internally. This will slow things down if the function is run iteratively so it's best to provide \code{installed_pkgs}.
 #' 
@@ -33,14 +35,16 @@
 #' @return If output .Rmd and .html files were successfully created and if \code{count_words == TRUE}, returns list of \code{$word_count} and \code{$rendered=TRUE}. If \code{count_words == FALSE}, only returns a single \code{TRUE}. Otherwise returns an error.
 #' @examples
 #' # first run
-#' mark("C:/work/201000.Rmd")
+#' mark("C:/work/201000.Rmd", ...)
 #' # then
-#' mark("C:/work/201000.Rmd", feedback = T)
+#' mark("C:/work/201000.Rmd", feedback = T, ...)
 #' @export
 #' 
 
 mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubric_grades = NULL, rubric = NULL,
-                 include_rubric_desc = F, feedback = F, rubric_url = NULL, flowchart_url = NULL, quick_comment_url = NULL, count_words = !feedback, limit = 2000,
+                 include_rubric_desc = F, feedback = F, fdbck_boiler_text = NULL,
+                 rubric_url = NULL, flowchart_url = NULL, quick_comment_url = NULL,
+                 count_words = !feedback, limit = 2000,
                  include_results = F, results_obj = NULL, format_comments = T, collapse_chunks = F,
                  color = "#b38ed2", text = NULL, install_missing_pkgs = F, installed_pkgs = NULL) {
   
@@ -192,28 +196,39 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
     
     # change all echo=F to echo=T
     ff <- sub("(echo\\s*=\\s*)FALSE|(echo\\s*=\\s*)F", "\\1\\2T", ff)
-    # change all include=F to include=T, results='hidden'
-    ff <- sub("(include\\s*=\\s*)FALSE|(include\\s*=\\s*)F", "\\1\\2T, results='hide'", ff)
+    # change all include=F to include=T, results='hide', fig.show='hide'
+    ff <- sub("(include\\s*=\\s*)FALSE|(include\\s*=\\s*)F",
+              "\\1\\2T, results='hide', fig.show='hide'", ff)
     
     
     # replace comment mkd with html tags
     ff <- gsub("<--([a-z0-9]*)\\s(.*?)-->", "<\\1>\\2</\\1>", ff)
+  
+    boiler <- if (is.null(fdbck_boiler_text)) {
+      readLines(file.path(path.package("teachR"), "fdbck_boilerplate.txt"))
+    } else readLines(fdbck_boiler_text)
     
+    lim <- cbind(
+      grep("THE GOOD|THE BAD|RECOMMENDATIONS", boiler) + 1,
+      grep("---", boiler) - 1
+    )
+    
+    boiler <- apply(lim, 1, function(x) boiler[x[1]:x[2]])
     good_text <- c(
       "\n\\ \n\n",
-      readLines(paste0(path.package("teachR"), "/fb_gd.txt")),
+      boiler[[1]],
       ""
     )
     
     bad_text <- c(
       "\n\\ \n\n",
-      readLines(paste0(path.package("teachR"), "/fb_bd.txt")),
+      boiler[[2]],
       ""
     )
     
     recom_text <- c(
       "\n\\ \n\n",
-      readLines(paste0(path.package("teachR"), "/fb_rec.txt")),
+      boiler[[3]],
       ""
     )
     

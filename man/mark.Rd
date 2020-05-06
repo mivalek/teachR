@@ -13,6 +13,7 @@ mark(
   rubric = NULL,
   include_rubric_desc = F,
   feedback = F,
+  fdbck_boiler_text = NULL,
   rubric_url = NULL,
   flowchart_url = NULL,
   quick_comment_url = NULL,
@@ -43,9 +44,11 @@ mark(
 
 \item{feedback}{\code{logical}. Should feedback box with marker's comments appear at the bottom of document? \code{FALSE} by default.}
 
+\item{fdbck_boiler_text}{\code{character}. Optional path to boilerplate text to be used in the Feedback sections. See details.}
+
 \item{rubric_url}{\code{cahracter}. URL to a webpage containing markng rubric/criteria/guidelines for markers' quick reference.}
 
-\item{flowchart_url}{\code{cahracter}. URL to a webpage containing report flowchart students were supposed to follow. Also for for markers' quick reference.}
+\item{flowchart_url}{\code{cahracter}. URL to a webpage containing report flowchart students were supposed to follow. Also for for markers' quick reference. Can be either a .html file or image.}
 
 \item{quick_comment_url}{\code{cahracter}. URL to a (Google?) spreadsheet containing quick comments for convenient marking.}
 
@@ -78,7 +81,9 @@ If output .Rmd and .html files were successfully created and if \code{count_word
 For Rmd submissions of reports and other coursework. Function checks word count and inserts space for feedback.
 }
 \details{
-Function run with \code{feedback = FALSE} will overwrite the original Rmd file and knit it into HTML. This should be done before marking in order to automate word count. The overwritten Rmd should then be used for comments and feedback. Once done, \code{mark(feedback = TRUE)} should be run on the edited Rmd. This will output a ..._marked.html file that can be returned to students.
+Function run with \code{feedback = FALSE} will overwrite the original Rmd file and knit it into HTML. This should be done before marking in order to automate word count, include correct results, and additional marking tools (see \code{rubric_url}, \code{flowchart_url}, and \code{quick_comment_url}). The overwritten Rmd should then be used for comments and feedback. Once done, \code{mark(feedback = TRUE)} should be run on the edited Rmd. This will output a ..._marked.html file that can be returned to students.
+
+Initial run of \code{mark(feedback=F)} inserts an empty feedback section into Rmd with three placeholders: THE GOOD, THE BAD, and RECOMMENDATIONS. These are then replaced with boilerplate text passed to \code{fdbck_boiler_text}. If the argument is not used, function defualts to using text in \code{file.path(path.package("teachR"), "fdbck_boilerplate.txt")}. Any external file passed to the argument should follow the same structure.
 
 If \code{install_missing_pkgs == TRUE} and \code{installed_pkgs} is \code{NULL}, a vector of installed packages will be retrieved internally. This will slow things down if the function is run iteratively so it's best to provide \code{installed_pkgs}.
 
@@ -86,7 +91,7 @@ In-text comments can be inserted into .Rmd file on a lew line surrounded by <--/
 }
 \examples{
 # first run
-mark("C:/work/201000.Rmd")
+mark("C:/work/201000.Rmd", ...)
 # then
-mark("C:/work/201000.Rmd", feedback = T)
+mark("C:/work/201000.Rmd", feedback = T, ...)
 }
