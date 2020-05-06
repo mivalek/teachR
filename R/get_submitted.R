@@ -9,7 +9,7 @@
 #' @param assign_id \code{numeric}. ID code of Canvas assignment to retrieve.
 #' @import rcanvas
 #' @examples
-#' submitted <- get.submitted("1204923CwEH1wk2GKcJqbXF3Nja3QUg7G2Ksr6dBscIN9, course_id = 1234, assign_id = 1324)
+#' submitted <- get.submitted("1204923CwEH1wk2GKcJqbXF3Nja3QUg7G2Ksr6dBscIN9", course_id = 1234, assign_id = 1324)
 #' @export
 #' 
 

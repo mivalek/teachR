@@ -30,7 +30,7 @@ parse_qus <- function(x, group = F, author) {
   return(out)
 }
 
-#' @describeIn parse_qus 
+#' @describeIn parse_qus extract exam questions from Rmd file
 get_questions <- function(x, group = NA, author) {
   qu_ind <- cbind(
     grep("^\\d{2}\\.", x),
@@ -47,7 +47,7 @@ get_questions <- function(x, group = NA, author) {
   return(out)
 }
 
-#' @describeIn parse_qus 
+#' @describeIn parse_qus formats questions for knitting
 format_q <- function(x, num, key = F, randomise_opts = T) {
   stem <- x$stem
   

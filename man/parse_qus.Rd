@@ -17,8 +17,8 @@ Functions used for within \code{\link{make.paper}()} and \code{\link{question.ba
 }
 \section{Functions}{
 \itemize{
-\item \code{get_questions}: 
+\item \code{get_questions}: extract exam questions from Rmd file
 
-\item \code{format_q}: 
+\item \code{format_q}: formats questions for knitting
 }}
 
