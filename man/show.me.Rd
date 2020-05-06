@@ -35,3 +35,12 @@ Opens up an Rmd file in source editor and displays the corresponding HTML file i
 \details{
 String passed to \code{url} may contain \code{"..."}. If it does, it will get replace by value passed to \code{module}. This allows for easier use accross different modules, provided the file structure of the hosting website is identical except for the module name.
 }
+\examples{
+# not setting working directory
+show.me("marking/and/2019_20/1234.Rmd")
+# not setting wd, offline HTML
+show.me("marking/and/2019_20/1234.Rmd", offline=F, offline_thml_path = "marking/and/2019_20/knitted")
+# setting wd
+setwd("marking/and/2019_20")
+show.me("1234")
+}

@@ -15,7 +15,7 @@
 #' # not setting working directory
 #' show.me("marking/and/2019_20/1234.Rmd")
 #' # not setting wd, offline HTML
-#' show.me("marking/and/2019_20/1234.Rmd", offline=F, offline_thml_path = "marking/and/2019_20/knitted)
+#' show.me("marking/and/2019_20/1234.Rmd", offline=F, offline_thml_path = "marking/and/2019_20/knitted")
 #' # setting wd
 #' setwd("marking/and/2019_20")
 #' show.me("1234")
