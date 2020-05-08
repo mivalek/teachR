@@ -32,14 +32,14 @@ get.quick.com <- function(csv_path, rubric, output_dir, warn_col = "#f00000", co
   
   q_com <- q_com[nzchar(q_com$description), ]
   criteria <- q_com$description[!nzchar((q_com$text))]
-  q_com <- q_com %>% filter(nzchar(text)) %>%
-    mutate(text = gsub("&", "&amp;", text),
+  q_com <- q_com %>% dplyr::filter(nzchar(text)) %>%
+    dplyr::mutate(text = gsub("&", "&amp;", text),
            markdown = gsub("&", "&amp;", markdown),
            button =  paste0('<button class="btn ', tag,
                             '" data-clipboard-text="',
                             gsub('\"', '\'', markdown),
                             '">Copy text</button>')) %>%
-    select(-markdown) %>%
+    dplyr::select(-markdown) %>%
     tidyr::nest(data = c(description, text, button))
   tabs <- q_com %>%
     purrr::pmap(function(tag, data)
