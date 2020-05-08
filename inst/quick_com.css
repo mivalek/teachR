@@ -1,0 +1,223 @@
+
+.container-fluid.main-container {
+    max-width: 90%;
+}
+
+body {
+	background-color: #fafafadd;
+}
+
+.table > tbody > tr > td, .table > tbody > tr > th
+td {
+    padding: 8px 5px;
+    border-top: 1px solid #ddd;
+}
+
+.table > thead > tr > td, .table > thead > tr > th {
+    padding-bottom: 10px;
+    padding-left: 5px;
+	border-bottom: none;
+}
+
+details {
+    position: relative;
+    border-radius: 5px;
+    margin: 1em 0 2em 0;
+    background-color: rgb(var(--theme-col));
+    padding: .5em 1em;
+	width: 220px;
+}
+
+
+details[open] {
+	width: 100%;
+    background-color: white;
+    border: solid 1px black;
+}
+
+summary {
+    font-size: 16pt;
+	list-style-type: none;
+	cursor: pointer;
+	outline: 0;
+	color: white;
+	padding-left: 5px;
+}
+
+
+summary:focus {
+    outline: none;
+}
+
+summary::marker {
+	content: '';
+}
+
+details > summary::-webkit-details-marker {
+    display: none;
+}
+
+details > summary::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+details[open] > summary {
+    padding-bottom: 1em;
+	color: rgb(var(--font-col));
+}
+
+.btn {
+    z-index: 1;
+    position: relative;
+    cursor: auto;
+	border: none;
+	color: white;
+}
+
+.btn.active.focus, .btn.active:focus, .btn.focus,
+.btn:active.focus, .btn:active:focus, .btn:focus {
+    outline: none;
+}
+
+.btn.focus, .btn:focus, .btn:hover {
+    color: white;
+    text-decoration: none;
+    filter: opacity(70%);
+}
+
+details.c1 {
+    background-color: rgb(var(--c1-col));	
+}
+
+
+details.c1[open] > summary {
+	color: rgb(var(--c1-col));
+}
+
+details.c1[open] {
+	border-color: rgb(var(--c1-col));
+	background-color: white;
+}
+
+.btn.c1 {
+	background-color: rgb(var(--c1-col));
+}
+
+
+details.c2 {
+    background-color: rgb(var(--c2-col));	
+}
+
+
+details.c2[open] > summary {
+	color: rgb(var(--c2-col));
+}
+
+details.c2[open] {
+	border-color: rgb(var(--c2-col));
+	background-color: white;
+}
+
+.btn.c2 {
+	background-color: rgb(var(--c2-col));
+}
+
+
+details.c3 {
+    background-color: rgb(var(--c3-col));	
+}
+
+
+details.c3[open] > summary {
+	color: rgb(var(--c3-col));
+}
+
+details.c3[open] {
+	border-color: rgb(var(--c3-col));
+	background-color: white;
+}
+
+.btn.c3 {
+	background-color: rgb(var(--c3-col));
+}
+
+
+details.c4 {
+    background-color: rgb(var(--c4-col));	
+}
+
+
+details.c4[open] > summary {
+	color: rgb(var(--c4-col));
+}
+
+details.c4[open] {
+	border-color: rgb(var(--c4-col));
+	background-color: white;
+}
+
+.btn.c4 {
+	background-color: rgb(var(--c4-col));
+}
+
+
+details.c5 {
+    background-color: rgb(var(--c5-col));	
+}
+
+
+details.c5[open] > summary {
+	color: rgb(var(--c5-col));
+}
+
+details.c5[open] {
+	border-color: rgb(var(--c5-col));
+	background-color: white;
+}
+
+.btn.c5 {
+	background-color: rgb(var(--c5-col));
+}
+
+
+details.warn {
+    background-color: rgb(var(--warn-col));	
+}
+
+
+details.warn[open] > summary {
+	color: rgb(var(--warn-col));
+}
+
+details.warn[open] {
+	border-color: rgb(var(--warn-col));
+	background-color: white;
+}
+
+.btn.warn {
+	background-color: rgb(var(--warn-col));
+}
+
+
+details.code {
+    background-color: rgb(var(--code-col));	
+}
+
+
+details.code[open] > summary {
+	color: rgb(var(--code-col));
+}
+
+details.code[open] {
+	border-color: rgb(var(--code-col));
+	background-color: white;
+}
+
+.btn.code {
+	background-color: rgb(var(--code-col));
+}
