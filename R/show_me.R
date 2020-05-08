@@ -52,7 +52,7 @@ show.me <- function(id, module = "and", height = "maximize", online = F, url = "
     file.copy(file.path(offline_html_path, html), local_html)
   }
   
-  file <- readLines(file.path(tempdir(), "10714.html"))
+  file <- readLines(local_html)
   urls <- grep(paste0(button_urls, ".*?\\.html"), file, value = T)
   urls <- gsub(".*(https.*?\\.html).*", "\\1", urls)
   dir.create(file.path(tempdir(), "doc"))
