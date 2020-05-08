@@ -9,6 +9,7 @@
 #' @param online \code{logical}. Should knitted file be pulled from the web? \code{FALSE} by default.
 #' @param url \code{cahracter}. URL to a webpage containing knitted HTML files. Ignored if \code{online=FALSE}. See details.
 #' @param offline_html_path \code{cahracter}. If \code{online=FALSE}, path to knitted HTML files relative to \code{id=}. Ignored if \code{online=TRUE}.
+#' @param button_urls \code{character}. If \code{online=FALSE}, path to online folder where html files for buttons 1 and 3 are stored. These files will be downloaded locally so they can be displayed in RStudio viewer.
 #' @details String passed to \code{url} may contain \code{"..."}. If it does, it will get replace by value passed to \code{module}. This allows for easier use accross different modules, provided the file structure of the hosting website is identical except for the module name.
 #' @return Function does not return a value. It opens an .Rmd file in the source editor and a HTML file in the Viewer.
 #' @examples
@@ -22,7 +23,8 @@
 #' @export
 #' 
 
-show.me <- function(id, module = "and", height = "maximize", online = F, url = "https://mivalek.github.io/.../marking/knitted/", offline_html_path = "../knitted") {
+show.me <- function(id, module = "and", height = "maximize", online = F, url = "https://mivalek.github.io/.../marking/knitted/",
+                    offline_html_path = "../knitted", button_urls = "https://mivalek.github.io/adata/marking") {
   module <- ifelse(module == "and", "adata", module)
   if (online) {
     url <- sub("...", module, url, fixed = T)
@@ -50,7 +52,16 @@ show.me <- function(id, module = "and", height = "maximize", online = F, url = "
     file.copy(file.path(offline_html_path, html), local_html)
   }
   
+  file <- readLines(file.path(tempdir(), "10714.html"))
+  urls <- grep(paste0(button_urls, ".*?\\.html"), file, value = T)
+  urls <- gsub(".*(https.*?\\.html).*", "\\1", urls)
+  dir.create(file.path(tempdir(), "doc"))
+  sapply(urls, function(x) download.file(x, file.path(tempdir(), "doc", gsub(".*/", "", x))))
+  file <- gsub(paste0("<iframe src=\"", button_urls), "<iframe src=\"doc/", file)
+  writeLines(file, local_html)
+  
   rstudioapi::navigateToFile(rmd)
   rstudioapi::viewer(local_html, height = height)
 }
+
 
