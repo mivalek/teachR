@@ -16,6 +16,8 @@ get.quick.com(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b
 \item{warn_col}{\code{numeric}. Hex code of colour for general comments.}
 
 \item{code_col}{\code{numeric}. Hex code of colour for comments in code.}
+
+\item{tabbed}{\code{logical}. Should sections be tabs (\code{TRUE}; default) or FAq-style buttons (\code{<details>})?}
 }
 \value{
 Function produces a HTML document saved in \code{output_dir}.

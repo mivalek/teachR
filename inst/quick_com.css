@@ -7,6 +7,20 @@ body {
 	background-color: #fafafadd;
 }
 
+h2 {
+    margin: 0;
+    height: 1px;
+}
+
+a {
+	color: #dc46dc;
+}
+
+a:focus, a:hover {
+	color: #21bdae;
+	outline: none;
+}
+
 .table > tbody > tr > td, .table > tbody > tr > th
 td {
     padding: 8px 5px;
@@ -220,4 +234,173 @@ details.code[open] {
 
 .btn.code {
 	background-color: rgb(var(--code-col));
+}
+
+.section.level3 {
+    border: solid 1px;
+    border-radius: 6px;
+	margin: 0 -5px;
+	padding: 0 5px;
+	background: white;
+}
+
+.nav-pills > li {
+    border: solid 1px;
+    border-radius: 6px;
+    border-bottom: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+	background: none;
+}
+
+.nav-pills > li.active, .nav-pills > li.active:hover {
+    background-color: white !important;
+    border-bottom: solid 1px white !important;
+    margin-bottom: -5px;
+}
+
+.nav-pills > li > a {
+	color: white;
+}
+
+.nav-pills > li.active > a, .nav-pills > li.active > a:focus, .nav-pills > li.active > a:hover {
+	background: none;
+}
+
+.nav > li > a:focus, .nav > li > a:hover {
+    text-decoration: none;
+	background: none;
+}
+
+.section.c1 {
+    border-color: rgb(var(--c1-col));
+}
+
+.nav-pills > li:nth-child(1) {
+    border-color: rgb(var(--c1-col));
+    background-color: rgb(var(--c1-col));
+}
+
+.nav-pills > li:nth-child(1):hover {
+    background-color: rgba(var(--c1-col), .3);
+}
+
+.nav-pills > li:nth-child(1).active > a,
+.nav-pills > li:nth-child(1) > a:hover,
+.nav-pills > li:nth-child(1).active > a:hover {
+    color: rgb(var(--c1-col));
+}
+
+.section.c2 {
+    border-color: rgb(var(--c2-col));
+}
+
+.nav-pills > li:nth-child(2) {
+    border-color: rgb(var(--c2-col));
+    background-color: rgb(var(--c2-col));
+}
+
+.nav-pills > li:nth-child(2):hover {
+    background-color: rgba(var(--c2-col), .3);
+}
+
+.nav-pills > li:nth-child(2).active > a,
+.nav-pills > li:nth-child(2) > a:hover,
+.nav-pills > li:nth-child(2).asctive > a:hover {
+    color: rgb(var(--c2-col));
+}
+
+.section.c3 {
+    border-color: rgb(var(--c3-col));
+}
+
+.nav-pills > li:nth-child(3) {
+    border-color: rgb(var(--c3-col));
+    background-color: rgb(var(--c3-col));
+}
+
+.nav-pills > li:nth-child(3):hover {
+    background-color: rgba(var(--c3-col), .3);
+}
+
+.nav-pills > li:nth-child(3).active > a,
+.nav-pills > li:nth-child(3) > a:hover,
+.nav-pills > li:nth-child(3).active > a:hover {
+    color: rgb(var(--c3-col));
+}
+
+.section.c4 {
+    border-color: rgb(var(--c4-col));
+}
+
+.nav-pills > li:nth-child(4) {
+    border-color: rgb(var(--c4-col));
+    background-color: rgb(var(--c4-col));
+}
+
+.nav-pills > li:nth-child(4):hover {
+    background-color: rgba(var(--c4-col), .3);
+}
+
+.nav-pills > li:nth-child(4).active > a,
+.nav-pills > li:nth-child(4) > a:hover,
+.nav-pills > li:nth-child(4).active > a:hover {
+    color: rgb(var(--c4-col));
+}
+
+.section.c5 {
+    border-color: rgb(var(--c5-col));
+}
+
+.nav-pills > li:nth-child(5) {
+    border-color: rgb(var(--c5-col));
+    background-color: rgb(var(--c5-col));
+}
+
+.nav-pills > li:nth-child(5):hover {
+    background-color: rgba(var(--c5-col), .3);
+}
+
+.nav-pills > li:nth-child(5).active > a,
+.nav-pills > li:nth-child(5) > a:hover,
+.nav-pills > li:nth-child(5).active > a:hover {
+    color: rgb(var(--c5-col));
+}
+
+.section.warn {
+    border-color: rgb(var(--warn-col));
+}
+
+.nav-pills > li:nth-child(6) {
+    border-color: rgb(var(--warn-col));
+    background-color: rgb(var(--warn-col));
+}
+
+.nav-pills > li:nth-child(6):hover {
+    background-color: rgba(var(--warn-col), .3);
+}
+
+.nav-pills > li:nth-child(6).active > a,
+.nav-pills > li:nth-child(6) > a:hover,
+.nav-pills > li:nth-child(6).active > a:hover {
+    color: rgb(var(--warn-col));
+}
+
+.section.code {
+    border-color: rgb(var(--code-col));
+}
+
+.nav-pills > li:nth-child(7) {
+    border-color: rgb(var(--code-col));
+    background-color: rgb(var(--code-col));
+}
+
+.nav-pills > li:nth-child(7):hover {
+    background-color: rgba(var(--code-col), .3);
+}
+
+.nav-pills > li:nth-child(7).active > a,
+.nav-pills > li:nth-child(7) > a:hover,
+.nav-pills > li:nth-child(7).active > a:hover {
+    color: rgb(var(--code-col));
 }

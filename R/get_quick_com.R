@@ -8,6 +8,7 @@
 #' @param output_dir \code{character}. Which study to get correct results for? Currently either \code{"red"} or \code{"green"}.
 #' @param warn_col \code{numeric}. Hex code of colour for general comments.
 #' @param code_col \code{numeric}. Hex code of colour for comments in code.
+#' @param tabbed \code{logical}. Should sections be tabs (\code{TRUE}; default) or FAq-style buttons (\code{<details>})?
 #' @return Function produces a HTML document saved in \code{output_dir}.
 #' @examples
 #' get.quick.com(csv_path = "https://docs.google.com/spreadsheets/d/19CXCZk28CQzX4MzQ86a5U-ijYQvP47x0mfX7pQk6KKo/export?gid=588770828&format=csv",
@@ -18,9 +19,13 @@
 #' 
 
 
-get.quick.com <- function(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2") {
+get.quick.com <- function(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2", tabbed = T) {
   q_com <- read.csv(csv_path, stringsAsFactors = F)
-  
+  if (grepl('^http', csv_path)) {
+    is.url <- T
+    if (grepl('google.com/spreadsheets', csv_path))
+      csv_path <- sub('export\\?(.*?)&format=csv', 'edit#\\1', csv_path)
+  }
   source(rubric, local = T)
   on.exit(rm(rubric))
   colors <- lapply(rubric, function(x)  paste(col2rgb(x$col), collapse=", "))
@@ -65,22 +70,46 @@ get.quick.com <- function(csv_path, rubric, output_dir, warn_col = "#f00000", co
     '',
     '\\ ',
     '',
-    '```{r, echo = F, results = "asis"}',
-    'for (i in 1:nrow(q_com)) {',
-    '  cat("<details class=\\"", q_com$tag[i],"\\"><summary>",',
-    '      criteria[i],',
-    '     "</summary>\n",', 
-    '      tabs[[i]],',
-    '      "\n</details>\n\n\\ \n\n", sep = "")',
-    '}',
-    '```',
+    if (is.url) 
+      paste0('Please feel free to add to quick comments [here](', csv_path, ').'),
+    '',
+    paste0('(Synced with `teachR::get.quick.com()` on ', sub("^0", "", format(Sys.Date(), "%d %B %Y")), '.)'),
+    '',
+    '\\ ',
+    '',
+    if (tabbed) {
+      c(
+        '## \\ {.tabset .tabset-pills}',
+        '',
+        '```{r, echo = F, results = "asis"}',
+        'for (i in 1:nrow(q_com)) {',
+        '  cat("### ", criteria[i], " {.", q_com$tag[i], "}",','"\n\n",',
+        '  tabs[[i]],',
+        '  "\n\n\\ \n\n", sep = "")',
+        '}',
+        '```',
+        ''
+      )
+    } else {
+      c(
+        '```{r, echo = F, results = "asis"}',
+        'for (i in 1:nrow(q_com)) {',
+        '  cat("<details class=\\"", q_com$tag[i],"\\"><summary>",',
+        '      criteria[i],',
+        '     "</summary>\n",', 
+        '      tabs[[i]],',
+        '      "\n</details>\n\n\\ \n\n", sep = "")',
+        '}',
+        '```'
+      )
+      },
     '',
     '\\ ',
     ''
   )
   
   writeLines(text, "quick_comments.Rmd")
-  on.exit(file.remove("quick_comments.Rmd"))
+  # on.exit(file.remove("quick_comments.Rmd"))
   
   rmarkdown::render("quick_comments.Rmd",
                     output_format = rmarkdown::html_document(css = paste0(path.package("teachR"), "/quick_com.css")),
