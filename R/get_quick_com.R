@@ -15,7 +15,7 @@
 #' rubric = "https://raw.githubusercontent.com/SussexPsychMethods/and_pub/master/marking/sussex_rubric.R",
 #' output_dir = "../mivalek_io/adata/marking/")
 #' @export get.quick.com
-#' @usage get.quick.com(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2, tabbed = T")
+#' @usage get.quick.com(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2", tabbed = T)
 #' 
 
 

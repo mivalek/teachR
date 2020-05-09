@@ -4,7 +4,7 @@
 \alias{get.quick.com}
 \title{Mark coursework assignment Rmd}
 \usage{
-get.quick.com(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2, tabbed = T")
+get.quick.com(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2", tabbed = T)
 }
 \arguments{
 \item{csv_path}{\code{character}. Path or URL of a csv file from which to extract quick comments.}
