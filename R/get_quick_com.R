@@ -9,17 +9,18 @@
 #' @param warn_col \code{numeric}. Hex code of colour for general comments.
 #' @param code_col \code{numeric}. Hex code of colour for comments in code.
 #' @param tabbed \code{logical}. Should sections be tabs (\code{TRUE}; default) or FAQ-style buttons (HTML \code{<details>})?
+#' @param keep_rmd \code{logical}. Should the source .Rmd file be kept (in working directory)? \code{FALSE} by default.
 #' @return Function produces a HTML document saved in \code{output_dir}.
 #' @examples
 #' get.quick.com(csv_path = "https://docs.google.com/spreadsheets/d/19CXCZk28CQzX4MzQ86a5U-ijYQvP47x0mfX7pQk6KKo/export?gid=588770828&format=csv",
 #' rubric = "https://raw.githubusercontent.com/SussexPsychMethods/and_pub/master/marking/sussex_rubric.R",
 #' output_dir = "../mivalek_io/adata/marking/")
 #' @export get.quick.com
-#' @usage get.quick.com(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2", tabbed = T)
+#' @usage get.quick.com(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2", tabbed = T, keep_rmd = F)
 #' 
 
 
-get.quick.com <- function(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2", tabbed = T) {
+get.quick.com <- function(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2", tabbed = T, keep_rmd = F) {
   q_com <- read.csv(csv_path, stringsAsFactors = F)
   if (grepl('^http', csv_path)) {
     is.url <- T
@@ -43,7 +44,7 @@ get.quick.com <- function(csv_path, rubric, output_dir, warn_col = "#f00000", co
            button =  paste0('<button class="btn ', tag,
                             '" data-clipboard-text="',
                             gsub('\"', '\'', markdown),
-                            '">Copy text</button>')) %>%
+                            '">Markdown</button>')) %>%
     dplyr::select(-markdown) %>%
     tidyr::nest(data = c(description, text, button))
   tabs <- q_com %>%
@@ -53,6 +54,58 @@ get.quick.com <- function(csv_path, rubric, output_dir, warn_col = "#f00000", co
         kableExtra::column_spec(1, width = "150px") %>%
         kableExtra::kable_styling(full_width = T)
     )
+  
+  styles <- c()
+  for (i in 1:nrow(q_com)) {
+    styles <- c(
+      styles,
+      if (tabbed) {
+        c(
+          paste0('.section.', q_com$tag[i], ' {'),
+          paste0('  border-color: rgb(var(--', q_com$tag[i], '-col));'),
+          '}',
+          '',
+          paste0('.nav-pills > li:nth-child(', i, ') {'),
+          paste0('  border-color: rgb(var(--', q_com$tag[i], '-col));'),
+          paste0('  background-color: rgb(var(--', q_com$tag[i], '-col));'),
+          '}',
+          '',
+          paste0('.nav-pills > li:nth-child(', i, '):hover {'),
+          paste0('  background-color: rgba(var(--', q_com$tag[i], '-col), .3);'),
+          '}',
+          paste0('.nav-pills > li:nth-child(', i, ').active > a,'),
+          paste0('.nav-pills > li:nth-child(', i, ') > a:hover,'),
+          paste0('.nav-pills > li:nth-child(', i, ').active > a:hover {'),
+          paste0('  color: rgb(var(--', q_com$tag[i], '-col));'),
+          '}',
+          '',
+          paste0('.btn.', q_com$tag[i], ' {'),
+          paste0('  background-color: rgb(var(--', q_com$tag[i], '-col));'),
+          '}'
+        )
+      } else {
+        c(
+          paste0('details.', q_com$tag[i], ' {'),
+          paste0('  background-color: rgb(var(--', q_com$tag[i], '-col));'),
+          '}',
+          '',
+          paste0('details.', q_com$tag[i], '[open] > summary {'),
+          paste0('  color: rgb(var(--', q_com$tag[i], '-col));'),
+          '}',
+          '',
+          paste0('details.', q_com$tag[i], '[open] {'),
+          paste0('  border-color: rgb(var(--', q_com$tag[i], '-col));'),
+          'background-color: white;',
+          '}',
+          '',
+          paste0('.btn.', q_com$tag[i], ' {'),
+          paste0('  background-color: rgb(var(--', q_com$tag[i], '-col));'),
+          '}'
+        )
+      }
+    )
+  }
+  
   text <- c(
     '---',
     'output: html_document',
@@ -64,6 +117,10 @@ get.quick.com <- function(csv_path, rubric, output_dir, warn_col = "#f00000", co
     ':root {',
     paste("    ", colors),
     '}',
+    '',
+    
+    '',
+    styles,
     '</style>',
     '',
     '\\ ',
@@ -109,7 +166,7 @@ get.quick.com <- function(csv_path, rubric, output_dir, warn_col = "#f00000", co
   )
   
   writeLines(text, "quick_comments.Rmd")
-  # on.exit(file.remove("quick_comments.Rmd"))
+  if (!keep_rmd) on.exit(file.remove("quick_comments.Rmd"))
   
   rmarkdown::render("quick_comments.Rmd",
                     output_format = rmarkdown::html_document(css = paste0(path.package("teachR"), "/quick_com.css")),

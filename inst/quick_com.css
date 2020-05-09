@@ -1,6 +1,7 @@
 
 .container-fluid.main-container {
-    max-width: 90%;
+    max-width: 95%;
+	padding: 0;
 }
 
 body {
@@ -83,6 +84,7 @@ details > summary::before {
 details[open] > summary {
     padding-bottom: 1em;
 	color: rgb(var(--font-col));
+	background-color: white;
 }
 
 .btn {
@@ -104,137 +106,6 @@ details[open] > summary {
     filter: opacity(70%);
 }
 
-details.c1 {
-    background-color: rgb(var(--c1-col));	
-}
-
-
-details.c1[open] > summary {
-	color: rgb(var(--c1-col));
-}
-
-details.c1[open] {
-	border-color: rgb(var(--c1-col));
-	background-color: white;
-}
-
-.btn.c1 {
-	background-color: rgb(var(--c1-col));
-}
-
-
-details.c2 {
-    background-color: rgb(var(--c2-col));	
-}
-
-
-details.c2[open] > summary {
-	color: rgb(var(--c2-col));
-}
-
-details.c2[open] {
-	border-color: rgb(var(--c2-col));
-	background-color: white;
-}
-
-.btn.c2 {
-	background-color: rgb(var(--c2-col));
-}
-
-
-details.c3 {
-    background-color: rgb(var(--c3-col));	
-}
-
-
-details.c3[open] > summary {
-	color: rgb(var(--c3-col));
-}
-
-details.c3[open] {
-	border-color: rgb(var(--c3-col));
-	background-color: white;
-}
-
-.btn.c3 {
-	background-color: rgb(var(--c3-col));
-}
-
-
-details.c4 {
-    background-color: rgb(var(--c4-col));	
-}
-
-
-details.c4[open] > summary {
-	color: rgb(var(--c4-col));
-}
-
-details.c4[open] {
-	border-color: rgb(var(--c4-col));
-	background-color: white;
-}
-
-.btn.c4 {
-	background-color: rgb(var(--c4-col));
-}
-
-
-details.c5 {
-    background-color: rgb(var(--c5-col));	
-}
-
-
-details.c5[open] > summary {
-	color: rgb(var(--c5-col));
-}
-
-details.c5[open] {
-	border-color: rgb(var(--c5-col));
-	background-color: white;
-}
-
-.btn.c5 {
-	background-color: rgb(var(--c5-col));
-}
-
-
-details.warn {
-    background-color: rgb(var(--warn-col));	
-}
-
-
-details.warn[open] > summary {
-	color: rgb(var(--warn-col));
-}
-
-details.warn[open] {
-	border-color: rgb(var(--warn-col));
-	background-color: white;
-}
-
-.btn.warn {
-	background-color: rgb(var(--warn-col));
-}
-
-
-details.code {
-    background-color: rgb(var(--code-col));	
-}
-
-
-details.code[open] > summary {
-	color: rgb(var(--code-col));
-}
-
-details.code[open] {
-	border-color: rgb(var(--code-col));
-	background-color: white;
-}
-
-.btn.code {
-	background-color: rgb(var(--code-col));
-}
 
 .section.level3 {
     border: solid 1px;
@@ -242,6 +113,11 @@ details.code[open] {
 	margin: 0 -5px;
 	padding: 0 5px;
 	background: white;
+}
+
+.nav > li {
+	max-width: calc(100%/7.2);
+    height: 40px;
 }
 
 .nav-pills > li {
@@ -256,7 +132,21 @@ details.code[open] {
 .nav-pills > li.active, .nav-pills > li.active:hover {
     background-color: white !important;
     border-bottom: solid 1px white !important;
-    margin-bottom: -5px;
+    margin-bottom: -1px;
+	height: 41px
+}
+
+.nav > li > a, .nav > li.active > a {
+	padding: 8px 12px;
+	text-align: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	height: 40px;
+}
+
+.nav-pills > li + li {
+    margin-left: 0;
 }
 
 .nav-pills > li > a {
@@ -272,135 +162,3 @@ details.code[open] {
 	background: none;
 }
 
-.section.c1 {
-    border-color: rgb(var(--c1-col));
-}
-
-.nav-pills > li:nth-child(1) {
-    border-color: rgb(var(--c1-col));
-    background-color: rgb(var(--c1-col));
-}
-
-.nav-pills > li:nth-child(1):hover {
-    background-color: rgba(var(--c1-col), .3);
-}
-
-.nav-pills > li:nth-child(1).active > a,
-.nav-pills > li:nth-child(1) > a:hover,
-.nav-pills > li:nth-child(1).active > a:hover {
-    color: rgb(var(--c1-col));
-}
-
-.section.c2 {
-    border-color: rgb(var(--c2-col));
-}
-
-.nav-pills > li:nth-child(2) {
-    border-color: rgb(var(--c2-col));
-    background-color: rgb(var(--c2-col));
-}
-
-.nav-pills > li:nth-child(2):hover {
-    background-color: rgba(var(--c2-col), .3);
-}
-
-.nav-pills > li:nth-child(2).active > a,
-.nav-pills > li:nth-child(2) > a:hover,
-.nav-pills > li:nth-child(2).asctive > a:hover {
-    color: rgb(var(--c2-col));
-}
-
-.section.c3 {
-    border-color: rgb(var(--c3-col));
-}
-
-.nav-pills > li:nth-child(3) {
-    border-color: rgb(var(--c3-col));
-    background-color: rgb(var(--c3-col));
-}
-
-.nav-pills > li:nth-child(3):hover {
-    background-color: rgba(var(--c3-col), .3);
-}
-
-.nav-pills > li:nth-child(3).active > a,
-.nav-pills > li:nth-child(3) > a:hover,
-.nav-pills > li:nth-child(3).active > a:hover {
-    color: rgb(var(--c3-col));
-}
-
-.section.c4 {
-    border-color: rgb(var(--c4-col));
-}
-
-.nav-pills > li:nth-child(4) {
-    border-color: rgb(var(--c4-col));
-    background-color: rgb(var(--c4-col));
-}
-
-.nav-pills > li:nth-child(4):hover {
-    background-color: rgba(var(--c4-col), .3);
-}
-
-.nav-pills > li:nth-child(4).active > a,
-.nav-pills > li:nth-child(4) > a:hover,
-.nav-pills > li:nth-child(4).active > a:hover {
-    color: rgb(var(--c4-col));
-}
-
-.section.c5 {
-    border-color: rgb(var(--c5-col));
-}
-
-.nav-pills > li:nth-child(5) {
-    border-color: rgb(var(--c5-col));
-    background-color: rgb(var(--c5-col));
-}
-
-.nav-pills > li:nth-child(5):hover {
-    background-color: rgba(var(--c5-col), .3);
-}
-
-.nav-pills > li:nth-child(5).active > a,
-.nav-pills > li:nth-child(5) > a:hover,
-.nav-pills > li:nth-child(5).active > a:hover {
-    color: rgb(var(--c5-col));
-}
-
-.section.warn {
-    border-color: rgb(var(--warn-col));
-}
-
-.nav-pills > li:nth-child(6) {
-    border-color: rgb(var(--warn-col));
-    background-color: rgb(var(--warn-col));
-}
-
-.nav-pills > li:nth-child(6):hover {
-    background-color: rgba(var(--warn-col), .3);
-}
-
-.nav-pills > li:nth-child(6).active > a,
-.nav-pills > li:nth-child(6) > a:hover,
-.nav-pills > li:nth-child(6).active > a:hover {
-    color: rgb(var(--warn-col));
-}
-
-.section.code {
-    border-color: rgb(var(--code-col));
-}
-
-.nav-pills > li:nth-child(7) {
-    border-color: rgb(var(--code-col));
-    background-color: rgb(var(--code-col));
-}
-
-.nav-pills > li:nth-child(7):hover {
-    background-color: rgba(var(--code-col), .3);
-}
-
-.nav-pills > li:nth-child(7).active > a,
-.nav-pills > li:nth-child(7) > a:hover,
-.nav-pills > li:nth-child(7).active > a:hover {
-    color: rgb(var(--code-col));
-}
