@@ -4,7 +4,7 @@
 \alias{get.quick.com}
 \title{Mark coursework assignment Rmd}
 \usage{
-get.quick.com(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2")
+get.quick.com(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2, tabbed = T")
 }
 \arguments{
 \item{csv_path}{\code{character}. Path or URL of a csv file from which to extract quick comments.}
@@ -17,7 +17,7 @@ get.quick.com(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b
 
 \item{code_col}{\code{numeric}. Hex code of colour for comments in code.}
 
-\item{tabbed}{\code{logical}. Should sections be tabs (\code{TRUE}; default) or FAq-style buttons (\code{<details>})?}
+\item{tabbed}{\code{logical}. Should sections be tabs (\code{TRUE}; default) or FAQ-style buttons (HTML \code{<details>})?}
 }
 \value{
 Function produces a HTML document saved in \code{output_dir}.

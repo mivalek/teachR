@@ -8,14 +8,14 @@
 #' @param output_dir \code{character}. Which study to get correct results for? Currently either \code{"red"} or \code{"green"}.
 #' @param warn_col \code{numeric}. Hex code of colour for general comments.
 #' @param code_col \code{numeric}. Hex code of colour for comments in code.
-#' @param tabbed \code{logical}. Should sections be tabs (\code{TRUE}; default) or FAq-style buttons (\code{<details>})?
+#' @param tabbed \code{logical}. Should sections be tabs (\code{TRUE}; default) or FAQ-style buttons (HTML \code{<details>})?
 #' @return Function produces a HTML document saved in \code{output_dir}.
 #' @examples
 #' get.quick.com(csv_path = "https://docs.google.com/spreadsheets/d/19CXCZk28CQzX4MzQ86a5U-ijYQvP47x0mfX7pQk6KKo/export?gid=588770828&format=csv",
 #' rubric = "https://raw.githubusercontent.com/SussexPsychMethods/and_pub/master/marking/sussex_rubric.R",
 #' output_dir = "../mivalek_io/adata/marking/")
 #' @export get.quick.com
-#' @usage get.quick.com(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2")
+#' @usage get.quick.com(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2, tabbed = T")
 #' 
 
 
