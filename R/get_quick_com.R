@@ -16,11 +16,11 @@
 #' rubric = "https://raw.githubusercontent.com/SussexPsychMethods/and_pub/master/marking/sussex_rubric.R",
 #' output_dir = "../mivalek_io/adata/marking/")
 #' @export get.quick.com
-#' @usage get.quick.com(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2", tabbed = T, keep_rmd = F)
+#' @usage get.quick.com(csv_path, rubric, output_dir, warn_col = "#cc0000", code_col = "#b38ed2", tabbed = T, keep_rmd = F)
 #' 
 
 
-get.quick.com <- function(csv_path, rubric, output_dir, warn_col = "#f00000", code_col = "#b38ed2", tabbed = T, keep_rmd = F) {
+get.quick.com <- function(csv_path, rubric, output_dir, warn_col = "#cc0000", code_col = "#b38ed2", tabbed = T, keep_rmd = F) {
   q_com <- read.csv(csv_path, stringsAsFactors = F)
   if (grepl('^http', csv_path)) {
     is.url <- T
@@ -108,11 +108,10 @@ get.quick.com <- function(csv_path, rubric, output_dir, warn_col = "#f00000", co
   
   text <- c(
     '---',
+    'pagetitle: "Quick Comments - AnD"',
     'output: html_document',
     '---',
     '',
-    paste0('<script src="', path.package("teachR"), '/clipboard.js-master/dist/clipboard.min.js"></script>'),
-    '<script>new ClipboardJS(".btn");</script>',
     '<style>',
     ':root {',
     paste("    ", colors),
@@ -169,7 +168,10 @@ get.quick.com <- function(csv_path, rubric, output_dir, warn_col = "#f00000", co
   if (!keep_rmd) on.exit(file.remove("quick_comments.Rmd"))
   
   rmarkdown::render("quick_comments.Rmd",
-                    output_format = rmarkdown::html_document(css = paste0(path.package("teachR"), "/quick_com.css")),
+                    output_format = rmarkdown::html_document(
+                      css = file.path(path.package("teachR"), "quick_com.css"),
+                      includes = rmarkdown::includes(
+                        before_body = file.path(path.package("teachR"), "copyClipboard.js"))),
                     output_dir = output_dir)
 }
 
