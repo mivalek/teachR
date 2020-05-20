@@ -118,11 +118,11 @@ make.paper <- function(items, code_file = NULL, output_format = "word", out_file
   }
   
   # format sinlge items
-  scoring_key <- tibble(q_num = numeric(0), correct = character(0))
+  scoring_key <- tibble(q_num = rep(NA_character_, nrow(items)), correct = rep(NA_character_, nrow(items)))
   for (i in 1:nrow(paper_qu)) {
     item <- teachR:::format_q(paper_qu[i, ], i, key = !sample, randomise_opts = randomise_response_opts)
     paper <- c(paper, "", item$item)
-    scoring_key[i, ] <- item$key
+    scoring_key[i, ] <- rbind(item$key)
   }
   
   # format multi-items
@@ -145,7 +145,7 @@ make.paper <- function(items, code_file = NULL, output_format = "word", out_file
       i <- i + 1
       item <- teachR:::format_q(temp[q, ], i, key = !sample, randomise_opts = randomise_response_opts)
       paper <- c(paper, item$item)
-      scoring_key[i, ] <- item$key
+      scoring_key[i, ] <- rbind(item$key)
     }
   }
   
