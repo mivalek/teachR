@@ -113,7 +113,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
   }
   
   if (count_words) {
-    if (!any(grepl(insert, ff, fixed = T))) {
+    if (!any(grepl("*** WORD LIMIT REACHED ***", ff, fixed = T))) {
       
       ff_edit <- ff
       
@@ -155,9 +155,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       cutoff_line <- cutoff[1]
       cutoff_word <- cutoff[2]
       
-      if (is.na(cutoff)[1]) {
-        out <- c(ff, fdbck)
-      } else {
+      if (!is.na(cutoff)[1]) {
         words <- words[grep(paste0("^", cutoff_line, "_"), names(words))]
         words_sane <- gsub(" ", "", gsub("([\\(\\[\\{\\*\\$\\.\\^\\#\\)\\}]|\\])", "\\\\ \\1", words))
         ptrn <- paste(words_sane[1:cutoff_word], collapse = "[[:punct:] ]*?")
@@ -165,12 +163,13 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
         ff[cutoff_line] <- sub(paste0("(", ptrn, ")"), "\\1\n", ff[cutoff_line])
         # split by \n again
         ff <- unlist(strsplit(paste(ff, collapse = "\n"), "\n"))
-        out <- c(ff[1:cutoff_line], insert, ff[(cutoff_line + 1):length(ff)], fdbck)
+        ff <- c(ff[1:cutoff_line], insert, ff[(cutoff_line + 1):length(ff)])
       }
-      
-      writeLines(out, out_file)
-      
-    } else writeLines(ff, out_file)
+    }
+    
+    if (!any(grepl('<div class="feedback">', ff))) ff <- c(ff, fdbck)
+    
+    writeLines(ff, out_file)
     
     rmarkdown::render(input = out_file,
                       output_format = rmarkdown::html_document(
@@ -260,17 +259,18 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
     
     writeLines(ff, out_file)
     
-    rmarkdown::render(input = out_file,
-                      output_format = rmarkdown::html_document(
-      toc = F,
-      code_folding = "hide",
-      highlight = "tango",
-      includes = rmarkdown::includes(after_body = paste0(path.package("teachR"), "/feedback.css"))),
+    rmarkdown::render(
+      input = out_file,
+      output_format = rmarkdown::html_document(
+        toc = F,
+        code_folding = "hide",
+        highlight = "tango",
+        includes = rmarkdown::includes(after_body = paste0(path.package("teachR"), "/feedback.css"))),
       envir = new.env()
     )
   } else {
-    out <- c(ff, fdbck)
-    writeLines(out, out_file)
+    if (!any(grepl('<div class="feedback">', ff))) ff <- c(ff, fdbck)
+    writeLines(ff, out_file)
     rmarkdown::render(input = out_file,
                       output_format = rmarkdown::html_document(
                         toc = F,
