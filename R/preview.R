@@ -51,7 +51,8 @@ preview <- function(file, rubric_url = "https://raw.githubusercontent.com/Sussex
   } else if (length(green) != 0) study <- "green"
   
   
-  eval(parse(text = grep("candidate_number", r_code, value = T)))
+  eval(parse(text = grep("candidate_number", r_code, value = T)), envir = globalenv())
+  on.exit(rm("candidate_number", "rubric", envir = globalenv()), add = T)
   
   html <- sub("\\.rmd$", "_marked.html", fname, ignore.case = T)
    
