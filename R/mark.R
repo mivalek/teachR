@@ -22,16 +22,17 @@
 #' @param format_comments \code{logical}. If \code{TRUE} (default), comments in code chunks will be formatted in line with other marker comments.
 #' @param collapse_chunks \code{logical}. If \code{TRUE} and  \code{feedback = TRUE}, adjacent code chunks will be collapsed into one to prevent multiple "code" buttons stacked on top of one another in rendered HTML. \code{FALSE} by default.
 #' @param color \code{character}. Single valid colour string (hex code or any of the values in \code{colours()}). 
-#' @param text Alternative way of providing input from object rather than file. Requires \code{file_name=} 
+#' @param text Alternative way of providing input from object rather than file. Requires \code{file_name=}
 #' @param install_missing_pkgs \code{logical}. Should packages loaded in reports but not installed on marker's machine be installed? \code{FALSE} by default.
 #' @param installed_pkgs \code{character}. Vector of installed packages. See Details.
+#' @param preview \code{logical}. If \code{TRUE} additional marking tools will be provided even for \code{feedback = T} (see details)? This is only intended to be used by \code{teachR::preview()}. \code{FALSE} by default.
 #' @details Function run with \code{feedback = FALSE} will overwrite the original Rmd file and knit it into HTML. This should be done before marking in order to automate word count, include correct results, and additional marking tools (see \code{rubric_url}, \code{flowchart_url}, and \code{quick_comment_url}). The overwritten Rmd should then be used for comments and feedback. Once done, \code{mark(feedback = TRUE)} should be run on the edited Rmd. This will output a ..._marked.html file that can be returned to students.
 #' 
 #'Initial run of \code{mark(feedback=F)} inserts an empty feedback section into Rmd with three placeholders: THE GOOD, THE BAD, and RECOMMENDATIONS. These are then replaced with boilerplate text passed to \code{fdbck_boiler_text}. If the argument is not used, function defualts to using text in \code{file.path(path.package("teachR"), "fdbck_boilerplate.txt")}. Any external file passed to the argument should follow the same structure.
 #' 
 #' If \code{install_missing_pkgs == TRUE} and \code{installed_pkgs} is \code{NULL}, a vector of installed packages will be retrieved internally. This will slow things down if the function is run iteratively so it's best to provide \code{installed_pkgs}.
 #' 
-#' In-text comments can be inserted into .Rmd file on a lew line surrounded by <--/tag/ -->, where /tag/ is one of: warn, c1, c2, c3, c4, c5.
+#' In-text comments can be inserted into .Rmd file on a lew line surrounded by <--!/tag/ -->, where /tag/ is one of: warn, c1, c2, c3, c4, c5.
 #' @return If output .Rmd and .html files were successfully created and if \code{count_words == TRUE}, returns list of \code{$word_count} and \code{$rendered=TRUE}. If \code{count_words == FALSE}, only returns a single \code{TRUE}. Otherwise returns an error.
 #' @examples
 #' # first run
@@ -46,7 +47,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
                  rubric_url = NULL, flowchart_url = NULL, quick_comment_url = NULL,
                  count_words = !feedback, limit = 2000,
                  include_results = F, results_obj = NULL, format_comments = T, collapse_chunks = F,
-                 color = "#b38ed2", text = NULL, install_missing_pkgs = F, installed_pkgs = NULL) {
+                 color = "#b38ed2", text = NULL, install_missing_pkgs = F, installed_pkgs = NULL, preview = F) {
   
   if (is.null(file)) {
     if (!is.null(text)) {
@@ -200,9 +201,6 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
               "\\1\\2T, results='hide', fig.show='hide'", ff)
     
     
-    # replace comment mkd with html tags
-    ff <- gsub("<--([a-z0-9]*)\\s(.*?)-->", "<\\1>\\2</\\1>", ff)
-  
     boiler <- if (is.null(fdbck_boiler_text)) {
       readLines(file.path(path.package("teachR"), "fdbck_boilerplate.txt"))
     } else readLines(fdbck_boiler_text)
@@ -239,6 +237,10 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
     ff[grep("<!-- THE GOOD", ff)] <- paste(good_text, collapse = "\n")
     ff[grep("<!-- THE BAD", ff)] <- paste(bad_text, collapse = "\n")
     ff[grep("<!-- RECOMMEND", ff)] <- paste(recom_text, collapse = "\n")
+    
+    # replace comment mkd with html tags
+    ff <- gsub("<--([a-z0-9]*)\\s(.*?)-->", "<\\1>\\2</\\1>", ff) # legacy markdown
+    ff <- gsub("<!--([a-z0-9]*)\\s(.*?)-->", "<\\1>\\2</\\1>", ff)
     
     if (collapse_chunks) {
       ff <- paste(ff, collapse = "-*-")
@@ -330,7 +332,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       test_res,
       "</div>",
       "</div>",
-      if (!feedback) {
+      if (!feedback | preview) {
         c("<div class=\"rubric\">",
           "<details>",
           "<summary><img src=\"https://raw.githubusercontent.com/mivalek/mivalek.github.io/master/img/rubric.png\" width=\"25px\" height=\"22px\"></summary>",

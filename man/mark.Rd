@@ -26,7 +26,8 @@ mark(
   color = "#b38ed2",
   text = NULL,
   install_missing_pkgs = F,
-  installed_pkgs = NULL
+  installed_pkgs = NULL,
+  preview = F
 )
 }
 \arguments{
@@ -72,6 +73,8 @@ mark(
 
 \item{installed_pkgs}{\code{character}. Vector of installed packages. See Details.}
 
+\item{preview}{\code{logical}. If \code{TRUE} additional marking tools will be provided even for \code{feedback = T} (see details)? This is only intended to be used by \code{teachR::preview()}. \code{FALSE} by default.}
+
 \item{rubric_grades.}{Mark for each rubric criterion. Can be a factor with levels sorted from lowest mark to highest mark. See \code{rubric} and \code{include_rubric_desc} for more info.}
 }
 \value{
@@ -87,7 +90,7 @@ Initial run of \code{mark(feedback=F)} inserts an empty feedback section into Rm
 
 If \code{install_missing_pkgs == TRUE} and \code{installed_pkgs} is \code{NULL}, a vector of installed packages will be retrieved internally. This will slow things down if the function is run iteratively so it's best to provide \code{installed_pkgs}.
 
-In-text comments can be inserted into .Rmd file on a lew line surrounded by <--/tag/ -->, where /tag/ is one of: warn, c1, c2, c3, c4, c5.
+In-text comments can be inserted into .Rmd file on a lew line surrounded by <--!/tag/ -->, where /tag/ is one of: warn, c1, c2, c3, c4, c5.
 }
 \examples{
 # first run
