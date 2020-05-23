@@ -685,12 +685,12 @@ summary > img {
 	}
 	
 	.sidebar1 {
-		position: absolute;
-		top: 10px;
-		left:0;
-		height: 100%;
-		width: 100%;
-		min-height: 5000px;
+		position: fixed;
+		top: 20px;
+		left: 30px;
+		height: max-content;
+		width: calc(100vw - 76px);
+		min-height: 0;
 	}
 	
 	.results-container {
