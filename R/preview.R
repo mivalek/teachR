@@ -66,7 +66,8 @@ preview <- function(file, rubric_url = "https://raw.githubusercontent.com/Sussex
        install_missing_pkgs = F, collapse_chunks = T,
        rubric_url = rubric_btn_url,
        flowchart_url = flowchart_url,
-       quick_comment_url = quick_comment_url)
+       quick_comment_url = quick_comment_url,
+       preview = T)
   
   knitted <- readLines(html)
   urls <- grep(paste0(button_urls, ".*?\\.html"), knitted, value = T)
