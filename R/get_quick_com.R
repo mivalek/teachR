@@ -46,12 +46,12 @@ get.quick.com <- function(csv_path, rubric, output_dir, warn_col = "#cc0000", co
                             gsub('\"', '\'', markdown),
                             '">Markdown</button>')) %>%
     dplyr::select(-markdown) %>%
-    tidyr::nest(data = c(description, text, button))
+    tidyr::nest(data = c(section, description, text, button))
   tabs <- q_com %>%
     purrr::pmap(function(tag, data)
       data %>%
-        kableExtra::kable(col.names = c("Description", "Text", ""), escape = F, align = "llr", padding = "2px") %>%
-        kableExtra::column_spec(1, width = "150px") %>%
+        kableExtra::kable(col.names = c("Section", "Description", "Text", ""), escape = F, align = "lllr", padding = "2px") %>%
+        kableExtra::column_spec(2, width = "150px") %>%
         kableExtra::kable_styling(full_width = T)
     )
   
