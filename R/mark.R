@@ -240,7 +240,8 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
     
     # replace comment mkd with html tags
     ff <- gsub("<--([a-z0-9]*)\\s(.*?)-->", "<\\1>\\2</\\1>", ff) # legacy markdown
-    ff <- gsub("<!--([a-z0-9]*)\\s(.*?)-->", "<\\1>\\2</\\1>", ff)
+    ff <- gsub("<!--(c\\d)\\s(.*?)-->", "<\\1>\\2</\\1>", ff)
+    ff <- gsub("<!--warn\\s(.*?)-->", "<warn>\\1</warn>", ff)
     
     if (collapse_chunks) {
       ff <- paste(ff, collapse = "-*-")
