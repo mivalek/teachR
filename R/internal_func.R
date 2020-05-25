@@ -153,6 +153,8 @@ res <- function(study = NA, cand_no = candidate_number) {
     typo_cond <- grep(paste(groups, collapse = "|"), unique(data$condition),
                       invert = T, value = T)
     
+    # hacky patch to get round the problem that as.numeric("3e") is 3
+    data$age <- gsub("(\\d*)e", "\\1r", data$age)
     out <- list(
       rem_age_na = sum(is.na(data$age)),
       rem_age_typo = length(grep("[A-z]", data$age, value = T)),
