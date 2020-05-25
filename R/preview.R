@@ -26,7 +26,7 @@ preview <- function(file, rubric_url = "https://raw.githubusercontent.com/Sussex
   
   # cand no must be in global env for knitting
   file <- ifelse(grepl("\\.rmd$", file, ignore.case = T), file, 
-                paste0(id, ".Rmd"))
+                paste0(file, ".Rmd"))
   if (!file.exists(file)) 
     stop(paste0("Can't find ", file, ". Did you set working directory?"))
   
