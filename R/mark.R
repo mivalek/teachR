@@ -290,7 +290,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       pre_setup_opts,
       '```',
       '',
-      '```{r pre-setup, include = T, eval = F, echo = T}',
+      '```{r user-setup, include = T, eval = F, echo = T}',
       user_chunk_opts,
       '```',
       '',
