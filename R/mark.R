@@ -184,7 +184,10 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
     
     ### EDIT CHUNK OPTS
     # get user-defined chunk options
-    pre_setup_opts <- user_chunk_opts <- grep("opts_chunk\\$set\\(", ff, value=T)
+    chunk_opts_line <- grep("opts_chunk\\$set\\(", ff)
+    pre_setup_opts <- user_chunk_opts <- ff[chunk_opts_line]
+    
+    ff[chunk_opts_line] <- ""
     
     if (any(grepl("include\\s*=\\s*F", user_chunk_opts))) {
       # change all include=T to results='markup'
@@ -196,6 +199,8 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
         ff[results_conflict] <- gsub(", results='markup'", "", ff[results_conflict])
       }
     }
+    
+    
     
     # # if chunk opts set to include=F
     # if (any(grepl("opts_chunk\\$set\\(.*?include\\s*=\\s*F", ff))) {
