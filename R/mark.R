@@ -181,14 +181,14 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
                       envir = new.env())
     
   } else if (feedback) {
-    # get user-defined chunk options
-    user_chunk_opts <- grep("opts_chunk\\$set\\(", ff, value=T)
     
     ### EDIT CHUNK OPTS
-    # if chunk opts set to include=F
-    if (any(grepl("opts_chunk\\$set\\(.*?include\\s*=\\s*F", ff))) {
+    # get user-defined chunk options
+    pre_setup_opts <- user_chunk_opts <- grep("opts_chunk\\$set\\(", ff, value=T)
+    
+    if (any(grepl("include\\s*=\\s*F", user_chunk_opts))) {
       # change all include=T to results='markup'
-      ff <- sub("(include\\s*=\\s*)TRUE|(include\\s*=\\s*)T", "\\1\\2T, results='markup', fig.show='asis'", ff)
+      pre_setup_opts <- sub("(include\\s*=\\s*)TRUE|(include\\s*=\\s*)T", "\\1\\2T, results='markup', fig.show='asis'", user_chunk_opts)
       # identify chunks with BOTH results='markup' and results='asis' due to line above
       results_conflict <- base::intersect(grep("results='markup'", ff), grep("results\\s*=\\s*['\"]asis", ff))
       if (length(results_conflict) > 0) {
@@ -196,6 +196,18 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
         ff[results_conflict] <- gsub(", results='markup'", "", ff[results_conflict])
       }
     }
+    
+    # # if chunk opts set to include=F
+    # if (any(grepl("opts_chunk\\$set\\(.*?include\\s*=\\s*F", ff))) {
+    #   # change all include=T to results='markup'
+    #   ff <- sub("(include\\s*=\\s*)TRUE|(include\\s*=\\s*)T", "\\1\\2T, results='markup', fig.show='asis'", ff)
+    #   # identify chunks with BOTH results='markup' and results='asis' due to line above
+    #   results_conflict <- base::intersect(grep("results='markup'", ff), grep("results\\s*=\\s*['\"]asis", ff))
+    #   if (length(results_conflict) > 0) {
+    #     # delete results='markup' from those
+    #     ff[results_conflict] <- gsub(", results='markup'", "", ff[results_conflict])
+    #   }
+    # }
     
     # change all echo=F to echo=T
     ff <- sub("(echo\\s*=\\s*)FALSE|(echo\\s*=\\s*)F", "\\1\\2T", ff)
@@ -270,6 +282,10 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       ff[1:yaml_end],
       '',
       '```{r pre-setup, include = F}',
+      pre_setup_opts,
+      '```',
+      '',
+      '```{r pre-setup, include = T, eval = F, echo = T}',
       user_chunk_opts,
       '```',
       '',
