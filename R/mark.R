@@ -265,13 +265,14 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
     
     # identifies line with second instance of "---"
     # if there's only one instance, it picks that one
-    yaml_end <- rev(na.omit(grep("^\\s*---\\s*$", ff))[1:2]))[1]
+    yaml_end <- rev(na.omit(grep("^\\s*---\\s*$", ff)[1:2]))[1]
     ff <- c(
       ff[1:yaml_end],
       '',
       '```{r pre-setup, include = F}',
       user_chunk_opts,
       '```',
+      '',
       ff[c(yaml_end + 1):length(ff)]
     )
     
