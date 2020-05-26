@@ -696,7 +696,7 @@ summary > img {
 	.results-container {
 		overflow-x: auto;
 		overflow-y: hidden;
-		position: sticky;
+		position: initial;
 		background-color: white;
 		z-index: 2;
 	}
