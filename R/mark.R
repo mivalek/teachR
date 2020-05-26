@@ -181,6 +181,9 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
                       envir = new.env())
     
   } else if (feedback) {
+    # get user-defined chunk options
+    user_chunk_opts <- grep("opts_chunk\\$set\\(", ff, value=T)
+    
     ### EDIT CHUNK OPTS
     # if chunk opts set to include=F
     if (any(grepl("opts_chunk\\$set\\(.*?include\\s*=\\s*F", ff))) {
@@ -259,6 +262,18 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
               ff[chunk_1[2]:length(ff)])
       
     }
+    
+    # identifies line with second instance of "---"
+    # if there's only one instance, it picks that one
+    yaml_end <- rev(na.omit(grep("^\\s*---\\s*$", ff))[1:2]))[1]
+    ff <- c(
+      ff[1:yaml_end],
+      '',
+      '```{r pre-setup, include = F}',
+      user_chunk_opts,
+      '```',
+      ff[c(yaml_end + 1):length(ff)]
+    )
     
     writeLines(ff, out_file)
     
