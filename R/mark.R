@@ -185,7 +185,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
     # if chunk opts set to include=F
     if (any(grepl("opts_chunk\\$set\\(.*?include\\s*=\\s*F", ff))) {
       # change all include=T to results='markup'
-      ff <- sub("(include\\s*=\\s*)TRUE|(include\\s*=\\s*)T", "\\1\\2T, results='markup'", ff)
+      ff <- sub("(include\\s*=\\s*)TRUE|(include\\s*=\\s*)T", "\\1\\2T, results='markup', fig.show='asis'", ff)
       # identify chunks with BOTH results='markup' and results='asis' due to line above
       results_conflict <- base::intersect(grep("results='markup'", ff), grep("results\\s*=\\s*['\"]asis", ff))
       if (length(results_conflict) > 0) {
