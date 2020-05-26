@@ -15,7 +15,8 @@
 #' @export
 #' 
 
-preview <- function(file, rubric_url = "https://raw.githubusercontent.com/SussexPsychMethods/and_pub/master/marking/sussex_rubric.R",
+preview <- function(file, show_rmd = F,
+                    rubric_url = "https://raw.githubusercontent.com/SussexPsychMethods/and_pub/master/marking/sussex_rubric.R",
                     fdbck_boiler_text = "https://raw.githubusercontent.com/SussexPsychMethods/and_pub/master/marking/fdbck_boilerplate.txt",
                     install_missing_pkgs = F,
                     rubric_btn_url = "https://mivalek.github.io/adata/marking/rubric_and_criteria_faq.html",
@@ -79,4 +80,6 @@ preview <- function(file, rubric_url = "https://raw.githubusercontent.com/Sussex
                   knitted)
   writeLines(knitted, html)
   rstudioapi::viewer(html, height = height)
+  setwd(wd_restore)
+  rstudioapi::navigateToFile(file)
 }
