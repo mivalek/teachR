@@ -191,7 +191,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
     
     if (any(grepl("include\\s*=\\s*F", user_chunk_opts))) {
       # change all include=T to results='markup'
-      pre_setup_opts <- sub("(include\\s*=\\s*)TRUE|(include\\s*=\\s*)T", "\\1\\2T, results='markup', fig.show='asis'", user_chunk_opts)
+      ff <- sub("(include\\s*=\\s*)TRUE|(include\\s*=\\s*)T", "\\1\\2T, results='markup', fig.show='asis'", ff)
       # identify chunks with BOTH results='markup' and results='asis' due to line above
       results_conflict <- base::intersect(grep("results='markup'", ff), grep("results\\s*=\\s*['\"]asis", ff))
       if (length(results_conflict) > 0) {
@@ -219,7 +219,12 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
     # change all include=F to include=T, results='hide', fig.show='hide'
     ff <- sub("(include\\s*=\\s*)FALSE|(include\\s*=\\s*)F",
               "\\1\\2T, results='hide', fig.show='hide'", ff)
-    
+    # do the same in pre-setup chunk
+    # change all echo=F to echo=T
+    pre_setup_opts <- sub("(echo\\s*=\\s*)FALSE|(echo\\s*=\\s*)F", "\\1\\2T", pre_setup_opts)
+    # change all include=F to include=T, results='hide', fig.show='hide'
+    pre_setup_opts <- sub("(include\\s*=\\s*)FALSE|(include\\s*=\\s*)F",
+              "\\1\\2T, results='hide', fig.show='hide'", pre_setup_opts)
     
     boiler <- if (is.null(fdbck_boiler_text)) {
       readLines(file.path(path.package("teachR"), "fdbck_boilerplate.txt"))
