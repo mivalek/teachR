@@ -293,6 +293,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       '',
       '```{r pre-setup, include = F}',
       pre_setup_opts,
+      'knitr::opts_chunk$set(error = T)',
       '```',
       '',
       '```{r user-setup, include = T, eval = F, echo = T}',
