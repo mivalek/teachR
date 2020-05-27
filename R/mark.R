@@ -297,7 +297,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       'knitr::knit_hooks$set(',
       '  evaluate.inline = function (code, envir = knit_global()) {',
       '   v = try(eval(xfun::parse_only(code), envir = envir))',
-      '    if (class(v)[1] == "try-error") v <- structure(sub(".*?:\\s*(.*)\\n$", "\\1", v), call=code)',
+      '    if (class(v)[1] == "try-error") v <- structure(sub(".*?:\\\\s*(.*)\\\\n$", "\\\\1", v), call=code)',
       '  knitr::knit_print(v, inline = TRUE, options = knitr::opts_chunk$get())',
       '  },',
       ' inline = function(x) {',
