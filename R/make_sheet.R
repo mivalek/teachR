@@ -135,6 +135,14 @@ make.sheet <- function(file, course, solution = FALSE, handout = FALSE, tasks_to
     x[begin_toggle] <- "<details><summary>Solution</summary>"
     x[end_toggle] <- gsub("\\s*-->\\s*$", "</details>", x[end_toggle])
     
+    ### hint button formatting
+    hint <- grep("<!--\\s*hint", x[begin_comment])
+    begin_hint <- begin_comment[hint]
+    end_hint <- end_comment[hint]
+    
+    x[begin_hint] <- "<details class='hint'><summary>Hint</summary>"
+    x[end_hint] <- gsub("\\s*-->\\s*$", "</details>", x[end_hint])
+    
     sol <- grep("<!--\\s*solution|<!--\\s*write.?up", x[begin_comment])
     begin_comment <- begin_comment[sol]
     end_comment <- end_comment[sol]
@@ -188,6 +196,15 @@ make.sheet <- function(file, course, solution = FALSE, handout = FALSE, tasks_to
     "      paste0('<details><summary>Solution</summary>')",
     "    } else {",
     "      paste0('</details>')",
+    "    }",
+    "  }",
+    "},",
+    "                     copy = function(before, options, envir){",
+    "  if (options$copy) {",
+    "    if (before){",
+    "      paste0('<div class=\"copy\" onclick=\"copyCode(this)\">')",
+    "    } else {",
+    "      paste0('</div>')",
     "    }",
     "  }",
     "})",
@@ -269,7 +286,9 @@ make.sheet <- function(file, course, solution = FALSE, handout = FALSE, tasks_to
       output_format = html_document(
         toc = toc, toc_depth = toc_depth, toc_float = toc_float,
         fig_width = fig_width, fig_height = fig_height, highlight = highlight,
-        includes = includes(after_body = c(css, js)),# md_extensions = "+fenced_code_attributes",
+        includes = includes(before_body = file.path(path.package("teachR"), 
+                                                    "copyClipboard.js"),
+                            after_body = c(css, js)),# md_extensions = "+fenced_code_attributes",
         ...
     ),
     intermediates_dir = tempdir())

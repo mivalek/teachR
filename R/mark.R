@@ -296,12 +296,13 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       'knitr::opts_chunk$set(error = T)',
       'knitr::knit_hooks$set(',
       '  evaluate.inline = function (code, envir = knit_global()) {',
-      '   v = try(eval(xfun::parse_only(code), envir = envir))',
-      '    if (class(v)[1] == "try-error") v <- structure(sub(".*?:\\\\s*(.*)\\\\n$", "\\\\1", v), call=code)',
+      '   v = tryCatch(eval(xfun::parse_only(code), envir = envir),',
+      '         error = function(e) structure(conditionMessage(e), class="try-error", call="code"))',
+      '    if (inherits(v, "try-error")) v <- gsub("<text>:\\\\d+:\\\\d+: |\\\\n\\\\d+|\\\\n\\\\s*\\\\^", "", v)',
       '  knitr::knit_print(v, inline = TRUE, options = knitr::opts_chunk$get())',
       '  },',
       ' inline = function(x) {',
-      '    if (any(class(x) == "try-error")) {',
+      '    if (inherits(x, "try-error")) {',
       '     paste0("<warn>In-line code error in <code>", attr(x, "call"), ": ", as.vector(x), "</code>.</warn>")',
       '    } else if(!(is.vector(x) | is.matrix(x))) {',
       '     "<warn>This kind of object is not appropriate for in-line code</warn>"',
@@ -341,6 +342,36 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
   
   ### add HTML magic
   out <- readLines(sub("[Rr]md$", "html", out_file))
+  
+  if (!feedback | preview) {
+    icons <- c(
+      "<div class=\"rubric\">",
+      "<details>",
+      "<summary><img src=\"https://raw.githubusercontent.com/mivalek/mivalek.github.io/master/img/rubric.png\" width=\"25px\" height=\"22px\"></summary>",
+      paste0("<iframe src=\"", rubric_url, "\"></iframe>"),
+      "</details>",
+      "</div>",
+      if (!is.null(flowchart_url)) {
+        c("<div class=\"flow second\">",
+          "<details>",
+          "<summary><img src=\"https://raw.githubusercontent.com/mivalek/mivalek.github.io/master/img/flowchart.png\" width=\"25px\" height=\"22px\"></summary>",
+          ifelse(grepl("html$", flowchart_url),
+                 paste0("<iframe src=\"", flowchart_url, "\"></iframe>"),
+                 paste0("<img src=\"", flowchart_url, "\"></img>")),
+          "</details>",
+          "</div>")
+      },
+      if (!is.null(quick_comment_url)) {
+        c(paste0("<div class=\"quick-com ", ifelse(is.null(flowchart_url), "second", "third"), "\">"),
+          "<details>",
+          "<summary><img src=\"https://raw.githubusercontent.com/mivalek/mivalek.github.io/master/img/comment.png\" width=\"25px\" height=\"22px\"></summary>",
+          paste0("<iframe src=\"", quick_comment_url, "\"></iframe>"),
+          "</details>",
+          "</div>")
+      }
+    )
+  }
+  
   if (include_results) {
     if (study == "green") {
       chisq_res <- list()
@@ -366,59 +397,39 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
     res <- c(
       "<div class=\"sidebar1\">",
       "<div class=\"results-container\">",
-      "<div class=\"results\">",
-      "<div class=\"results-item item1\">",
-      "<p><strong><em>N</em> removed NAs:</strong> ", results_obj$rem_age_na, "</p>",
-      if (study == "red") "<p><strong><em>N</em> removed typo:</strong> ", results_obj$rem_age_typo, "</p>",
-      "<p><strong><em>N</em> removed &lt;18:</strong> ", results_obj$rem_age_young, "</p>",
-      if (study == "green") "<p><strong>Correct typo age:</strong> ", results_obj$correct_age, "</p>",
-      "<p><strong><em>N</em> total clean:</strong> ", results_obj$n_clean, "</p>",
-      "</div>",
-      "<div class=\"results-item item2\">",
-      results_obj$cond_desc_tab,
-      "</div>",
-      if (study == "green") {
-        c("<div class=\"results-item item3\">",
-          results_obj$gen_desc_tab,
+        c(
+          "<div class=\"results\">",
+          "<div class=\"results-item item1\">",
+          "<p><strong><em>N</em> removed NAs:</strong> ", results_obj$rem_age_na, "</p>",
+          if (study == "red") "<p><strong><em>N</em> removed typo:</strong> ", results_obj$rem_age_typo, "</p>",
+          "<p><strong><em>N</em> removed &lt;18:</strong> ", results_obj$rem_age_young, "</p>",
+          if (study == "green") "<p><strong>Correct typo age:</strong> ", results_obj$correct_age, "</p>",
+          "<p><strong><em>N</em> total clean:</strong> ", results_obj$n_clean, "</p>",
           "</div>",
-          "<div class=\"results-item item4\">")
-      } else if (study == "red") {
-        "<div class=\"results-item item3\">"
-      },
-      "<p><strong>Main analysis results</strong></p>",
-      test_res,
-      "</div>",
-      "</div>",
-      if (!feedback | preview) {
-        c("<div class=\"rubric\">",
-          "<details>",
-          "<summary><img src=\"https://raw.githubusercontent.com/mivalek/mivalek.github.io/master/img/rubric.png\" width=\"25px\" height=\"22px\"></summary>",
-          paste0("<iframe src=\"", rubric_url, "\"></iframe>"),
-          "</details>",
+          "<div class=\"results-item item2\">",
+          results_obj$cond_desc_tab,
           "</div>",
-          if (!is.null(flowchart_url)) {
-            c("<div class=\"flow second\">",
-              "<details>",
-              "<summary><img src=\"https://raw.githubusercontent.com/mivalek/mivalek.github.io/master/img/flowchart.png\" width=\"25px\" height=\"22px\"></summary>",
-              ifelse(grepl("html$", flowchart_url),
-                     paste0("<iframe src=\"", flowchart_url, "\"></iframe>"),
-                     paste0("<img src=\"", flowchart_url, "\"></img>")),
-              "</details>",
-              "</div>")
+          if (study == "green") {
+            c("<div class=\"results-item item3\">",
+              results_obj$gen_desc_tab,
+              "</div>",
+              "<div class=\"results-item item4\">")
+          } else if (study == "red") {
+            "<div class=\"results-item item3\">"
           },
-          if (!is.null(quick_comment_url)) {
-            c(paste0("<div class=\"quick-com ", ifelse(is.null(flowchart_url), "second", "third"), "\">"),
-              "<details>",
-              "<summary><img src=\"https://raw.githubusercontent.com/mivalek/mivalek.github.io/master/img/comment.png\" width=\"25px\" height=\"22px\"></summary>",
-              paste0("<iframe src=\"", quick_comment_url, "\"></iframe>"),
-              "</details>",
-              "</div>")
-          }
-        )
+          "<p><strong>Main analysis results</strong></p>",
+          test_res,
+          "</div>",
+          "</div>"
+        ),
+      if (!feedback | preview) {
+        icons
       },
       "</div>",
       "</div>"
     )
+  } else  if (!feedback | preview) {
+    res <- c("<div class=\"sidebar1\">", icons, "</div>")
   } else res <- ""
   
   rub_desc <- rub_grades <- rubric_vars <- c()
@@ -448,13 +459,15 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
   out <- c(out[1:(style_end - 1)],
            ":root {",
            paste0("  --res-width: ",
-                  if (study == "green") {
+                  if (!include_results | is.null(study)) {
+                    605
+                  } else if (study == "green") {
                     745
                   } else if (study == "red") {
                     605
                   }, "px;"),
            paste0("  --res-offset: ",
-                  if (!include_results) {
+                  if (!include_results | is.null(study)) {
                     0
                   } else if (study == "green") {
                     280
