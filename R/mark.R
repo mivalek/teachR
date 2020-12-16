@@ -141,6 +141,15 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       # remove YAML header
       ff_edit <- ff_edit[-c(1:grep("^\\s*---", ff_edit)[2])]
       
+      # remove abstract if present
+      abstract <- grepl("^\\s*#+\\s*abstract", ff_edit, ignore.case = T)
+      if (any(abstract)) {
+        abstract_heading <- which(abstract)
+        headings <- grep("^\\s*#+", ff_edit)
+        abstract_end <- headings[which(headings == abstract_heading) + 1] - 1
+        ff_edit <- ff_edit[-c(abstract_heading:abstract_end)]
+      }
+      
       # remove HTML comments
       ff_edit <- gsub("^(.*?)<!--.*?-->\\s*(.*)$", "\\1\\2", ff_edit)
       ff_edit <- gsub("^(.*?)<!--.*$", "\\1", ff_edit)
