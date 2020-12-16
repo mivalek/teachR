@@ -10,8 +10,7 @@ show.me(
   height = "maximize",
   online = F,
   url = "https://mivalek.github.io/.../marking/knitted/",
-  offline_html_path = "../knitted",
-  button_urls = "https://mivalek.github.io/adata/marking"
+  offline_html_path = "../knitted"
 )
 }
 \arguments{
@@ -26,8 +25,6 @@ show.me(
 \item{url}{\code{cahracter}. URL to a webpage containing knitted HTML files. Ignored if \code{online=FALSE}. See details.}
 
 \item{offline_html_path}{\code{cahracter}. If \code{online=FALSE}, path to knitted HTML files relative to \code{id=}. Ignored if \code{online=TRUE}.}
-
-\item{button_urls}{\code{character}. If \code{online=FALSE}, path to online folder where html files for buttons 1 and 3 are stored. These files will be downloaded locally so they can be displayed in RStudio viewer.}
 }
 \value{
 Function does not return a value. It opens an .Rmd file in the source editor and a HTML file in the Viewer.
