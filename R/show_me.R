@@ -58,7 +58,9 @@ show.me <- function(id, module = "and", height = "maximize", online = F, url = "
   iframes <- grep("<iframe src=\".*?\\.html", sidebar1, value = T)
   urls <- gsub(".*?\\\"(.*?)\\\".*", "\\1", iframes)
   dir.create(file.path(tempdir(), "doc"))
-  sapply(urls, function(x) download.file(x, file.path(tempdir(), "doc", gsub(".*/", "", x))))
+  sapply(grep("^http", urls, value = T), function(x) download.file(x, file.path(tempdir(), "doc", gsub(".*/", "", x))))
+  local_files <- grep("^http", urls, value = T, invert = T)
+  file.copy(local_files, file.path(tempdir(), gsub(".*/", "doc/", local_files)))
   for (i in urls) {
     file[sidebar1_ind[1]:sidebar1_ind[2]] <- sub(i, sub(".*/", "doc/", i), file[sidebar1_ind[1]:sidebar1_ind[2]])
   }
