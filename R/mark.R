@@ -142,10 +142,10 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       ff_edit <- ff_edit[-c(1:grep("^\\s*---", ff_edit)[2])]
       
       # remove abstract if present
-      abstract <- grepl("^\\s*#+\\s*abstract", ff_edit, ignore.case = T)
+      abstract <- grepl("^\\s*#+\\s*abstract|^\\s*[_\\*]+\\s*abstract\\s*[_\\*]+$", ff_edit, ignore.case = T)
       if (any(abstract)) {
         abstract_heading <- which(abstract)
-        headings <- grep("^\\s*#+", ff_edit)
+        headings <- grep("^\\s*#+|^\\s*[_\\*]+.*?[_\\*]+$", ff_edit)
         abstract_end <- headings[which(headings == abstract_heading) + 1] - 1
         ff_edit <- ff_edit[-c(abstract_heading:abstract_end)]
       }
