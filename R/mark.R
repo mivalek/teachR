@@ -124,7 +124,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       # remove code chunks
       # can't just do matrix(grep("```", rmd), ncol = 2, byrow= T)
       # it breaks if students include an extra ```
-      chunk_start <- grep("```{r", ff_edit, fixed = T)
+      chunk_start <- grep("```\\s*\\{r", ff_edit, ignore.case = T)
       chunk_end <- grep("```\\s*$", ff_edit)
       # find ``` nearest to each ```{r
       chunk_end <- sapply(chunk_start, function(x) chunk_end[which(chunk_end > x)[1]])
@@ -170,7 +170,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
         words_sane <- gsub(" ", "", gsub("([\\(\\[\\{\\*\\$\\.\\^\\#\\)\\}]|\\])", "\\\\ \\1", words))
         ptrn <- paste(words_sane[1:cutoff_word], collapse = "[[:punct:] ]*?")
         # introduce line break after limit has been reached
-        ff[cutoff_line] <- sub(paste0("(", ptrn, ")"), "\\1\n", ff[cutoff_line])
+        ff[cutoff_line] <- sub(paste0("(", ptrn, ")"), "\\1\n", ff[cutoff_line], perl=TRUE)
         # split by \n again
         ff <- unlist(strsplit(paste(ff, collapse = "\n"), "\n"))
         ff <- c(ff[1:cutoff_line], insert, ff[(cutoff_line + 1):length(ff)])
