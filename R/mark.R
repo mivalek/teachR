@@ -124,7 +124,7 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       # remove code chunks
       # can't just do matrix(grep("```", rmd), ncol = 2, byrow= T)
       # it breaks if students include an extra ```
-      chunk_start <- grep("```\\s*\\{r", ff_edit, ignore.case = T)
+      chunk_start <- grep("```\\s*\\{\\s*r", ff_edit, ignore.case = T)
       chunk_end <- grep("```\\s*$", ff_edit)
       # find ``` nearest to each ```{r
       chunk_end <- sapply(chunk_start, function(x) chunk_end[which(chunk_end > x)[1]])
@@ -151,6 +151,21 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       }
       
       # remove HTML comments
+      
+      ## multi-line html comments
+      comment_start <- grep("^(.*?)<!--", ff_edit)
+      comment_end <- grep("-->\\s*(.*)$", ff_edit)
+      comment_end <- sapply(comment_start, function(x) comment_end[which(comment_end >= x)[1]])
+      comment_limits <- cbind(comment_start, comment_end)      for (i in 1:nrow(comment_limits)) {
+        if (comment_limits[i, 1] != comment_limits[i, 2]) {
+          for (j in comment_limits[i, 1]:comment_limits[i, 2]) {
+            if (!grepl("<!--", ff_edit[j])) {ff_edit[j] <- paste("<!--", ff_edit[j])}
+            if (!grepl("-->", ff_edit[j])) {ff_edit[j] <- paste(ff_edit[j], "-->")}
+          }
+        }
+      }
+      ##
+      
       ff_edit <- gsub("^(.*?)<!--.*?-->\\s*(.*)$", "\\1\\2", ff_edit)
       ff_edit <- gsub("^(.*?)<!--.*$", "\\1", ff_edit)
       # this is not safe so don't!

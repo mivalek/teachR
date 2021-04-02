@@ -1,0 +1,40 @@
+
+Name: Insert :::{.box}
+Description: Inserts a div of class box under cursor position.
+Binding: insertBox
+Interactive: false
+
+Name: Insert :::{.sol}
+Description: Inserts a div of class sol under cursor position.
+Binding: insertSol
+Interactive: false
+
+Name: Insert :::{.more}
+Description: Inserts a div of class more under cursor position.
+Binding: insertMoreBox
+Interactive: false
+
+Name: Insert :::{.r-box}
+Description: Inserts a div of class r-box under cursor position.
+Binding: insertRbox
+Interactive: false
+
+Name: Insert :::{.hint}
+Description: Inserts a div of class hint under cursor position.
+Binding: insertHint
+Interactive: false
+
+Name: Insert `r task()`
+Description: Inserts inline chunk for task at cursor position.
+Binding: insertTask
+Interactive: false
+
+Name: Insert `r subtask()`
+Description: Inserts inline chunk for subtask at cursor position.
+Binding: inserSubtask
+Interactive: false
+
+Name: Insert quiz chunk
+Description: Inserts a pre-filled code chunk for quizzes with example MCQ and SAQ under cursor position.
+Binding: insertQuiz
+Interactive: false
