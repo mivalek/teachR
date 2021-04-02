@@ -9,6 +9,12 @@ insertSol <- function() {
   rstudioapi::setCursorPosition(c(pos + 2, 1))
 }
 
+insertSolChunk <- function() {
+  pos <- rstudioapi::getActiveDocumentContext()$selection[[1]]$range$start[1]
+  rstudioapi::insertText("\n```{r, sol=TRUE}\n\n```\n")
+  rstudioapi::setCursorPosition(c(pos + 2, 1))
+}
+
 insertBox <- function() {
   pos <- rstudioapi::getActiveDocumentContext()$selection[[1]]$range$start[1]
   rstudioapi::insertText("\n:::{.box}\n\n:::\n")
@@ -30,6 +36,12 @@ insertRbox <- function() {
 insertHint <- function() {
   pos <- rstudioapi::getActiveDocumentContext()$selection[[1]]$range$start[1]
   rstudioapi::insertText("\n:::{.hint}\n\n:::\n")
+  rstudioapi::setCursorPosition(c(pos + 2, 1))
+}
+
+insertWarn <- function() {
+  pos <- rstudioapi::getActiveDocumentContext()$selection[[1]]$range$start[1]
+  rstudioapi::insertText("\n:::{.warn}\n\n:::\n")
   rstudioapi::setCursorPosition(c(pos + 2, 1))
 }
 

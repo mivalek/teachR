@@ -9,6 +9,11 @@ Description: Inserts a div of class sol under cursor position.
 Binding: insertSol
 Interactive: false
 
+Name: Insert ```{r, sol=TRUE}
+Description: Inserts a solution code chunk under cursor position.
+Binding: insertSolChunk
+Interactive: false
+
 Name: Insert :::{.more}
 Description: Inserts a div of class more under cursor position.
 Binding: insertMoreBox
@@ -22,6 +27,11 @@ Interactive: false
 Name: Insert :::{.hint}
 Description: Inserts a div of class hint under cursor position.
 Binding: insertHint
+Interactive: false
+
+Name: Insert :::{.warn}
+Description: Inserts a div of class warn under cursor position.
+Binding: insertWarn
 Interactive: false
 
 Name: Insert `r task()`
