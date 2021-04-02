@@ -31,7 +31,7 @@ Interactive: false
 
 Name: Insert `r subtask()`
 Description: Inserts inline chunk for subtask at cursor position.
-Binding: inserSubtask
+Binding: insertSubtask
 Interactive: false
 
 Name: Insert quiz chunk
