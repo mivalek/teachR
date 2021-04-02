@@ -156,7 +156,8 @@ mark <- function(file = NULL, file_name = file, study = NULL, mark = NULL, rubri
       comment_start <- grep("^(.*?)<!--", ff_edit)
       comment_end <- grep("-->\\s*(.*)$", ff_edit)
       comment_end <- sapply(comment_start, function(x) comment_end[which(comment_end >= x)[1]])
-      comment_limits <- cbind(comment_start, comment_end)      for (i in 1:nrow(comment_limits)) {
+      comment_limits <- cbind(comment_start, comment_end)
+      for (i in 1:nrow(comment_limits)) {
         if (comment_limits[i, 1] != comment_limits[i, 2]) {
           for (j in comment_limits[i, 1]:comment_limits[i, 2]) {
             if (!grepl("<!--", ff_edit[j])) {ff_edit[j] <- paste("<!--", ff_edit[j])}
