@@ -199,13 +199,13 @@ xaringan_slides = function(
     
     setup_file = here::here('themes/teachR/static/R/slides_setup.R')
     if (file.exists(setup_file)) {
-      setup_file = paste0("\nsource(", setup_file, ")")
+      setup_file = paste0("\nsource('", setup_file, "')")
     } else { setup_file = "" }
     add_to_setup = paste0("\\1", setup_file, "\nxaringanExtra:::register_panelset_knitr_hooks()")
     
     rmd_text <- readChar(input, file.info(input)$size)
     rmd_text <- gsub("\r\n", "\n", rmd_text)
-    rmd_text <- sub("(```\\s*\\{\\s*r.*?setup.*?\\})", "\\1\nsource(here::here('themes/teachR/static/R/slides_setup.R'))\nxaringanExtra:::register_panelset_knitr_hooks()", rmd_text)
+    rmd_text <- sub("(```\\s*\\{\\s*r.*?setup.*?\\})", add_to_setup, rmd_text)
     preprocessed_rmd_file <- intermediates_loc(
       file_with_meta_ext(pre_knit_input, "preproc")
     )

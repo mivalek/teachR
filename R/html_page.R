@@ -153,9 +153,9 @@ html_page = function(
     
     setup_file = here::here('themes/teachR/static/R/page_setup.R')
     if (file.exists(setup_file)) {
-      setup_file = paste0("\nsource(", setup_file, ")")
+      setup_file = paste0("\nsource('", setup_file, "')")
     } else { setup_file = "" }
-    add_to_setup = paste0("\\1", setup_file, "\nsource(", system.file('resources', 'tasks_quizzes.R', package = 'teachR', mustWork = TRUE), ")")
+    add_to_setup = paste0("\\1", setup_file, "\nsource('", system.file('resources', 'tasks_quizzes.R', package = 'teachR', mustWork = TRUE), "')")
     rmd_text <- readChar(input, file.info(input)$size)
     rmd_text <- gsub("\r\n", "\n", rmd_text)
     rmd_text <- sub("(```\\s*\\{\\s*r.*?setup.*?\\})", add_to_setup, rmd_text)
