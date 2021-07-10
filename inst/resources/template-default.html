@@ -1,0 +1,27 @@
+$for(header-includes)$
+$header-includes$
+$endfor$
+$if(highlighting-css)$
+<style type="text/css">
+$highlighting-css$
+</style>
+$endif$
+$for(css)$
+  <link rel="stylesheet" href="$css$" type="text/css" />
+$endfor$
+
+$for(include-before)$
+$include-before$
+$endfor$
+$if(toc)$
+<div id="TOC">
+<h2 id="$toc-title$">Contents</h2>
+$table-of-contents$
+</div>
+$endif$
+
+$body$
+
+$for(include-after)$
+$include-after$
+$endfor$
