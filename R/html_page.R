@@ -1,9 +1,10 @@
 #' An R Markdown output format for \pkg{blogdown} web pages
-#'  
-#' This is an edited version of \code{blogdown::html_page()} that sets up
-#' and renders \pkg{distill}-like documents (e.g., \url(https://and.netlify.app/tutorials/04/)).
-#' Below is the original documentation because I'm lazy.
 #'
+#'
+#' This is an edited version of \code{blogdown::html_page()} that sets up
+#' and renders \pkg{distill}-like documents (e.g., \url{https://and.netlify.app/tutorials/04/}).
+#' Below is the original documentation because I'm lazy.
+#' 
 #' This function is a simple wrapper of \code{bookdown::\link{html_document2}()}
 #' with different default arguments, and more importantly, a special HTML
 #' template designed only for \pkg{blogdown} to render R Markdown to HTML pages

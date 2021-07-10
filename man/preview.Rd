@@ -6,6 +6,7 @@
 \usage{
 preview(
   file,
+  show_rmd = F,
  
     rubric_url = "https://raw.githubusercontent.com/SussexPsychMethods/and_pub/master/marking/sussex_rubric.R",
  
