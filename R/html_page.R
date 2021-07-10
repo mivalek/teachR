@@ -180,7 +180,7 @@ html_page = function(
     on_exit = cleanup,
     post_processor = post_processor,
     base_format = bookdown::html_document2(
-      ..., number_sections = number_sections, theme = NULL,
+      ..., section_divs = FALSE, number_sections = number_sections, theme = NULL,
       self_contained = self_contained, highlight = highlight,
       pandoc_args = c('-M', 'link-citations=true', pandoc_args),
       template = system.file('resources', 'template-default.html', package = 'teachR', mustWork = TRUE)
