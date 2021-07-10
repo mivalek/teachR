@@ -1,12 +1,13 @@
 Package: teachR
 Type: Package
-Title: Tools for creating teaching materials and maintaining UoE Psych website
+Title: Pretty teaching materials using blogdown, distill, and xaringan
 Version: 0.1.0
 Author: Milan Valasek
 Maintainer: The package maintainer <yourself@somewhere.net>
-Description: A handful of functions to help maintain the websites for Uni Sussex and UoE Psychology statistics courses (dapR, USMR, MSMR, AnD) and convert .Rmd files with lecture content into reveal.js slides. For more details see internal user guide.
-Imports: rmarkdown, revealjs
+Description:  Tools for creating blogdown module websites plus misc marking and exam functions.
+Imports: rmarkdown, rcanvas, xaringan, xaringanExtra, distill
 License: GNU GPL
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
+Remotes: gadenbuie/xaringanExtra
