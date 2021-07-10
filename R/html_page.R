@@ -158,7 +158,7 @@ html_page = function(
     add_to_setup = paste0("\\1", setup_file, "\nsource(", system.file('resources', 'tasks_quizzes.R', package = 'teachR', mustWork = TRUE), ")")
     rmd_text <- readChar(input, file.info(input)$size)
     rmd_text <- gsub("\r\n", "\n", rmd_text)
-    rmd_text <- sub("(```\\s*\\{\\s*r.*?setup.*?\\})", add_to_setup, rmd_text, fixed = T)
+    rmd_text <- sub("(```\\s*\\{\\s*r.*?setup.*?\\})", add_to_setup, rmd_text)
     preprocessed_rmd_file <- intermediates_loc(
       file_with_meta_ext(pre_knit_input, "preprocessed")
     )
