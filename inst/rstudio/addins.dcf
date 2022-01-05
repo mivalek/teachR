@@ -24,6 +24,11 @@ Description: Inserts a div of class r-box under cursor position.
 Binding: insertRbox
 Interactive: false
 
+Name: Insert :::{.extra}
+Description: Inserts a div of class extra under cursor position.
+Binding: insertExtraBox
+Interactive: false
+
 Name: Insert :::{.hint}
 Description: Inserts a div of class hint under cursor position.
 Binding: insertHint
