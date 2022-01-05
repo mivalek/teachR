@@ -106,14 +106,33 @@ html_page = function(
   }
   knitr_options$opts_hooks$quiz <- function(options) {
     if (isTRUE(options$quiz)) {
+      options$panel = FALSE
+      options$copy = FALSE
       options$sol = FALSE
       options$eval = TRUE
       options$echo = FALSE
       options$results = 'asis'
       options$layout = "quiz-wrapper"
-      options
     }
+    options
   }
+  knitr_options$opts_hooks$panel <- function(options) {
+    if (isTRUE(options$panel)) {
+      options$echo=TRUE
+      options$eval=TRUE
+      options$copy=FALSE
+    }
+    options
+  }
+  
+  
+  knitr_options$opts_hooks$sol <- function(options) {
+    if (isTRUE(options$sol)) {
+      options$echo=TRUE
+    }
+    options
+  }
+  
   knitr_options$knit_hooks <- distill:::knit_hooks(downlit = highlight_downlit)
   
   knitr_options$knit_hooks$sol <- function(before, options, envir){
@@ -137,6 +156,16 @@ html_page = function(
       } else paste0('</div>')
     }
   }
+  
+  knitr::knit_hooks$set(
+    panel = function(before, options, envir){
+      if (isTRUE(options$panel)) {
+        if (before) {
+          paste0('<div class="codePanel">')
+        } else paste0('</div>')
+      }
+    }
+  )
   
   # table of contents
   args <- rmarkdown::pandoc_toc_args(toc, toc_depth)

@@ -14,14 +14,16 @@ $for(include-before)$
 $include-before$
 $endfor$
 $if(toc)$
+<div id="toc-container">
 <div id="TOC">
 <h2 id="$toc-title$">Contents</h2>
 $table-of-contents$
 </div>
+</div>
 $endif$
-
+<div id="article-container">
 $body$
-
+</div>
 $for(include-after)$
 $include-after$
 $endfor$
