@@ -2,6 +2,7 @@
 
 export(get.quick.com)
 export(get.submitted)
+export(get_output)
 export(html_page)
 export(insertSol)
 export(make.paper)
@@ -17,3 +18,4 @@ importFrom(htmltools,htmlEscape)
 importFrom(htmltools,tagList)
 importFrom(htmltools,tags)
 importFrom(tibble,tibble)
+importFrom(xtable,sanitize)
