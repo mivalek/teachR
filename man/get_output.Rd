@@ -4,10 +4,21 @@
 \alias{get_output}
 \title{Write console output to clipboard}
 \usage{
-get_output(x)
+get_output(
+  x,
+  style = FALSE,
+  global_style = FALSE,
+  css = "background:#002140;color:white;width:max-content;margin:auto"
+)
 }
 \arguments{
 \item{x}{Valid R command whose output you want to copy.}
+
+\item{style}{\code{logical}. Should the code block be styled. Default is \code{FALSE}.}
+
+\item{global_style}{\code{logical}. If \code{TRUE}, the style gets applied to all code blocks on the page, otherwise just this one. Default is \code{FALSE}.}
+
+\item{css}{\code{character}. A string with valid CSS to set the style.}
 }
 \description{
 Captures console output of a command (\code{show()}) and copies it to clipboard as a HTML code block.
