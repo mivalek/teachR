@@ -11,7 +11,7 @@
 #' @importFrom xtable sanitize
 #' @examples
 #' x <- rnorm(100)
-#' y <- 4 + .7 * x + rnrom(100)
+#' y <- 4 + .7 * x + rnorm(100)
 #' get_output(summary(lm(y ~ x)))
 #' @export
 #' 

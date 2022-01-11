@@ -25,6 +25,6 @@ Captures console output of a command (\code{show()}) and copies it to clipboard 
 }
 \examples{
 x <- rnorm(100)
-y <- 4 + .7 * x + rnrom(100)
+y <- 4 + .7 * x + rnorm(100)
 get_output(summary(lm(y ~ x)))
 }
