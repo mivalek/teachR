@@ -15,7 +15,7 @@
 #' 
 #' @export
 
-slides_to_pdf <- function(lecture_numer, module="AnD", port=4321) {
+slides_to_pdf <- function(lecture_number, module="AnD", port=4321) {
   needsServer <- try(readLines(paste0("http://localhost:", port), n = 1)) |> inherits("try-error")
   if (needsServer) blogdown::serve_site(port = port)
   num <-sprintf("%02d", lecture_numer)
