@@ -33,7 +33,9 @@ make.paper(
 
 \item{randomise_qs}{\code{logical}. Should order of items be randomised (multi-items that share a single stem/paradigm will be appended to the end of the exam in either case). \code{TRUE} by default.}
 
-\item{randomise_response_opts}{\code{TRUE} to generate a sample paper with correct responses at the end of the paper. \code{FALSE} by default.}
+\item{randomise_response_opts}{\code{logical}. Should order of response options be randomised. \code{TRUE} by default.}
+
+\item{sample}{\code{TRUE} to generate a sample paper with correct responses at the end of the paper. \code{FALSE} by default.}
 
 \item{items.}{Data frame of items for a given exam paper. It is recommended to first generate a question bank with \code{\link{question.bank}()} and then select individual paper items.}
 }
@@ -47,7 +49,8 @@ Requires a tibble of exam items, such as the one returned by \code{\link{questio
 Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/sheet_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
 }
 \examples{
+paper_items <- teachR::question.bank("exam_items.Rmd", authors = "MV")
 make.paper(paper_items, "exam_code.Rmd", out_file_name = "AnD_MCQ_paper_19_20",
            yaml_header = boilerplate$yaml, title_page = boiler_plate$title_page,
-           ref_file = "paper_ref_doc.docx", pre_processor = teachR:::sus_pre_processor)
+           ref_file = file.path(path.package("teachR"), "mcq_format_ref.docx"), pre_processor = teachR:::sus_pre_processor)
 }

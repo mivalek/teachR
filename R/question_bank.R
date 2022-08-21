@@ -28,7 +28,7 @@
 
 question.bank <- function(question_files, authors) {
   
-  all_questions <- all_groups <- list()
+  all_questions <- all_groups <- groups <- list()
   group_counter <- first_gr_couter <-  0
   for (i in seq_along(question_files)) {
     first_gr_couter <- first_gr_couter + 1

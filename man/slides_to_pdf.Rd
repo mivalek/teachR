@@ -4,14 +4,14 @@
 \alias{slides_to_pdf}
 \title{Generate PDF lecture slides for a HUGO tachR website}
 \usage{
-slides_to_pdf(lecture_numer, module = "AnD", port = 4321)
+slides_to_pdf(lecture_number, module = "AnD", port = 4321)
 }
 \arguments{
+\item{lecture_number}{Number of the lecture to convert to PDF. May be a vector.}
+
 \item{module}{\code{character}. Module name to use as a prefix in PDF file name. Defaults to \code{"AnD"}.}
 
 \item{port}{Port number on which to locally serve the Hugo website hosting lecture slides.}
-
-\item{lecture_number}{Number of the lecture to convert to PDF. May be a vector.}
 }
 \description{
 Requires a local install of \href{https://github.com/astefanutti/decktape}{decktape}. Function converts one or more knitted teachR::xaringan_slides files to a PDF version with slides next to a "notepad" sheet (\href{https://and.netlify.app/lectures/01/AnD_lecture01_slides.pdf}{example}).

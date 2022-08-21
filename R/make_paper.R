@@ -12,14 +12,15 @@
 #' @param pre_preocessor Pre-processor function to include \code{title_page} in the final document. Currently uses \code{teachR:::sus_pre_processor()} that gets called by \code{teachR:::exam_paper_document()} passed to \code{rmarkdown::render()}. Using alternatives not yet implemented.
 #' @param randomise_qs \code{logical}. Should order of items be randomised (multi-items that share a single stem/paradigm will be appended to the end of the exam in either case). \code{TRUE} by default.
 #' @param randomise_response_opts \code{logical}. Should order of response options be randomised. \code{TRUE} by default.
-#' @param randomise_response_opts \code{TRUE} to generate a sample paper with correct responses at the end of the paper. \code{FALSE} by default.
+#' @param sample \code{TRUE} to generate a sample paper with correct responses at the end of the paper. \code{FALSE} by default.
 #' @details Function requires a .css and .js files for correct formatting of lab sheets/handouts. These files sit on the stats website in the [root]/sheet_files folder and the path is hard-coded into the function. Look for css and js objects in function body.
 #' @return Function returns a message if successful and, if \code{sample=FALSE}, produces two versions of paper; one with correct answers (..._WITH_KEY in file name) and one without. A scoring key CSV file gets also generated. If \code{sample=TRUE},, only the sample paper gets generated.
 #' @importFrom tibble tibble
 #' @examples
+#' paper_items <- teachR::question.bank("exam_items.Rmd", authors = "MV")
 #' make.paper(paper_items, "exam_code.Rmd", out_file_name = "AnD_MCQ_paper_19_20",
 #'            yaml_header = boilerplate$yaml, title_page = boiler_plate$title_page,
-#'            ref_file = "paper_ref_doc.docx", pre_processor = teachR:::sus_pre_processor)
+#'            ref_file = file.path(path.package("teachR"), "mcq_format_ref.docx"), pre_processor = teachR:::sus_pre_processor)
 #' @export
 #' 
 
